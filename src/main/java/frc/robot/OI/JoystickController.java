@@ -33,7 +33,8 @@ public class JoystickController {
     button10_L = new JoystickButton(leftJoy, 10),
     button11_L = new JoystickButton(leftJoy, 11);
    public double getZJoyStick_L() {
-      return leftJoy.getZ();
+      return leftJoy.getZ(); 
+      
    }
    public double getXJoyStick_L() {
       return leftJoy.getX();
