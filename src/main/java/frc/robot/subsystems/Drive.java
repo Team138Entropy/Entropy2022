@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -12,7 +14,6 @@ import frc.robot.Kinematics;
 import frc.robot.Robot;
 import frc.robot.util.DriveSignal;
 import frc.robot.util.Util;
-import frc.robot.util.drivers.OurWPITalonSRX;
 import frc.robot.util.geometry.Rotation2d;
 import frc.robot.util.geometry.Twist2d;
 
@@ -20,7 +21,7 @@ public class Drive extends Subsystem {
   private static Drive mInstance;
 
   // Drive Talons
-  private OurWPITalonSRX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
+  private TalonFX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
 
   public enum DriveControlState {
     OPEN_LOOP, // open loop voltage control
@@ -88,17 +89,17 @@ public class Drive extends Subsystem {
     previousDriveSignals[0] = new DriveSignal(0, 0);
 
 
-    mLeftSlave = new OurWPITalonSRX(Constants.Talons.Drive.leftMaster);
-    mLeftMaster = new OurWPITalonSRX(Constants.Talons.Drive.leftSlave);
-    mRightSlave = new OurWPITalonSRX(Constants.Talons.Drive.rightMaster);
-    mRightMaster = new OurWPITalonSRX(Constants.Talons.Drive.rightSlave);
+    mLeftSlave = new TalonFX(Constants.Talons.Drive.leftMaster);
+    mLeftMaster = new TalonFX(Constants.Talons.Drive.leftSlave);
+    mRightSlave = new TalonFX(Constants.Talons.Drive.rightMaster);
+    mRightMaster = new TalonFX(Constants.Talons.Drive.rightSlave);
 
     configTalon(mLeftMaster);
-    mLeftSlave.setNeutralMode(NeutralMode.Coast);
+    mLeftSlave.setNeutralMode(NeutralMode.Brake);
     mLeftSlave.setSensorPhase(false);
 
     configTalon(mRightMaster);
-    mRightSlave.setNeutralMode(NeutralMode.Coast);
+    mRightSlave.setNeutralMode(NeutralMode.Brake);
 
     // Configure slave Talons to follow masters
     mLeftSlave.follow(mLeftMaster);
@@ -110,7 +111,7 @@ public class Drive extends Subsystem {
     m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
   }
 
-  private void configTalon(OurWPITalonSRX talon) {
+  private void configTalon(TalonFX talon) {
     talon.configFactoryDefault();
     talon.configNominalOutputForward(0., 0);
     talon.configNominalOutputReverse(0., 0);
@@ -119,7 +120,7 @@ public class Drive extends Subsystem {
     talon.configOpenloopRamp(0);
     talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
     talon.setSensorPhase(true);
-    talon.setNeutralMode(NeutralMode.Coast);
+    talon.setNeutralMode(NeutralMode.Brake);
 
     // Configure Talon gains
     double P, I, D;
@@ -290,7 +291,7 @@ public class Drive extends Subsystem {
   // if this is not the first loop,  we will consider the previous loop
   // returns a drive signal
   public DriveSignal getCheesyBrianDrive(double throttle, double wheel, boolean quickTurn) {
-    double DeltaVelocityLimit = 0.03;
+    double DeltaVelocityLimit = 0.015;
     wheel = wheel * -1; //invert wheel
     if (Util.epsilonEquals(throttle, 0.0, 0.05)) {
         throttle = 0.0;
@@ -360,11 +361,11 @@ public class Drive extends Subsystem {
   }
 
   public synchronized int getLeftEncoderDistance() {
-    return mLeftMaster.getSelectedSensorPosition();
+    return 0;
   }
 
   public synchronized int getRightEncoderDistance() {
-    return mRightMaster.getSelectedSensorPosition();
+    return 0;
   }
 
   public synchronized Rotation2d getRotation() {
@@ -372,14 +373,7 @@ public class Drive extends Subsystem {
   }
 
   public void zeroEncoders() {
-    if (Robot.isReal()) {
-      mLeftMaster
-          .getSensorCollection()
-          .setQuadraturePosition(0, Constants.Drive.talonSensorTimeoutMs);
-      mRightMaster
-          .getSensorCollection()
-          .setQuadraturePosition(0, Constants.Drive.talonSensorTimeoutMs);
-    }
+
   }
 
   // Used only in TEST mode
