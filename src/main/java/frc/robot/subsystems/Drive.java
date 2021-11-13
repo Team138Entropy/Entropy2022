@@ -31,7 +31,7 @@ public class Drive extends Subsystem {
   private DriveControlState mDriveControlState;
 
   // The gyro sensor
- // private final Gyro m_gyro = new ADXRS450_Gyro();
+  private final Gyro m_gyro = new ADXRS450_Gyro();  
 
   // Odometry class for tracking robot pose
   
@@ -105,7 +105,7 @@ public class Drive extends Subsystem {
     mRightSlave.follow(mRightMaster);
 
     setOpenLoop(DriveSignal.NEUTRAL);
-
+    m_gyro.reset();
     // Reset Odometrey 
     //m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
   }
@@ -225,6 +225,7 @@ public class Drive extends Subsystem {
   public synchronized void setDrive(double throttle, double wheel, boolean quickTurn) {
     DriveSignal s = getCheesyBrianDrive(throttle, wheel, quickTurn);
     setOpenLoop(s);
+    System.out.println(m_gyro.getRotation2d().getDegrees());
   }
 
 
