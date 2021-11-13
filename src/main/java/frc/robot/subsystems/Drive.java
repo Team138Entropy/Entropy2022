@@ -31,10 +31,9 @@ public class Drive extends Subsystem {
   private DriveControlState mDriveControlState;
 
   // The gyro sensor
-  private final Gyro m_gyro = new ADXRS450_Gyro();
+ // private final Gyro m_gyro = new ADXRS450_Gyro();
 
   // Odometry class for tracking robot pose
-  private final DifferentialDriveOdometry m_odometry;
   
   private PeriodicDriveData mPeriodicDriveData = new PeriodicDriveData();
 
@@ -108,7 +107,7 @@ public class Drive extends Subsystem {
     setOpenLoop(DriveSignal.NEUTRAL);
 
     // Reset Odometrey 
-    m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+    //m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
   }
 
   private void configTalon(TalonFX talon) {
