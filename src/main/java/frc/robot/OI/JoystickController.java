@@ -34,7 +34,7 @@ public class JoystickController {
     button11_L = new JoystickButton(leftJoy, 11);
    public double getZJoyStick_L() {
       return leftJoy.getZ(); 
-      
+
    }
    public double getXJoyStick_L() {
       return leftJoy.getX();
@@ -63,72 +63,136 @@ public class JoystickController {
    public double getYJoyStick_R() {
       return RightJoy.getY();
    }
-   /*
-   public boolean isButton1Pressed() {
-      if (button1.get()){
+   public boolean isButton1Pressed_L() {
+      if (button1_L.get()){
          return true;
       }
       return false;
    }
-   public boolean isButton2Pressed() {
-      if (button2.get()){
+   public boolean isButton2Pressed_L() {
+      if (button2_L.get()){
          return true;
       }
       return false;
    }
-   public boolean isButton3Pressed() {
-      if (button3.get()){
+   public boolean isButton3Pressed_L() {
+      if (button3_L.get()){
          return true;
       }
       return false;
    }
-   public boolean isButton4Pressed() {
-      if (button4.get()){
+   public boolean isButton4Pressed_L() {
+      if (button4_L.get()){
          return true;
       }
       return false;
    }
-   public boolean isButton5Pressed() {
-      if (button5.get()){
+   public boolean isButton5Pressed_L() {
+      if (button5_L.get()){
          return true;
       }
       return false;
    }
-   public boolean isButton6Pressed() {
-      if (button6.get()){
+   public boolean isButton6Pressed_L() {
+      if (button6_L.get()){
          return true;
       }
       return false;
    }
-   public boolean isButton7Pressed() {
-      if (button7.get()){
+   public boolean isButton7Pressed_L() {
+      if (button7_L.get()){
          return true;
       }
       return false;
    }
-   public boolean isButton8Pressed() {
-      if (button8.get()){
+   public boolean isButton8Pressed_L() {
+      if (button8_L.get()){
          return true;
       }
       return false;
    }
-   public boolean isButton9Pressed() {
-      if (button9.get()){
+   public boolean isButton9Pressed_L() {
+      if (button9_L.get()){
          return true;
       }
       return false;
    }
-   public boolean isButton10Pressed() {
-      if (button10.get()){
+   public boolean isButton10Pressed_L() {
+      if (button10_L.get()){
          return true;
       }
       return false;
    }
-   public boolean isButton11Pressed() {
-      if (button11.get()){
+   public boolean isButton11Pressed_L() {
+      if (button11_L.get()){
          return true;
       }
       return false;
    }
-   */
+   public boolean isButton1Pressed_R() {
+    if (button1_R.get()){
+       return true;
+    }
+    return false;
+ }
+ public boolean isButton2Pressed_R() {
+    if (button2_R.get()){
+       return true;
+    }
+    return false;
+ }
+ public boolean isButton3Pressed_R() {
+    if (button3_R.get()){
+       return true;
+    }
+    return false;
+ }
+ public boolean isButton4Pressed_R() {
+    if (button4_R.get()){
+       return true;
+    }
+    return false;
+ }
+ public boolean isButton5Pressed_R() {
+    if (button5_R.get()){
+       return true;
+    }
+    return false;
+ }
+ public boolean isButton6Pressed_R() {
+    if (button6_R.get()){
+       return true;
+    }
+    return false;
+ }
+ public boolean isButton7Pressed_R() {
+    if (button7_R.get()){
+       return true;
+    }
+    return false;
+ }
+ public boolean isButton8Pressed_R() {
+    if (button8_R.get()){
+       return true;
+    }
+    return false;
+ }
+ public boolean isButton9Pressed_R() {
+    if (button9_R.get()){
+       return true;
+    }
+    return false;
+ }
+ public boolean isButton10Pressed_R() {
+    if (button10_R.get()){
+       return true;
+    }
+    return false;
+ }
+ public boolean isButton11Pressed_R() {
+    if (button11_R.get()){
+       return true;
+    }
+    return false;
+ }
 }
