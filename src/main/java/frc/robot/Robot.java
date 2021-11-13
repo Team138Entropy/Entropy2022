@@ -159,10 +159,6 @@ public class Robot extends TimedRobot {
     double driveThrottle = mOperatorInterface.getDriveThrottle();
     double driveTurn = mOperatorInterface.getDriveTurn();
 
-    //scale inputs 
-    driveThrottle *= .7;
-    driveTurn *= .7;
-
     //manual drive
     mDrive.setDrive(driveThrottle, driveTurn, false);
   }
