@@ -17,6 +17,8 @@ import frc.robot.util.DriveSignal;
 import frc.robot.util.Util;
 import frc.robot.util.geometry.Rotation2d;
 import frc.robot.util.geometry.Twist2d;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+
 
 public class Drive extends Subsystem {
   private static Drive mInstance;
@@ -340,6 +342,40 @@ public class Drive extends Subsystem {
  
   public void zeroEncoders() {
 
+  }
+
+  /**
+   * Returns the currently-estimated pose of the robot.
+   *
+   * @return The pose.
+   */
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+
+  /**
+   * Zeroes the heading of the robot.
+   */
+  public void zeroHeading() {
+    m_gyro.reset();
+  }
+
+  /**
+   * Returns the heading of the robot.
+   *
+   * @return the robot's heading in degrees, from -180 to 180
+   */
+  public double getHeading() {
+    return m_gyro.getRotation2d().getDegrees();
+  }
+
+  /**
+   * Returns the turn rate of the robot.
+   *
+   * @return The turn rate of the robot, in degrees per second
+   */
+  public double getTurnRate() {
+    return -m_gyro.getRate();
   }
 
 }
