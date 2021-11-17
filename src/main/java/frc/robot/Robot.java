@@ -7,15 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.controller.RamseteController;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
 
-//remove
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.FileWriter;
-import frc.robot.util.DriveSignal;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -33,6 +29,10 @@ public class Robot extends TimedRobot {
   
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
+
+  // Using the default constructor of RamseteController. Here
+  // the gains are initialized to 2.0 and 0.7.
+  RamseteController AutoRamseteController = new RamseteController();
 
 
   /**
@@ -57,56 +57,17 @@ public class Robot extends TimedRobot {
   }
 
 
-  boolean firstLoop = true;
-  long startTimeMilliseconds = System.currentTimeMillis();
-
-  FileWriter csvWriter;
   /** Called at the Start of Autonomous **/
   @Override
   public void autonomousInit() {
-    try{
-      csvWriter = new FileWriter("WaltersDrive0to1.csv");
-      csvWriter.append("Milliseconds,");
-      csvWriter.append("Left Output (),");
-      csvWriter.append("Right Output (),");
-      csvWriter.append("\n");
-      csvWriter.flush();
-    }catch(java.io.IOException e){
-    }
+  
 
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    if(firstLoop){
-      startTimeMilliseconds = System.currentTimeMillis();
-      firstLoop = false;
-    }
-
-    //System.out.println("Drive!");
-    //test period
-    //mDrive.setDrive(1, 0, false);
-    long timeMilliseconds = System.currentTimeMillis() - startTimeMilliseconds;
-    DriveSignal d = mDrive.getCheesyBrianDrive(1, 0, false);
-
-    try{
-      csvWriter.append(Long.toString(timeMilliseconds));
-      csvWriter.append(",");
-
-
-      // Write Output
-      csvWriter.append(Double.toString(d.getLeft()));
-      csvWriter.append(",");
-      csvWriter.append(Double.toString(d.getRight()));
-      csvWriter.append(",");
-
-
-      csvWriter.append("\n");
-      csvWriter.flush();
-    }catch(java.io.IOException e){
-
-    }
+    
   }
 
   /** This function is called once when teleop is enabled. */
