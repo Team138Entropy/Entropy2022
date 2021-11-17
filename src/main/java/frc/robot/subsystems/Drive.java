@@ -32,9 +32,10 @@ public class Drive extends Subsystem {
   private DriveControlState mDriveControlState;
 
   // The gyro sensor
-  private final Gyro m_gyro = new ADXRS450_Gyro();  
+  private final Gyro m_gyro = new ADXRS450_Gyro();
 
   // Odometry class for tracking robot pose
+  private final DifferentialDriveOdometry m_odometry;
   
   private PeriodicDriveData mPeriodicDriveData = new PeriodicDriveData();
   public static class PeriodicDriveData {
@@ -79,15 +80,11 @@ public class Drive extends Subsystem {
     return (int) roundedVal;
   }
 
+  // Drive Memory for Drive Smoothing
   private final int previousDriveSignalCount = 1;
-  private DriveSignal previousDriveSignals[] = new DriveSignal[previousDriveSignalCount];
-  //intialize to zero
-  
+  private DriveSignal previousDriveSignals[] = new DriveSignal[previousDriveSignalCount]; 
 
   private Drive() {
-    previousDriveSignals[0] = new DriveSignal(0, 0);
-
-
     mLeftSlave = new TalonFX(Constants.Talons.Drive.leftMaster);
     mLeftMaster = new TalonFX(Constants.Talons.Drive.leftSlave);
     mRightSlave = new TalonFX(Constants.Talons.Drive.rightMaster);
@@ -105,14 +102,21 @@ public class Drive extends Subsystem {
     mRightSlave.follow(mRightMaster);
 
     setOpenLoop(DriveSignal.NEUTRAL);
-    m_gyro.reset();
-    // Reset Odometrey 
-    //m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
 
+    // reset gyro to have psotion zero
+    m_gyro.reset();
+
+    // Reset Odometrey 
+    m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+
+    // Encoder Setup
     mLeftMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
     mRightMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
 		mLeftMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
-		mRightMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
+    mRightMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
+    
+    // Init Drive Memory to Zero
+    intializeDriveMemory();
   }
 
   private void configTalon(TalonFX talon) {
@@ -146,6 +150,11 @@ public class Drive extends Subsystem {
     // Accelerate Limits
     double secondsToFull = .8;
     talon.configOpenloopRamp(0);
+  }
+
+  // Intialize Drive Memory Objects
+  private void intializeDriveMemory(){
+    previousDriveSignals[0] = new DriveSignal(0, 0);
   }
 
   public void resetCruiseAndAccel() {
