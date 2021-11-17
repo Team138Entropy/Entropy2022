@@ -101,22 +101,23 @@ public class Drive extends Subsystem {
     mLeftSlave.follow(mLeftMaster);
     mRightSlave.follow(mRightMaster);
 
-    setOpenLoop(DriveSignal.NEUTRAL);
-
-    // reset gyro to have psotion zero
-    m_gyro.reset();
-
-    // Reset Odometrey 
-    m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
-
     // Encoder Setup
     mLeftMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
     mRightMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
 		mLeftMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
     mRightMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
     
+    // reset gyro to have psotion zero
+    m_gyro.reset();
+
+    // Reset Odometrey 
+    m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+
     // Init Drive Memory to Zero
     intializeDriveMemory();
+
+    // Default Robot into Open Loop
+    setOpenLoop(DriveSignal.NEUTRAL);
   }
 
   private void configTalon(TalonFX talon) {
@@ -147,8 +148,8 @@ public class Drive extends Subsystem {
     talon.configMotionCruiseVelocity(900);
     talon.configMotionAcceleration(750);
 
-    // Accelerate Limits
-    double secondsToFull = .8;
+    // Acceleration Limits
+    // This should be ZERO!
     talon.configOpenloopRamp(0);
   }
 
@@ -200,19 +201,7 @@ public class Drive extends Subsystem {
     zeroEncoders();
   }
 
-  public void setMotionMagicTarget(int left, int right) {
-    mLeftMaster.set(ControlMode.MotionMagic, left);
-    mRightMaster.set(ControlMode.MotionMagic, -right);
-  }
-
-  public void setSimplePIDTarget(int left, int right) {
-    mLeftMaster.set(ControlMode.Position, left);
-    mRightMaster.set(ControlMode.Position, -right);
-  }
-
-  /** Configure talons for open loop control */
-
-  // Used for arcade turning during auto
+  // Used for Test
   public void setSimplePercentOutput(DriveSignal signal) {
     mLeftMaster.set(ControlMode.PercentOutput, signal.getLeft());
     mRightMaster.set(ControlMode.PercentOutput, signal.getRight() * -1);
@@ -221,8 +210,6 @@ public class Drive extends Subsystem {
   // Set Open Loop Control
   public synchronized void setOpenLoop(DriveSignal signal) {
       if (mDriveControlState != DriveControlState.OPEN_LOOP) {
-          //setBrakeMode(true);
-
           mDriveControlState = DriveControlState.OPEN_LOOP;
       }
 
@@ -263,14 +250,7 @@ public class Drive extends Subsystem {
     if (!quickTurn) {
         wheel = Math.sin(Math.PI / 2.0 * kWheelNonlinearity * wheel);
         wheel = Math.sin(Math.PI / 2.0 * kWheelNonlinearity * wheel);
-        wheel = wheel / (denominator * denominator) * Math.abs(throttle);
-        wheel = wheel * .80;
-        /*
-        if(throttle < 0){
-          wheel = wheel * -1;
-        }
-        */
-        
+        wheel = wheel / (denominator * denominator) * Math.abs(throttle);        
     }
 
     if(quickTurn){
@@ -281,8 +261,6 @@ public class Drive extends Subsystem {
         wheel = Math.pow((wheel*.5),2) * -1;
       }
     }
-
-
 
     wheel *= kWheelGain;
     DriveSignal signal = Kinematics.inverseKinematics(new Twist2d(throttle, 0.0, wheel));
