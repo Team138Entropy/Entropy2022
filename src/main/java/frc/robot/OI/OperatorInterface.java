@@ -35,7 +35,7 @@ public class OperatorInterface {
       }
     
     public double getDriveTurn() {
-        return joysticks.getXJoyStick_L();
+        return joysticks.getXJoyStick_R();
     }
 
 }

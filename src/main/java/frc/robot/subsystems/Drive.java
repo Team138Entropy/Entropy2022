@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -36,7 +37,6 @@ public class Drive extends Subsystem {
   // Odometry class for tracking robot pose
   
   private PeriodicDriveData mPeriodicDriveData = new PeriodicDriveData();
-
   public static class PeriodicDriveData {
     // INPUTS
     public double timestamp;
@@ -108,6 +108,11 @@ public class Drive extends Subsystem {
     m_gyro.reset();
     // Reset Odometrey 
     //m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+
+    mLeftMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
+    mRightMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
+		mLeftMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
+		mRightMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
   }
 
   private void configTalon(TalonFX talon) {
@@ -204,19 +209,14 @@ public class Drive extends Subsystem {
     mRightMaster.set(ControlMode.PercentOutput, signal.getRight() * -1);
   }
 
- /**
-     * Configure talons for open loop control
-     */
-    public synchronized void setOpenLoop(DriveSignal signal) {
+  // Set Open Loop Control
+  public synchronized void setOpenLoop(DriveSignal signal) {
       if (mDriveControlState != DriveControlState.OPEN_LOOP) {
           //setBrakeMode(true);
-          //System.out.println("switching to open loop");
-          //System.out.println(signal);
+
           mDriveControlState = DriveControlState.OPEN_LOOP;
       }
 
-
-      //signal.PrintLog();
       mLeftMaster.set(ControlMode.PercentOutput, signal.getLeft());
       mRightMaster.set(ControlMode.PercentOutput, signal.getRight() * -1);
   }
@@ -225,20 +225,17 @@ public class Drive extends Subsystem {
   public synchronized void setDrive(double throttle, double wheel, boolean quickTurn) {
     DriveSignal s = getCheesyBrianDrive(throttle, wheel, quickTurn);
     setOpenLoop(s);
-    System.out.println(m_gyro.getRotation2d().getDegrees());
+    System.out.println("Gyro: " + m_gyro.getRotation2d().getDegrees());
+    System.out.println("Encoder Left: " + mLeftMaster.getSelectedSensorPosition());
+    System.out.println("Encoder Right: " + mRightMaster.getSelectedSensorPosition());
   }
 
-
-  private void setCheesyDrive(double throttle, double wheel, boolean quickTurn) {
+  // Original Cheesy Drive Equation
+  // Depcreated for memory system
+  public DriveSignal getCheesyDrive(double throttle, double wheel, boolean quickTurn) {
     wheel = wheel * -1; //invert wheel
-/*
-    if(throttle >= 0){
-    }
-    */
-    //System.out.println(throttle);
   
     //if throttle over a speed
-
     if (Util.epsilonEquals(throttle, 0.0, 0.05)) {
         throttle = 0.0;
         quickTurn = true;
@@ -281,7 +278,7 @@ public class Drive extends Subsystem {
     wheel *= kWheelGain;
     DriveSignal signal = Kinematics.inverseKinematics(new Twist2d(throttle, 0.0, wheel));
     double scaling_factor = Math.max(1.0, Math.max(Math.abs(signal.getLeft()), Math.abs(signal.getRight())));
-    setOpenLoop(new DriveSignal(signal.getLeft() / scaling_factor, signal.getRight() / scaling_factor));
+    return new DriveSignal(signal.getLeft() / scaling_factor, signal.getRight() / scaling_factor);
   }
 
 
@@ -339,10 +336,6 @@ public class Drive extends Subsystem {
     return currentCommand;
   }
 
-  public void logData(double throttle, double wheel, DriveSignal sl){
-
-  }
-
   // periodic update 
   public void periodic() {
     // Update the odometry in the periodic block
@@ -351,60 +344,15 @@ public class Drive extends Subsystem {
   }
 
 
-  /*
-      Test all Sensors in the Subsystem
-  */
-  public void checkSubsystem() {}
+  // Test all Sensors in the Subsystem
+  public void checkSubsystem() {
 
-  public synchronized void setClimbingSpeed(boolean climbing) {
-    mPeriodicDriveData.climbingSpeed = climbing;
+
   }
 
-  public synchronized int getLeftEncoderDistance() {
-    return 0;
-  }
-
-  public synchronized int getRightEncoderDistance() {
-    return 0;
-  }
-
-  public synchronized Rotation2d getRotation() {
-    return null;
-  }
-
+ 
   public void zeroEncoders() {
 
   }
 
-  // Used only in TEST mode
-  public void setOutputLeftBack(double output) {
-    mLeftMaster.set(ControlMode.PercentOutput, output);
-  }
-
-  // Used only in TEST mode
-  public void setOutputLeftFront(double output) {
-    mLeftSlave.set(ControlMode.PercentOutput, output);
-  }
-
-  // Used only in TEST mode
-  public void setOutputRightBack(double output) {
-    mRightMaster.set(ControlMode.PercentOutput, output);
-  }
-
-  public synchronized Rotation2d getHeading() {
-    return Rotation2d.identity();
-  }
-
-  // Used only in TEST mode
-  public void setOutputRightFront(double output) {
-    mRightSlave.set(ControlMode.PercentOutput, output);
-  }
-
-  public double getLeftLinearVelocity() {
-    return 0;
-  }
-
-  public double getRightLinearVelocity() {
-    return 0;
-  }
 }
