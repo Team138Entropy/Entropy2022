@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
+  private final Arm mArm = Arm.getInstance();
 
   // Using the default constructor of RamseteController. Here
   // the gains are initialized to 2.0 and 0.7.
@@ -87,8 +88,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-
-
+    System.out.println("100 value encoder average (on-hit): " + mArm.getEncoderValueQueueAverage());
   }
 
   /** This function is called periodically when disabled. */
@@ -108,8 +108,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-
-
+    mArm.periodic();
   }
 
   private void teleopRobotLoop(){
