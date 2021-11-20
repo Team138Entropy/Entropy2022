@@ -223,9 +223,6 @@ public class Drive extends Subsystem {
   public synchronized void setDrive(double throttle, double wheel, boolean quickTurn) {
     DriveSignal s = getCheesyBrianDrive(throttle, wheel, quickTurn);
     setOpenLoop(s);
-    System.out.println("Gyro: " + m_gyro.getRotation2d().getDegrees());
-    System.out.println("Encoder Left: " + mLeftMaster.getSelectedSensorPosition());
-    System.out.println("Encoder Right: " + mRightMaster.getSelectedSensorPosition());
   }
 
   // Original Cheesy Drive Equation
@@ -329,7 +326,7 @@ public class Drive extends Subsystem {
   public void periodic() {
     // Update the odometry in the periodic block
     //m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
-
+    
   }
 
 

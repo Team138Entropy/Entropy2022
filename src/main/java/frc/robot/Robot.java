@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    System.out.println("100 value encoder average (on-hit): " + mArm.getEncoderValueQueueAverage());
+  
   }
 
   /** This function is called periodically when disabled. */
@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
   }
 
   private void teleopRobotLoop(){
-    teleopDriveLoop();
+    
   }
 
   private void teleopDriveLoop(){
