@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
+import frc.robot.auto.AutoModeExecutor;
 
 
 
@@ -30,10 +31,8 @@ public class Robot extends TimedRobot {
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
 
-  // Using the default constructor of RamseteController. Here
-  // the gains are initialized to 2.0 and 0.7.
-  RamseteController AutoRamseteController = new RamseteController();
-
+  // Autonomous Execution Thread
+  private AutoModeExecutor mAutoModeExecutor = null;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -60,8 +59,9 @@ public class Robot extends TimedRobot {
   /** Called at the Start of Autonomous **/
   @Override
   public void autonomousInit() {
-  
-
+    // Start Autonomous Thread
+    // This thread will run until disabled
+    mAutoModeExecutor.start();
   }
 
   /** This function is called periodically during autonomous. */
@@ -73,7 +73,10 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-
+    // Disable Auto Thread (if running)
+    if (mAutoModeExecutor != null) {
+        mAutoModeExecutor.stop();
+    }
 
   }
 
@@ -87,14 +90,21 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
+    // Reset all auto mode state.
+    if (mAutoModeExecutor != null) {
+        mAutoModeExecutor.stop();
+    }
 
+    // create Auto Mode Executor
+    mAutoModeExecutor = new AutoModeExecutor();
 
   }
 
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-
+    // Set Mode for the Auto Mode to use in Thread
+    //mAutoModeExecutor.setAutoMode(new_auto_mode);
 
   }
 

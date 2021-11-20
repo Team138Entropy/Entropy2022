@@ -6,10 +6,14 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import frc.robot.Constants;
 import frc.robot.Kinematics;
 import frc.robot.Robot;
@@ -37,7 +41,24 @@ public class Drive extends Subsystem {
   private final Gyro m_gyro = new ADXRS450_Gyro();
 
   // Odometry class for tracking robot pose
-  private final DifferentialDriveOdometry m_odometry;
+  private final DifferentialDriveOdometry mOdometry;
+
+  private static final double kTrackWidth = 0.5969; // meters (23.5 inches)
+  private final DifferentialDriveKinematics mKinematics = 
+    new DifferentialDriveKinematics(kTrackWidth);
+
+
+  // FeedForwardController for Autonomous Use
+  // ks = static gain
+  // kv = velocity gain
+  double ks = 1;
+  double kv = 3;
+  private final SimpleMotorFeedforward mFeedForward = new SimpleMotorFeedforward(ks, kv);
+
+  // Autonomous PID Controllers
+  private final PIDController mLeftPIDController = new PIDController(1, 0, 0);
+  private final PIDController mRightPIDController = new PIDController(1, 0, 0);
+
   
   private PeriodicDriveData mPeriodicDriveData = new PeriodicDriveData();
   public static class PeriodicDriveData {
@@ -109,11 +130,11 @@ public class Drive extends Subsystem {
 		mLeftMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
     mRightMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
     
-    // reset gyro to have psotion zero
+    // reset gyro to have position to zero
     m_gyro.reset();
 
     // Reset Odometrey 
-    m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+    mOdometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
 
     // Init Drive Memory to Zero
     intializeDriveMemory();
@@ -271,7 +292,6 @@ public class Drive extends Subsystem {
   }
 
 
-
   // Cheesy Drive with a memory system
   // This loop will calculate the value for the NEXT loop
   // if this is not the first loop,  we will consider the previous loop
@@ -344,13 +364,72 @@ public class Drive extends Subsystem {
 
   }
 
+    /**
+   * Sets the desired wheel speeds.
+   *
+   * @param speeds The desired wheel speeds.
+   */
+  public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+    final double leftFeedforward = mFeedForward.calculate(speeds.leftMetersPerSecond);
+    final double rightFeedforward = mFeedForward.calculate(speeds.rightMetersPerSecond);
+
+    double leftEncoderRate = mLeftMaster.getSelectedSensorVelocity();
+    double rightEncoderRate = mRightMaster.getSelectedSensorVelocity();
+
+    // calculate left and right outputs
+    final double leftOutput =
+        mLeftPIDController.calculate(leftEncoderRate, speeds.leftMetersPerSecond);
+    final double rightOutput =
+        mRightPIDController.calculate(rightEncoderRate, speeds.rightMetersPerSecond);
+
+    // calculte left and right voltage to feed to motors
+    double leftVoltage = leftOutput + leftFeedforward;
+    double rightVoltage = rightOutput + rightFeedforward;
+
+    // set motor outputs
+   // mLeftMaster.set(ControlMode.PercentOutput, leftVoltage);
+   // mRightMaster.set(ControlMode.PercentOutput, rightVoltage);
+  }
+
+  /**
+   * Drives the robot with the given linear velocity and angular velocity.
+   *
+   * @param xSpeed Linear velocity in m/s.
+   * @param rot Angular velocity in rad/s.
+   */
+  @SuppressWarnings("ParameterName")
+  public void autoomousDrive(double xSpeed, double rot) {
+    var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
+    setSpeeds(wheelSpeeds);
+  }
+
+
+  /** Updates the field-relative position. */
+  public void updateOdometry() {
+    double leftDistance = mLeftMaster.getSelectedSensorPosition();
+    double rightDistance = mRightMaster.getSelectedSensorPosition();
+
+    mOdometry.update(
+        m_gyro.getRotation2d(), leftDistance, rightDistance
+    );
+  }
+
+  /**
+   * Resets the field-relative position to a specific location.
+   *
+   * @param pose The position to reset to.
+   */
+  public void resetOdometry(Pose2d pose) {
+    mOdometry.resetPosition(pose, m_gyro.getRotation2d());
+  }
+
   /**
    * Returns the currently-estimated pose of the robot.
    *
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return mOdometry.getPoseMeters();
   }
 
   /**
