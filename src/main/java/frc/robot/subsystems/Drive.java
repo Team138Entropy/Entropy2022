@@ -51,9 +51,14 @@ public class Drive extends Subsystem {
   // FeedForwardController for Autonomous Use
   // ks = static gain
   // kv = velocity gain
-  double ks = 1;
-  double kv = 3;
+  double ks = .01;
+  double kv = .03;
   private final SimpleMotorFeedforward mFeedForward = new SimpleMotorFeedforward(ks, kv);
+
+  //Drive Values
+  //v 12 ft/s
+  //a 6 ft/s2
+  //
 
   // Autonomous PID Controllers
   private final PIDController mLeftPIDController = new PIDController(1, 0, 0);
@@ -387,8 +392,9 @@ public class Drive extends Subsystem {
     double rightVoltage = rightOutput + rightFeedforward;
 
     // set motor outputs
-   // mLeftMaster.set(ControlMode.PercentOutput, leftVoltage);
-   // mRightMaster.set(ControlMode.PercentOutput, rightVoltage);
+    System.out.println("Left: " + leftVoltage + "  Right: " + rightVoltage);
+    mLeftMaster.set(ControlMode.PercentOutput, leftVoltage);
+    mRightMaster.set(ControlMode.PercentOutput, rightVoltage);
   }
 
   /**

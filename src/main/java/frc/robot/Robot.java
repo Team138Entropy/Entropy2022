@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
 import frc.robot.auto.AutoModeExecutor;
+import frc.robot.auto.modes.TestDriveMode;
 
 
 
@@ -59,6 +60,10 @@ public class Robot extends TimedRobot {
   /** Called at the Start of Autonomous **/
   @Override
   public void autonomousInit() {
+    // set auto mode
+    TestDriveMode tdm = new TestDriveMode();
+    mAutoModeExecutor.setAutoMode(tdm);
+
     // Start Autonomous Thread
     // This thread will run until disabled
     mAutoModeExecutor.start();

@@ -20,7 +20,7 @@ public class DriveTrajectoryAction implements Action {
     }
 
     public DriveTrajectoryAction(Trajectory p) {
-        this(p, false);
+        this(p, true);
     }
 
     @Override
@@ -46,6 +46,7 @@ public class DriveTrajectoryAction implements Action {
 
     @Override
     public void done() {
+        System.out.println("DriveTrajectoryAction Complete!");
         if (mStopWhenDone) {
             mTrajectoryFollower.StopDrive();
         }

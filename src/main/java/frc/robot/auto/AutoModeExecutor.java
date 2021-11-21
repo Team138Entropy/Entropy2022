@@ -14,14 +14,18 @@ public class AutoModeExecutor {
     private AutoModeBase mAutoMode = null;
     private Thread mThread = null;
 
-    public AutoModeExecutor() {}
-
     public static AutoModeExecutor getInstance() {
         if (mInstance == null) {
             mInstance = new AutoModeExecutor();
         }
 
         return mInstance;
+    }
+
+    public AutoModeExecutor(){
+
+        // Force TrajectoryLibrary to Load
+        TrajectoryLibrary.getInstance();        
     }
 
     public void setAutoMode(AutoModeBase new_auto_mode) {
