@@ -43,11 +43,13 @@ public class Drive extends Subsystem {
   // Drive Talons
   private EntropyTalonFX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
 
+  // Potential Drive Modes
   public enum DriveControlState {
     OPEN_LOOP, // open loop voltage control
     PATH_FOLLOWING, // velocity PID control
   }
 
+  // Mode of Drive Control
   private DriveControlState mDriveControlState;
 
   // The gyro sensor
@@ -88,45 +90,37 @@ public class Drive extends Subsystem {
   // Drive Memory for Drive Smoothing
   private final int previousDriveSignalCount = 1;
   private DriveSignal previousDriveSignals[] = new DriveSignal[previousDriveSignalCount];
-  private final double drivetrainTicksPerMeter = 22000.0 * 2.08;
-
+  private final double drivetrainTicksPerMeter = 22000.0 * 2.08; //using constants now
+  
   private Drive() {
-    mLeftSlave = new EntropyTalonFX(Constants.Talons.Drive.leftMaster, drivetrainTicksPerMeter, 
+    // Create Talon References
+    mLeftSlave = new EntropyTalonFX(Constants.Talons.Drive.leftMaster, Constants.Drive.Encoders.ticksPerMeters, 
       MotorConfigUtils.POSITION_SLOT_IDX, MotorConfigUtils.VELOCITY_SLOT_IDX);
-    mLeftMaster = new EntropyTalonFX(Constants.Talons.Drive.leftSlave, drivetrainTicksPerMeter, 
+    mLeftMaster = new EntropyTalonFX(Constants.Talons.Drive.leftSlave, Constants.Drive.Encoders.ticksPerMeters, 
       MotorConfigUtils.POSITION_SLOT_IDX, MotorConfigUtils.VELOCITY_SLOT_IDX);
-    mRightSlave = new EntropyTalonFX(Constants.Talons.Drive.rightMaster, drivetrainTicksPerMeter, 
+    mRightSlave = new EntropyTalonFX(Constants.Talons.Drive.rightMaster, Constants.Drive.Encoders.ticksPerMeters, 
         MotorConfigUtils.POSITION_SLOT_IDX, MotorConfigUtils.VELOCITY_SLOT_IDX);
-    mRightMaster = new EntropyTalonFX(Constants.Talons.Drive.rightSlave, drivetrainTicksPerMeter, 
+    mRightMaster = new EntropyTalonFX(Constants.Talons.Drive.rightSlave, Constants.Drive.Encoders.ticksPerMeters, 
       MotorConfigUtils.POSITION_SLOT_IDX, MotorConfigUtils.VELOCITY_SLOT_IDX);
 
+    // Configure Each TalonFX 
     MotorConfigUtils.setDefaultTalonFXConfig(mLeftSlave);
     MotorConfigUtils.setDefaultTalonFXConfig(mLeftMaster);
     MotorConfigUtils.setDefaultTalonFXConfig(mRightSlave);
     MotorConfigUtils.setDefaultTalonFXConfig(mRightMaster);
 
-
-    //configTalon(mLeftMaster);
-    mLeftSlave.setNeutralMode(NeutralMode.Brake);
-    //mLeftSlave.setSensorPhase(false);
+    // Invert Right Encoder Value
     mRightMaster.invertEncoder();
 
-   // configTalon(mRightMaster);
+    // Configure Brake Modes
+    mLeftMaster.setNeutralMode(NeutralMode.Brake);
+    mLeftSlave.setNeutralMode(NeutralMode.Brake);
+    mRightMaster.setNeutralMode(NeutralMode.Brake);
     mRightSlave.setNeutralMode(NeutralMode.Brake);
 
     // Configure slave Talons to follow masters
     mLeftSlave.follow(mLeftMaster);
     mRightSlave.follow(mRightMaster);
-
-    // Encoder Setup
-    /*
-    mLeftMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
-    mRightMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
-		mLeftMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
-    mRightMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
-    */
-
-    // Set Encoder Distance Per Pulse
     
     // reset gyro to have position to zero
     m_gyro.reset();
