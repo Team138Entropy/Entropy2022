@@ -69,7 +69,12 @@ public class Constants {
         public static double compTicksPerFoot = compTicks / compDistance;
         public static final double practiceTicksPerFoot = 1228.615;
       }
-  
+
+      // Diameter of wheel & ticksPerRevolution used to convert meters into encoder ticks
+      public static double drivetrainWheelDiameter = 0.1524; // 6 inches in meters
+      public static double ticksPerRevolution = 4096;
+
+
       public static class AutoPID {
         public static final double p = 4;
         public static final double i = 0.00050;

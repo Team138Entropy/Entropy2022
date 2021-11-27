@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import  edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.subsystems.Drive;
@@ -61,6 +62,9 @@ public class TrajectoryFollower {
     // Sets Selected Trajectory
     public void setTrajectory(Trajectory traj){
         mTrajectory = traj;
+
+        // Push the trajectory to Field2d.
+        mField.getObject("traj").setTrajectory(mTrajectory);
     }
     
     private void init(){
@@ -72,10 +76,7 @@ public class TrajectoryFollower {
 
         // Create and push Field2d to SmartDashboard.
         mField = new Field2d();
-        SmartDashboard.putData(mField);
-
-        // Push the trajectory to Field2d.
-        //mField.getObject("traj").setTrajectory(mTrajectory);
+        SmartDashboard.putData("Field", mField);
     }
 
     // Called Once at the Start of following the Path
@@ -83,6 +84,12 @@ public class TrajectoryFollower {
         // Initialize the timer.
         mTimer = new Timer();
         mTimer.start();
+
+        // Reset Encoder Values
+        mDrive.zeroEncoders();
+
+        // Zero Gyro Position
+        mDrive.zeroHeading();
 
         // Reset the drivetrain's odometry to the starting pose of the trajectory.
         mDrive.resetOdometry(mTrajectory.getInitialPose());
@@ -117,7 +124,7 @@ public class TrajectoryFollower {
     // Stop Drivetrain from moving
     public void StopDrive(){
         mRun = false;
-        mDrive.autoomousDrive(0, 0);
+        mDrive.setDrive(0, 0, false);
     }
 
     //returns if getComplete is done

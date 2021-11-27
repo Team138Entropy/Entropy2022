@@ -3,8 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.DemandType;
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -19,16 +19,29 @@ import frc.robot.Kinematics;
 import frc.robot.Robot;
 import frc.robot.util.DriveSignal;
 import frc.robot.util.Util;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.geometry.Rotation2d;
 import frc.robot.util.geometry.Twist2d;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.RobotController;
+
+/*
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+*/
+
+
+import frc.robot.util.drivers.CTREUnits;
+import frc.robot.util.drivers.EntropyTalonFX;
+import frc.robot.util.drivers.MotorConfigUtils;
+
 
 
 public class Drive extends Subsystem {
   private static Drive mInstance;
 
   // Drive Talons
-  private TalonFX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
+  private EntropyTalonFX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
 
   public enum DriveControlState {
     OPEN_LOOP, // open loop voltage control
@@ -47,47 +60,23 @@ public class Drive extends Subsystem {
   private final DifferentialDriveKinematics mKinematics = 
     new DifferentialDriveKinematics(kTrackWidth);
 
-
   // FeedForwardController for Autonomous Use
   // ks = static gain
   // kv = velocity gain
-  double ks = .01;
-  double kv = .03;
+  double ks = 1;
+  double kv = 3;
   private final SimpleMotorFeedforward mFeedForward = new SimpleMotorFeedforward(ks, kv);
 
   //Drive Values
   //v 12 ft/s
   //a 6 ft/s2
   //
+  // 1.8288 
+  // .5
 
   // Autonomous PID Controllers
   private final PIDController mLeftPIDController = new PIDController(1, 0, 0);
   private final PIDController mRightPIDController = new PIDController(1, 0, 0);
-
-  
-  private PeriodicDriveData mPeriodicDriveData = new PeriodicDriveData();
-  public static class PeriodicDriveData {
-    // INPUTS
-    public double timestamp;
-    public double left_voltage;
-    public double right_voltage;
-    public int left_position_ticks;
-    public int right_position_ticks;
-    public double left_distance;
-    public double right_distance;
-    public int left_velocity_ticks_per_100ms;
-    public int right_velocity_ticks_per_100ms;
-    public boolean climbingSpeed = false;
-
-    // OUTPUTS
-    public double left_demand;
-    public double right_demand;
-    public double left_feedforward;
-    public double right_feedforward;
-    public double left_old = 0;
-    public double right_old = 0;
-    public boolean isQuickturning = false;
-  }
 
   public static synchronized Drive getInstance() {
     if (mInstance == null) {
@@ -96,33 +85,33 @@ public class Drive extends Subsystem {
     return mInstance;
   }
 
-  public int feetToTicks(double feet) {
-    double ticks;
-    ticks = Constants.Drive.Encoders.compTicksPerFoot;
-    
-    long roundedVal = Math.round(feet * ticks);
-    if (roundedVal > Integer.MAX_VALUE) {
-     
-    }
-
-    return (int) roundedVal;
-  }
-
   // Drive Memory for Drive Smoothing
   private final int previousDriveSignalCount = 1;
-  private DriveSignal previousDriveSignals[] = new DriveSignal[previousDriveSignalCount]; 
+  private DriveSignal previousDriveSignals[] = new DriveSignal[previousDriveSignalCount];
+  private final double drivetrainTicksPerMeter = 22000.0 * 2.08;
 
   private Drive() {
-    mLeftSlave = new TalonFX(Constants.Talons.Drive.leftMaster);
-    mLeftMaster = new TalonFX(Constants.Talons.Drive.leftSlave);
-    mRightSlave = new TalonFX(Constants.Talons.Drive.rightMaster);
-    mRightMaster = new TalonFX(Constants.Talons.Drive.rightSlave);
+    mLeftSlave = new EntropyTalonFX(Constants.Talons.Drive.leftMaster, drivetrainTicksPerMeter, 
+      MotorConfigUtils.POSITION_SLOT_IDX, MotorConfigUtils.VELOCITY_SLOT_IDX);
+    mLeftMaster = new EntropyTalonFX(Constants.Talons.Drive.leftSlave, drivetrainTicksPerMeter, 
+      MotorConfigUtils.POSITION_SLOT_IDX, MotorConfigUtils.VELOCITY_SLOT_IDX);
+    mRightSlave = new EntropyTalonFX(Constants.Talons.Drive.rightMaster, drivetrainTicksPerMeter, 
+        MotorConfigUtils.POSITION_SLOT_IDX, MotorConfigUtils.VELOCITY_SLOT_IDX);
+    mRightMaster = new EntropyTalonFX(Constants.Talons.Drive.rightSlave, drivetrainTicksPerMeter, 
+      MotorConfigUtils.POSITION_SLOT_IDX, MotorConfigUtils.VELOCITY_SLOT_IDX);
 
-    configTalon(mLeftMaster);
+    MotorConfigUtils.setDefaultTalonFXConfig(mLeftSlave);
+    MotorConfigUtils.setDefaultTalonFXConfig(mLeftMaster);
+    MotorConfigUtils.setDefaultTalonFXConfig(mRightSlave);
+    MotorConfigUtils.setDefaultTalonFXConfig(mRightMaster);
+
+
+    //configTalon(mLeftMaster);
     mLeftSlave.setNeutralMode(NeutralMode.Brake);
-    mLeftSlave.setSensorPhase(false);
+    //mLeftSlave.setSensorPhase(false);
+    mRightMaster.invertEncoder();
 
-    configTalon(mRightMaster);
+   // configTalon(mRightMaster);
     mRightSlave.setNeutralMode(NeutralMode.Brake);
 
     // Configure slave Talons to follow masters
@@ -130,10 +119,14 @@ public class Drive extends Subsystem {
     mRightSlave.follow(mRightMaster);
 
     // Encoder Setup
+    /*
     mLeftMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
     mRightMaster.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
 		mLeftMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
     mRightMaster.getSensorCollection().setIntegratedSensorPosition(0, 0);
+    */
+
+    // Set Encoder Distance Per Pulse
     
     // reset gyro to have position to zero
     m_gyro.reset();
@@ -148,7 +141,7 @@ public class Drive extends Subsystem {
     setOpenLoop(DriveSignal.NEUTRAL);
   }
 
-  private void configTalon(TalonFX talon) {
+  private void configTalon(EntropyTalonFX talon) {
     talon.configFactoryDefault();
     talon.configNominalOutputForward(0., 0);
     talon.configNominalOutputReverse(0., 0);
@@ -248,10 +241,7 @@ public class Drive extends Subsystem {
 
   public synchronized void setDrive(double throttle, double wheel, boolean quickTurn) {
     DriveSignal s = getCheesyBrianDrive(throttle, wheel, quickTurn);
-    setOpenLoop(s);
-    System.out.println("Gyro: " + m_gyro.getRotation2d().getDegrees());
-    System.out.println("Encoder Left: " + mLeftMaster.getSelectedSensorPosition());
-    System.out.println("Encoder Right: " + mRightMaster.getSelectedSensorPosition());
+    setOpenLoop(s);    
   }
 
   // Original Cheesy Drive Equation
@@ -364,9 +354,12 @@ public class Drive extends Subsystem {
 
   }
 
- 
+  // Zero Encoder of Each Falcon500
   public void zeroEncoders() {
-
+    mLeftMaster.zeroEncoder();
+    mRightMaster.zeroEncoder();
+    mLeftSlave.zeroEncoder();
+    mRightSlave.zeroEncoder();
   }
 
     /**
@@ -374,12 +367,12 @@ public class Drive extends Subsystem {
    *
    * @param speeds The desired wheel speeds.
    */
-  public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+  public void setAutoSpeeds(DifferentialDriveWheelSpeeds speeds) {
     final double leftFeedforward = mFeedForward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = mFeedForward.calculate(speeds.rightMetersPerSecond);
 
-    double leftEncoderRate = mLeftMaster.getSelectedSensorVelocity();
-    double rightEncoderRate = mRightMaster.getSelectedSensorVelocity();
+    double leftEncoderRate = mLeftMaster.getRateMetersPerSecond();
+    double rightEncoderRate = mRightMaster.getRateMetersPerSecond();
 
     // calculate left and right outputs
     final double leftOutput =
@@ -391,8 +384,17 @@ public class Drive extends Subsystem {
     double leftVoltage = leftOutput + leftFeedforward;
     double rightVoltage = rightOutput + rightFeedforward;
 
+    // normalize voltage out of robot voltage (~12)
+    // this command from the WPILib is normalized out of 12 
+    // Talons expect [1, -1]
+    // calculate out of battery voltage
+    leftVoltage = leftVoltage/RobotController.getBatteryVoltage();
+    rightVoltage = rightVoltage/RobotController.getBatteryVoltage();
+
+    // Invert Right Voltage (same as Teleop)
+    rightVoltage *= -1;
+
     // set motor outputs
-    System.out.println("Left: " + leftVoltage + "  Right: " + rightVoltage);
     mLeftMaster.set(ControlMode.PercentOutput, leftVoltage);
     mRightMaster.set(ControlMode.PercentOutput, rightVoltage);
   }
@@ -403,20 +405,16 @@ public class Drive extends Subsystem {
    * @param xSpeed Linear velocity in m/s.
    * @param rot Angular velocity in rad/s.
    */
-  @SuppressWarnings("ParameterName")
   public void autoomousDrive(double xSpeed, double rot) {
     var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
-    setSpeeds(wheelSpeeds);
+    setAutoSpeeds(wheelSpeeds);
   }
 
 
   /** Updates the field-relative position. */
   public void updateOdometry() {
-    double leftDistance = mLeftMaster.getSelectedSensorPosition();
-    double rightDistance = mRightMaster.getSelectedSensorPosition();
-
     mOdometry.update(
-        m_gyro.getRotation2d(), leftDistance, rightDistance
+        m_gyro.getRotation2d(), mLeftMaster.getDistanceMeters(), mRightMaster.getDistanceMeters()
     );
   }
 
@@ -462,5 +460,21 @@ public class Drive extends Subsystem {
   public double getTurnRate() {
     return -m_gyro.getRate();
   }
+
+    /**
+   * Get the encoder data in meters
+   */
+  private double getLeftEncoderPosition() {
+      return CTREUnits.talonPosistionToMeters(mLeftMaster.getSelectedSensorPosition());
+  }
+
+  /**
+   * Get the encoder data in meters
+   */
+  private double getRightEncoderPosition() {
+      return CTREUnits.talonPosistionToMeters(mRightMaster.getSelectedSensorPosition());
+  }
+
+
 
 }

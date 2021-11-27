@@ -13,9 +13,9 @@ public class OperatorInterface {
     private static OperatorInterface mInstance;
 
     // Instances of the Driver and Operator Controller
-    private  XboxController DriverController;
-    private  NykoController OperatorController;
-    private final JoystickController joysticks;
+    private XboxController DriverController;
+    private NykoController OperatorController;
+    private JoystickController joysticks;
     public static synchronized OperatorInterface getInstance() {
         if (mInstance == null) {
             mInstance = new OperatorInterface();
@@ -24,18 +24,17 @@ public class OperatorInterface {
     }
     
     private OperatorInterface() {
-        /*DriverController = new XboxController(Constants.Controllers.Driver.port);
+        DriverController = new XboxController(Constants.Controllers.Driver.port);
         OperatorController = new NykoController(Constants.Controllers.Operator.port);
-        */
-        joysticks = JoystickController.getInstance();
+        //joysticks = JoystickController.getInstance();
     }
 
     public double getDriveThrottle() {
-        return joysticks.getYJoyStick_L();
+        return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
       }
     
     public double getDriveTurn() {
-        return joysticks.getXJoyStick_R();
+        return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
     }
 
 }

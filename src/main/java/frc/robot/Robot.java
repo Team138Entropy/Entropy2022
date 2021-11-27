@@ -78,6 +78,8 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    mDrive.zeroEncoders();
+
     // Disable Auto Thread (if running)
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();

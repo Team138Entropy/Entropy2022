@@ -54,7 +54,7 @@ public class TrajectoryLibrary {
 
      public Trajectory getBasicTrajectory(){
       Trajectory traj = null;
-      String fileName = "BasicDrive1.wpilib.json";
+      String fileName = "curve3.wpilib.json";
       try {
         Path trajectoryPath = getTrajectoryPath(fileName);
         traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
