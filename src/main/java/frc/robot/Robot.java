@@ -7,10 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.controller.RamseteController;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
 import frc.robot.auto.AutoModeExecutor;
+import frc.robot.auto.modes.AutoModeBase;
+import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
 
 
@@ -35,6 +36,9 @@ public class Robot extends TimedRobot {
   // Autonomous Execution Thread
   private AutoModeExecutor mAutoModeExecutor = null;
 
+  // Autonomous Modes
+  private SendableChooser<AutoModeBase> mAutoModes;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -42,6 +46,15 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
+    // populate autonomous list
+    populateAutonomousModes();
+  }
+  
+  // Fill Autonomous Modes List
+  private void populateAutonomousModes(){
+    mAutoModes = new SendableChooser<AutoModeBase>();
+    mAutoModes.addOption("Nothing", new DoNothingMode());
+    mAutoModes.addOption("Test Drive", new TestDriveMode());
   }
 
   /**
@@ -61,6 +74,14 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // set auto mode
+
+    // Get Selected AutoMode
+    AutoModeBase selectedMode = mAutoModes.getSelected();
+    if(selectedMode == null){
+      System.out.println("Selected Auto Mode is Null");
+    }
+
+
     TestDriveMode tdm = new TestDriveMode();
     mAutoModeExecutor.setAutoMode(tdm);
 

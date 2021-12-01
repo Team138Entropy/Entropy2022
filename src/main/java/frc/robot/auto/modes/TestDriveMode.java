@@ -16,9 +16,9 @@ public class TestDriveMode extends AutoModeBase {
     DriveTrajectoryAction dta;
 
     public TestDriveMode(){
-        // Create new trajectory 
-        //dta = new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getBasicTrajectory());
-        
+    
+        /*
+        // unused code 
         double metersPerSecond = 1.8288;
         double acceleratoionMetersPerSecondSquared = .5;
         
@@ -36,8 +36,9 @@ public class TestDriveMode extends AutoModeBase {
             // Pass config
             config
         );
+        */
 
-        dta = new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getBasicTrajectory());
+        dta = new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getTrajectoryByName("curve3.wpilib.json"));
     }
 
     @Override

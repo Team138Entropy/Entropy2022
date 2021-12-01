@@ -51,6 +51,16 @@ public class TrajectoryLibrary {
 
 
      // Trajectories
+     public Trajectory getTrajectoryByName(String fileName){
+       Trajectory traj = null;
+       try {
+         Path trajectoryPath = getTrajectoryPath(fileName);
+         traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+       } catch (IOException ex) {
+           System.out.println("Unable to open trajectory: " + fileName);
+       }
+       return traj;
+     }
 
      public Trajectory getBasicTrajectory(){
       Trajectory traj = null;
