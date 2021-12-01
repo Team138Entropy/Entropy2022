@@ -76,7 +76,7 @@ public class TrajectoryFollower {
 
         // Create and push Field2d to SmartDashboard.
         mField = new Field2d();
-        SmartDashboard.putData("Field", mField);
+        SmartDashboard.putData("Autonomous Field", mField);
     }
 
     // Called Once at the Start of following the Path

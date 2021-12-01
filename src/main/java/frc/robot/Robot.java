@@ -72,18 +72,19 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    
+    // Autonomous is run through the AutoModeExecutor
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    mDrive.zeroEncoders();
-
     // Disable Auto Thread (if running)
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();
     }
+
+    // Zero Drive Sensors
+    mDrive.zeroSensors();
 
   }
 
@@ -111,7 +112,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     // Set Mode for the Auto Mode to use in Thread
-    //mAutoModeExecutor.setAutoMode(new_auto_mode);
 
   }
 

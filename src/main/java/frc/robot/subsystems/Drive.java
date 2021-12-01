@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -46,7 +45,8 @@ public class Drive extends Subsystem {
   // Potential Drive Modes
   public enum DriveControlState {
     OPEN_LOOP, // open loop voltage control
-    PATH_FOLLOWING, // velocity PID control
+    PATH_FOLLOWING, // autonomous 
+    AUTO_STEERING // steering is controlled, but user controls throttle
   }
 
   // Mode of Drive Control
@@ -169,51 +169,15 @@ public class Drive extends Subsystem {
   }
 
   // Intialize Drive Memory Objects
+  // Used to smooth cheesydrive
   private void intializeDriveMemory(){
     previousDriveSignals[0] = new DriveSignal(0, 0);
   }
 
-  public void resetCruiseAndAccel() {
-
-  }
-
-  public void setCruiseAndAcceleration(int cruise, int accel) {
-    mLeftMaster.configMotionCruiseVelocity(cruise);
-    mRightMaster.configMotionCruiseVelocity(cruise);
-
-    mLeftMaster.configMotionAcceleration(accel);
-    mRightMaster.configMotionAcceleration(accel);
-  }
-
-  public void configP(double p) {
-    mLeftMaster.config_kP(0, p);
-    mRightMaster.config_kP(0, p);
-  }
-
-  public void configI(double i) {
-    mLeftMaster.config_kI(0, i);
-    mRightMaster.config_kI(0, i);
-  }
-
-  public void configD(double d) {
-    mLeftMaster.config_kD(0, d);
-    mRightMaster.config_kD(0, d);
-  }
-
-  public void resetPID() {
-    double P, I, D;
-
-    P = Constants.Drive.AutoPID.p;
-    I = Constants.Drive.AutoPID.i;
-    D = Constants.Drive.AutoPID.d;
-
-    configP(P);
-    configI(I);
-    configD(D);
-  }
-
+  // Zeros all Drive related sensors
   public void zeroSensors() {
-    zeroEncoders();
+    zeroEncoders(); //zero encoders
+    zeroHeading(); //zero gyro
   }
 
   // Used for Test
@@ -455,9 +419,7 @@ public class Drive extends Subsystem {
     return -m_gyro.getRate();
   }
 
-    /**
-   * Get the encoder data in meters
-   */
+  // Get the left encoder data in meters
   private double getLeftEncoderPosition() {
       return CTREUnits.talonPosistionToMeters(mLeftMaster.getSelectedSensorPosition());
   }
@@ -465,10 +427,8 @@ public class Drive extends Subsystem {
   /**
    * Get the encoder data in meters
    */
+  // Get the right encoder data in meters
   private double getRightEncoderPosition() {
       return CTREUnits.talonPosistionToMeters(mRightMaster.getSelectedSensorPosition());
   }
-
-
-
 }
