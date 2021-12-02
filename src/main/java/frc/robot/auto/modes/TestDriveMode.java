@@ -38,7 +38,7 @@ public class TestDriveMode extends AutoModeBase {
         );
         */
 
-        dta = new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getTrajectoryByName("curve3.wpilib.json"));
+        dta = new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getBasicTrajectory());
     }
 
     @Override

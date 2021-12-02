@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
 
     // populate autonomous list
-    populateAutonomousModes();
+    //populateAutonomousModes();
   }
   
   // Fill Autonomous Modes List
@@ -76,10 +76,10 @@ public class Robot extends TimedRobot {
     // set auto mode
 
     // Get Selected AutoMode
-    AutoModeBase selectedMode = mAutoModes.getSelected();
-    if(selectedMode == null){
-      System.out.println("Selected Auto Mode is Null");
-    }
+    // AutoModeBase selectedMode = mAutoModes.getSelected();
+    // if(selectedMode == null){
+    //   System.out.println("Selected Auto Mode is Null");
+    // }
 
 
     TestDriveMode tdm = new TestDriveMode();
