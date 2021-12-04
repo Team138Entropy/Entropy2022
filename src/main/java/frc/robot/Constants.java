@@ -44,6 +44,10 @@ public class Constants {
             public static final int rightSlave = 4;
         }
     }
+    public static class CanIDs {
+      // Power dist. panel
+      public static final int PDPid = 25;
+    }
 
 
     // Subsystems

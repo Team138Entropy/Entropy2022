@@ -13,6 +13,8 @@ import frc.robot.auto.AutoModeExecutor;
 import frc.robot.auto.modes.AutoModeBase;
 import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -37,6 +39,9 @@ public class Robot extends TimedRobot {
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
 
+  //Power dist. panel
+  private final PowerDistributionPanel m_pdp = new PowerDistributionPanel(25);
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -45,7 +50,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     SendableChooser<AutoModeBase> mAutoModes = new SendableChooser<>();
     // populate autonomous list
-    populateAutonomousModes();
+    //populateAutonomousModes();
   }
   
   // Fill Autonomous Modes List
@@ -65,6 +70,13 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
+    // Put PowerDistributionBoard stats onto the smart dashboard
+    SmartDashboard.putNumber("PDP-Temp", m_pdp.getTemperature());
+    SmartDashboard.putNumber("PDP-Voltage", m_pdp.getVoltage());
+    for (int i = 0; i < 15; i++){ // This way we can get all the channels info
+      SmartDashboard.putNumber(("PDP-Current-"+i), m_pdp.getCurrent(i));
+    }
+    SmartDashboard.updateValues();
   }
 
 
@@ -74,10 +86,10 @@ public class Robot extends TimedRobot {
     // set auto mode
 
     // Get Selected AutoMode
-    AutoModeBase selectedMode = mAutoModes.getSelected();
-    if(selectedMode == null){
-      System.out.println("Selected Auto Mode is Null");
-    }
+    // AutoModeBase selectedMode = mAutoModes.getSelected();
+    // if(selectedMode == null){
+    //   System.out.println("Selected Auto Mode is Null");
+    // }
 
 
     //TestDriveMode selectedMode = new TestDriveMode();
