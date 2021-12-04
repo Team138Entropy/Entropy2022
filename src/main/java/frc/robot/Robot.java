@@ -15,7 +15,6 @@ import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
 
 
-
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -23,7 +22,6 @@ import frc.robot.auto.modes.TestDriveMode;
  * project.
  */
 public class Robot extends TimedRobot {
-
   // Controller Reference
   private final OperatorInterface mOperatorInterface = OperatorInterface.getInstance();
 
@@ -45,7 +43,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
+    SendableChooser<AutoModeBase> mAutoModes = new SendableChooser<>();
     // populate autonomous list
     populateAutonomousModes();
   }
@@ -53,10 +51,10 @@ public class Robot extends TimedRobot {
   // Fill Autonomous Modes List
   private void populateAutonomousModes(){
     mAutoModes = new SendableChooser<AutoModeBase>();
-    mAutoModes.addOption("Nothing", new DoNothingMode());
+    mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
     mAutoModes.addOption("Test Drive", new TestDriveMode());
+    SmartDashboard.putData(mAutoModes);
   }
-
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
    * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
@@ -82,8 +80,8 @@ public class Robot extends TimedRobot {
     }
 
 
-    TestDriveMode tdm = new TestDriveMode();
-    mAutoModeExecutor.setAutoMode(tdm);
+    //TestDriveMode selectedMode = new TestDriveMode();
+    mAutoModeExecutor.setAutoMode(selectedMode);
 
     // Start Autonomous Thread
     // This thread will run until disabled
@@ -99,6 +97,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    
     // Disable Auto Thread (if running)
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();
