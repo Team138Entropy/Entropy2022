@@ -13,6 +13,8 @@ import frc.robot.auto.AutoModeExecutor;
 import frc.robot.auto.modes.AutoModeBase;
 import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 
@@ -38,6 +40,9 @@ public class Robot extends TimedRobot {
 
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
+
+  //Power dist. panel
+  private final PowerDistributionPanel m_pdp = new PowerDistributionPanel();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -67,6 +72,13 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
+    // Put PowerDistributionBoard stats onto the smart dashboard
+    SmartDashboard.putNumber("PDP-Temp", m_pdp.getTemperature());
+    SmartDashboard.putNumber("PDP-Voltage", m_pdp.getVoltage());
+    for (int i = 0; i < 15; i++){ // This way we can get all the channels info
+      SmartDashboard.putNumber(("PDP-Current-"+i), m_pdp.getCurrent(i));
+    }
+    SmartDashboard.updateValues();
   }
 
 
