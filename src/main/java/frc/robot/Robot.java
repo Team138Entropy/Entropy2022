@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   private SendableChooser<AutoModeBase> mAutoModes;
 
   //Power dist. panel
-  private final PowerDistributionPanel m_pdp = new PowerDistributionPanel();
+  private final PowerDistributionPanel m_pdp = new PowerDistributionPanel(25);
 
   /**
    * This function is run when the robot is first started up and should be used for any
