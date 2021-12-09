@@ -43,6 +43,10 @@ public class Constants {
             public static final int rightMaster = 3;
             public static final int rightSlave = 4;
         }
+
+        public static class Arm {
+          public static final int rotator = 5;
+        }
     }
 
 
@@ -140,5 +144,12 @@ public class Constants {
       public static class Misc {
         public static final double pi = 3.14159;  
         public static final double inchesToMeters = 0.0254; //multiple inches to get meters
+      }
+
+      public static class Arm {
+        public static final int extenderChannel = 0;
+        public static final double ticksPerDegree = 0;
+        public static final double rotatorSpeedDefault = .1;
+        public static final double extenderSpeedDefault = .1;
       }
 }
