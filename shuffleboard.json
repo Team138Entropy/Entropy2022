@@ -531,26 +531,9 @@
               "_source14": "network_table:///SmartDashboard/PDP-Current-1",
               "_title": "Channels",
               "Graph/Visible time": 100.0,
-              "Graph/X-axis auto scrolling": true,
               "Y-axis/Automatic bounds": false,
               "Y-axis/Upper bound": 12.0,
-              "Y-axis/Lower bound": 0.0,
-              "Y-axis/Unit": "ul",
-              "Visible data/SmartDashboard/PDP-Current-0": true,
-              "Visible data/SmartDashboard/PDP-Current-1": true,
-              "Visible data/SmartDashboard/PDP-Current-2": true,
-              "Visible data/SmartDashboard/PDP-Current-3": true,
-              "Visible data/SmartDashboard/PDP-Current-4": true,
-              "Visible data/SmartDashboard/PDP-Current-5": true,
-              "Visible data/SmartDashboard/PDP-Current-6": true,
-              "Visible data/SmartDashboard/PDP-Current-7": true,
-              "Visible data/SmartDashboard/PDP-Current-8": true,
-              "Visible data/SmartDashboard/PDP-Current-9": true,
-              "Visible data/SmartDashboard/PDP-Current-10": true,
-              "Visible data/SmartDashboard/PDP-Current-11": true,
-              "Visible data/SmartDashboard/PDP-Current-12": true,
-              "Visible data/SmartDashboard/PDP-Current-13": true,
-              "Visible data/SmartDashboard/PDP-Current-14": true
+              "Y-axis/Lower bound": 0.0
             }
           },
           "5,0": {
@@ -563,12 +546,9 @@
               "_source0": "network_table:///SmartDashboard/PDP-Voltage",
               "_title": "Graph",
               "Graph/Visible time": 30.0,
-              "Graph/X-axis auto scrolling": true,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "ul",
-              "Visible data/SmartDashboard/PDP-Voltage": true
+              "Y-axis/Lower bound": -1.0
             }
           },
           "5,2": {
@@ -583,6 +563,226 @@
               "Range/Min": 0.0,
               "Range/Max": 100.0,
               "Visuals/Show value": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Driver station",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 64.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "2,2": {
+            "size": [
+              7,
+              6
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_title": "Camera Stream",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          },
+          "0,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_title": "ComboBox Chooser"
+            }
+          },
+          "0,2": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_title": "ComboBox Chooser"
+            }
+          },
+          "0,4": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_title": "Boolean Box",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "2,0": {
+            "size": [
+              5,
+              2
+            ],
+            "content": {
+              "_type": "Basic FMS Info",
+              "_title": "Basic FMS Info"
+            }
+          },
+          "9,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Gyro",
+              "_title": "Gyro",
+              "Visuals/Major tick spacing": 45.0,
+              "Visuals/Starting angle": 180.0,
+              "Visuals/Show tick mark ring": true,
+              "Visuals/Counter clockwise": false
+            }
+          },
+          "7,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_title": "Simple Dial",
+              "Range/Min": 0.0,
+              "Range/Max": 100.0,
+              "Visuals/Show value": true
+            }
+          },
+          "0,6": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_title": "Boolean Box",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Auto station",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 64.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "6,2": {
+            "size": [
+              4,
+              4
+            ],
+            "content": {
+              "_type": "Gyro",
+              "_title": "Gyro",
+              "Visuals/Major tick spacing": 45.0,
+              "Visuals/Starting angle": 180.0,
+              "Visuals/Show tick mark ring": true,
+              "Visuals/Counter clockwise": false
+            }
+          },
+          "0,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_title": "ComboBox Chooser"
+            }
+          },
+          "0,2": {
+            "size": [
+              6,
+              4
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_title": "Camera Stream",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          },
+          "4,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_title": "Boolean Box",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "8,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_title": "Simple Dial",
+              "Range/Min": 0.0,
+              "Range/Max": 100.0,
+              "Visuals/Show value": true
+            }
+          },
+          "6,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_title": "Simple Dial",
+              "Range/Min": 0.0,
+              "Range/Max": 100.0,
+              "Visuals/Show value": true
+            }
+          },
+          "0,6": {
+            "size": [
+              10,
+              2
+            ],
+            "content": {
+              "_type": "Voltage View",
+              "_title": "Voltage View",
+              "Range/Min": 0.0,
+              "Range/Max": 5.0,
+              "Range/Center": 0.0,
+              "Visuals/Orientation": "HORIZONTAL",
+              "Visuals/Number of tick marks": 5
             }
           }
         }
