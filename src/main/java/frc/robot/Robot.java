@@ -13,7 +13,12 @@ import frc.robot.auto.AutoModeExecutor;
 import frc.robot.auto.modes.AutoModeBase;
 import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
-
+import frc.robot.auto.modes.ControllerModeBase;
+import frc.robot.auto.modes.JoysticksMode;
+import frc.robot.auto.modes.XboxControllermode;
+import frc.robot.Constants.Controllers.Operator;
+import frc.robot.Constants;
+import frc.robot.OI.XboxController.Button;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -37,6 +42,9 @@ public class Robot extends TimedRobot {
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
 
+  // Autonomous Modes
+  private SendableChooser<Integer> mControllerModes;
+  boolean XboxInUse = false;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -44,6 +52,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     SendableChooser<AutoModeBase> mAutoModes = new SendableChooser<>();
+    SendableChooser<Integer> mControllerModes = new SendableChooser<>();
     // populate autonomous list
     populateAutonomousModes();
   }
@@ -54,6 +63,10 @@ public class Robot extends TimedRobot {
     mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
     mAutoModes.addOption("Test Drive", new TestDriveMode());
     SmartDashboard.putData(mAutoModes);
+    mControllerModes = new SendableChooser<Integer>();
+    mControllerModes.setDefaultOption("Xbox Controller", 0);
+    mControllerModes.addOption("Joysticks", 1);
+    SmartDashboard.putData(mControllerModes);
   }
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -78,7 +91,7 @@ public class Robot extends TimedRobot {
     if(selectedMode == null){
       System.out.println("Selected Auto Mode is Null");
     }
-
+    
 
     //TestDriveMode selectedMode = new TestDriveMode();
     mAutoModeExecutor.setAutoMode(selectedMode);
@@ -102,7 +115,13 @@ public class Robot extends TimedRobot {
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();
     }
-
+    Integer selectedController = mControllerModes.getSelected();
+    if(selectedController == 0){
+      mOperatorInterface.setXboxInUse(true);
+    }
+        if(selectedController == 1){
+      mOperatorInterface.setXboxInUse(false);
+    }
     // Zero Drive Sensors
     mDrive.zeroSensors();
 
@@ -125,6 +144,7 @@ public class Robot extends TimedRobot {
 
     // create Auto Mode Executor
     mAutoModeExecutor = new AutoModeExecutor();
+
 
   }
 
@@ -156,7 +176,8 @@ public class Robot extends TimedRobot {
   private void teleopDriveLoop(){
     double driveThrottle = mOperatorInterface.getDriveThrottle();
     double driveTurn = mOperatorInterface.getDriveTurn();
-
+    System.out.println(mOperatorInterface.getDriveThrottle());
+    System.out.println(mOperatorInterface.getDriveTurn());
     //manual drive
     mDrive.setDrive(driveThrottle, driveTurn, false);
   }

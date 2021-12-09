@@ -10,8 +10,9 @@ import frc.robot.Constants.Controllers.Operator;
 import frc.robot.util.LatchedBoolean;
 
 public class OperatorInterface {
+    
     private static OperatorInterface mInstance;
-
+    boolean XboxInUse = false;
     // Instances of the Driver and Operator Controller
     private XboxController DriverController;
     private NykoController OperatorController;
@@ -26,15 +27,28 @@ public class OperatorInterface {
     private OperatorInterface() {
         DriverController = new XboxController(Constants.Controllers.Driver.port);
         OperatorController = new NykoController(Constants.Controllers.Operator.port);
-        //joysticks = JoystickController.getInstance();
+        joysticks = JoystickController.getInstance();
     }
-
+    public void setXboxInUse(boolean value) { 
+    XboxInUse = value;
+    }
+    public boolean getXboxInUse() {
+        return XboxInUse;
+    }
     public double getDriveThrottle() {
-        return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
+        if (XboxInUse = true){
+             return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
+        } 
+        else 
+            {return joysticks.getYJoyStick_L();}
       }
     
     public double getDriveTurn() {
-        return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
+        if (XboxInUse = true) {
+             return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
+        }
+        else
+            {return joysticks.getXJoyStick_L();}
     }
 
 }
