@@ -164,7 +164,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
 
-    mOperatorInterface.setRumble(true);
+        mOperatorInterface.setRumble(true);
 
   }
 

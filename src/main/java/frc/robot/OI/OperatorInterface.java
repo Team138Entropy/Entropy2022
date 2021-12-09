@@ -40,8 +40,8 @@ public class OperatorInterface {
         return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
     }
 
-    public void setRumble(boolean a){ // Epic proper naming moment
-        NewOperatorController.setRumble(a);
+    public void setRumble(boolean a){ 
+        NewOperatorController.setRumble();
     }
 
 }
