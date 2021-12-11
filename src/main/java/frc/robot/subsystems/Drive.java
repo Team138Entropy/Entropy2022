@@ -255,6 +255,8 @@ public class Drive extends Subsystem {
     if (Util.epsilonEquals(throttle, 0.0, 0.05)) {
         throttle = 0.0;
         quickTurn = true;
+
+        wheel = wheel * 0.25;
     }
     if (Util.epsilonEquals(wheel, 0.0, 0.045)) {
         wheel = 0.0;
