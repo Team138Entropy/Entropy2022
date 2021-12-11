@@ -37,4 +37,31 @@ public class OperatorInterface {
         return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
     }
 
+    /**
+     * Return true if Button 1 is pressed.
+     */
+    public boolean getButton1() {
+        return OperatorController.getButton(NykoController.Button.BUTTON_1);
+    }
+
+    /**
+     * Return true if Button 2 is pressed.
+     */
+    public boolean getButton2() {
+        return OperatorController.getButton(NykoController.Button.BUTTON_2);
+    }
+
+    /**
+     * Return true if Button 3 is pressed.
+     */
+    public boolean getButton3() {
+        return OperatorController.getButton(NykoController.Button.BUTTON_3);
+    }
+
+    /**
+     * Return true if Button 4 is pressed.
+     */
+    public boolean getButton4() {
+        return OperatorController.getButton(NykoController.Button.BUTTON_4);
+    }
 }

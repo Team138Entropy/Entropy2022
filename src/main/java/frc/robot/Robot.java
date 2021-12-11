@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
   
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
-
+  private final Arm mArm = Arm.getInstance();
   // Autonomous Execution Thread
   private AutoModeExecutor mAutoModeExecutor = null;
 
@@ -146,8 +146,29 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    if (mOperatorInterface.getButton1()) {
+      mArm.jogArmDown();
+    } else {
+      mArm.stopArmExtend();
+    }
 
+     if (mOperatorInterface.getButton2()) {
+      mArm.rotateArmUp();
+    } else {
+      mArm.stopArmExtend();
+    }
 
+    if (mOperatorInterface.getButton3()) {
+      mArm.rotateArmUp();
+    } else {
+      mArm.stopArmRotate();
+    }
+    
+    if (mOperatorInterface.getButton4()) {
+      mArm.jogArmUp();
+    } else {
+      mArm.stopArmRotate();
+    }
   }
 
   private void teleopRobotLoop(){
