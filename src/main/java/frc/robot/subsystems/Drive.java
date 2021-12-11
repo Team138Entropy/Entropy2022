@@ -58,7 +58,7 @@ public class Drive extends Subsystem {
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry mOdometry;
 
-  private static final double kTrackWidth = 0.5969; // meters (23.5 inches)
+  private static final double kTrackWidth = 0.3; // meters (23.5 inches)
   private final DifferentialDriveKinematics mKinematics = 
     new DifferentialDriveKinematics(kTrackWidth);
 
