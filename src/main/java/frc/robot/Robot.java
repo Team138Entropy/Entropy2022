@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
     // }
 
 
-    //TestDriveMode selectedMode = new TestDriveMode();
+    TestDriveMode selectedMode = new TestDriveMode();
     mAutoModeExecutor.setAutoMode(selectedMode);
 
     // Start Autonomous Thread
