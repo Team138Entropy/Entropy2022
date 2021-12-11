@@ -135,7 +135,6 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    // Activate rumble on op controller
 
     // Reset all auto mode state.
     if (mAutoModeExecutor != null) {
@@ -147,10 +146,14 @@ public class Robot extends TimedRobot {
 
   }
 
+  int mRumbleTimer = 0;
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-
+    // Activate rumble on op controller every second or so
+    if (mRumbleTimer > 100){ mOperatorInterface.setRumble(true); }
+    if (mRumbleTimer > 200){ mOperatorInterface.setRumble(false); mRumbleTimer = 0; }
+    mRumbleTimer++;
   }
 
   /** This function is called once when test mode is enabled. */
@@ -163,8 +166,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-
-        mOperatorInterface.setRumble(true);
 
   }
 

@@ -41,7 +41,7 @@ public class OperatorInterface {
     }
 
     public void setRumble(boolean a){ 
-        NewOperatorController.setRumble();
+        NewOperatorController.setRumble(a);
     }
 
 }
