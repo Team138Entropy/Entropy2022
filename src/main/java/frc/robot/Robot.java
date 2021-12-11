@@ -90,12 +90,10 @@ public class Robot extends TimedRobot {
     // set auto mode
 
     // Get Selected AutoMode
-    /*
-    AutoModeBase selectedMode = mAutoModes.getSelected();
-    if(selectedMode == null){
-       System.out.println("Selected Auto Mode is Null");
-    }
-    */
+    // AutoModeBase selectedMode = mAutoModes.getSelected();
+    // if(selectedMode == null){
+    //   System.out.println("Selected Auto Mode is Null");
+    // }
     TestDriveMode selectedMode = new TestDriveMode();
     mAutoModeExecutor.setAutoMode(selectedMode);
 
