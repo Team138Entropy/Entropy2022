@@ -25,18 +25,19 @@ public class OperatorInterface {
     }
     
     private OperatorInterface() {
-        DriverController = new XboxController(Constants.Controllers.Driver.port);
+        DriverController = new XboxController(3);
         OperatorController = new NykoController(Constants.Controllers.Operator.port);
         joysticks = JoystickController.getInstance();
     }
     public void setXboxInUse(boolean value) { 
     XboxInUse = value;
+    System.out.println(XboxInUse);
     }
     public boolean getXboxInUse() {
         return XboxInUse;
     }
     public double getDriveThrottle() {
-        if (XboxInUse = true){
+        if (XboxInUse == true){
              return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
         } 
         else 
@@ -44,11 +45,12 @@ public class OperatorInterface {
       }
     
     public double getDriveTurn() {
-        if (XboxInUse = true) {
+        if (XboxInUse == true) {
+            
              return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
         }
         else
-            {return joysticks.getXJoyStick_L();}
+            {return joysticks.getXJoyStick_R();}
     }
 
 }

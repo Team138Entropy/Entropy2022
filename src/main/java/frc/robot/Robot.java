@@ -116,6 +116,7 @@ public class Robot extends TimedRobot {
         mAutoModeExecutor.stop();
     }
     Integer selectedController = mControllerModes.getSelected();
+    //System.out.println(selectedController);
     if(selectedController == 0){
       mOperatorInterface.setXboxInUse(true);
     }
@@ -152,7 +153,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     // Set Mode for the Auto Mode to use in Thread
-
   }
 
   /** This function is called once when test mode is enabled. */
@@ -176,8 +176,8 @@ public class Robot extends TimedRobot {
   private void teleopDriveLoop(){
     double driveThrottle = mOperatorInterface.getDriveThrottle();
     double driveTurn = mOperatorInterface.getDriveTurn();
-    System.out.println(mOperatorInterface.getDriveThrottle());
-    System.out.println(mOperatorInterface.getDriveTurn());
+    //System.out.println(mOperatorInterface.getDriveThrottle());
+    //System.out.println(mOperatorInterface.getDriveTurn());
     //manual drive
     mDrive.setDrive(driveThrottle, driveTurn, false);
   }
