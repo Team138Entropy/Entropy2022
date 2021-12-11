@@ -113,11 +113,14 @@ public class XboxController {
     return mController.getPOV();
   }
 
-  public void setRumble(boolean on) {
+  public void setRumble(boolean toggle) {
     // Check to see if we are already on
-    if (Rumble != on) {
-      mController.setRumble(RumbleType.kRightRumble, on ? 1 : 0);
-      Rumble = on;
+    if (toggle){
+      mController.setRumble(RumbleType.kLeftRumble, 0.5);
+      mController.setRumble(RumbleType.kRightRumble, 0.5);
+    } else {
+      mController.setRumble(RumbleType.kLeftRumble, 0);
+      mController.setRumble(RumbleType.kRightRumble, 0);
     }
   }
 
