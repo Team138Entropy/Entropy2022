@@ -1,8 +1,12 @@
 # Entropy 2022
 ![GitHub top language](https://img.shields.io/github/languages/top/Team138Entropy/Entropy2022)
 [![WPILib License](https://img.shields.io/badge/license-WPI_Lib-blue)](https://github.com/Team138Entropy/Entropy2022/blob/main/WPILib-License.md)
+![GitHub contributors](https://img.shields.io/github/contributors/Team138Entropy/Entropy2022)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Team138Entropy/Entropy2022)
 ![GitHub issues](https://img.shields.io/github/issues/Team138Entropy/Entropy2022)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/Team138Entropy/Entropy2022) 
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Team138Entropy/Entropy2022)
+![GitHub followers](https://img.shields.io/github/followers/Team138Entropy?style=social)
+
 
 This is a baseline of the 2022 Robotics Code. This code seeks to provide the team with a strong baseline entering the 2022 Build season.
 This readme highlights portions of the architecture, ideas, and best practices.
