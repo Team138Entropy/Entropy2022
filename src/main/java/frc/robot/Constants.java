@@ -48,6 +48,10 @@ public class Constants {
             public static final int rightMaster = 3;
             public static final int rightSlave = 4;
         }
+
+        public static class Arm {
+          public static final int rotator = 5;
+        }
     }
 
 
@@ -63,8 +67,13 @@ public class Constants {
       // previously named
       public static double accelSpeed = 1;
       public static double brakeSpeed = 1;
-  
+
+
       public static class Encoders {
+        public static final double ticksPerWheelRotation = 22000.0;
+        public static final double ticksPerMeters = ticksPerWheelRotation * RobotDimensions.RotationsPerMeter;
+
+        // OLD VALUE
         // ticks = (19711 + 19582) / 2
         // distance in feet = 89.5/12
         // ticks per foot = ticks / feet
@@ -74,7 +83,12 @@ public class Constants {
         public static double compTicksPerFoot = compTicks / compDistance;
         public static final double practiceTicksPerFoot = 1228.615;
       }
-  
+
+      // Diameter of wheel & ticksPerRevolution used to convert meters into encoder ticks
+      public static double drivetrainWheelDiameter = 0.1524; // 6 inches in meters
+      public static double ticksPerRevolution = 4096;
+
+
       public static class AutoPID {
         public static final double p = 4;
         public static final double i = 0.00050;
@@ -123,5 +137,24 @@ public class Constants {
             new Pose2d(new Translation2d(0, 0.0), Rotation2d.fromDegrees(0.0));
         public static final Pose2d wheelsToLens =
             new Pose2d(new Translation2d(0, 0.0), Rotation2d.fromDegrees(0.0));
+
+        // Wheel Dimensions
+        private static final double WheelDiameter = 6.0; //inches
+        private static final double WheelRadius = WheelDiameter/2.0; //inches
+        private static final double WheelCircumference = 2 * Misc.pi * WheelRadius; //inches
+        private static final double WheelCircumferenceMeters = WheelCircumference * Misc.inchesToMeters; //meters
+        private static final double RotationsPerMeter = 1.0/WheelCircumferenceMeters; // meters (rotations per meter)
+      }
+
+      public static class Misc {
+        public static final double pi = 3.14159;  
+        public static final double inchesToMeters = 0.0254; //multiple inches to get meters
+      }
+
+      public static class Arm {
+        public static final int extenderChannel = 0;
+        public static final double ticksPerDegree = 0;
+        public static final double rotatorSpeedDefault = .1;
+        public static final double extenderSpeedDefault = .1;
       }
 }

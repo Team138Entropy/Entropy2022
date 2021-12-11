@@ -1,97 +1,51 @@
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj.Encoder;
-import com.playingwithfusion.TimeOfFlight;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import frc.robot.Constants;
-import java.util.LinkedHashMap;
-import java.util.Vector;
-import frc.robot.OI.OperatorInterface;
-import frc.robot.util.LatchedBoolean;
-import edu.wpi.first.wpilibj.Jaguar;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 public class Arm {
-    Jaguar J0 = new Jaguar(0);
-    Jaguar J1 = new Jaguar(1);
-    Jaguar J2 = new Jaguar(2);
-    Jaguar J3 = new Jaguar(3);
-    Jaguar J4 = new Jaguar(4);
-    Jaguar J5 = new Jaguar(5);
-    armTalon = new TalonFX();
-    shoulderTalon = new TalonFX();
-    private final OperatorInterface mOperatorInterface = OperatorInterface.getInstance();
     private static Arm mInstance;
-    private TimeOfFlight mLidar = new TimeOfFlight(Constants.Talons.Arm.lidarCanID);
-    Encoder revEncoder = new Encoder(0, 1);
-    int encoderHome = 0;
-    private LatchedBoolean armUp = new LatchedBoolean();
-    private LatchedBoolean armDown = new LatchedBoolean();
-    private boolean inArmUpMode = false;
-    private boolean inArmDownMode = false;
-    private int currentEncoderPos = 0;
-    //temp?
-    Vector<Integer> encoderValuesQueue = new Vector<Integer>();
-    public static synchronized Arm getInstance() {
-      if (mInstance == null) {
-      mInstance = new Arm();
-      }
-     return mInstance;
-    }
-    public Arm(){}
 
-    private double getLidarRange(){
-        return mLidar.getRange();
+    private TalonSRX mRotator;
+    private WPI_TalonSRX mExtender;
 
+    public Arm() {
+        mRotator = new TalonSRX(0);
+        mExtender = new WPI_TalonSRX(Constants.Arm.extenderChannel);
+        mExtender.setName("", Constants.Arm.extenderChannel);
     }
-    private int getEncoder(){
-        return revEncoder.get();
-    }
-    private void setJaguars(double v){
-        J0.set(v);
-        J1.set(v);
-        J2.set(v);
-        J3.set(v);
-        J4.set(v);
-        J5.set(v);
-    }
-    private int encoderUpGoal(){
-       return currentEncoderPos + 50;
-    }
-    private int encoderDownGoal(){
-       return currentEncoderPos - 50;
-    }
-    public void periodic(){
-     boolean sendArmUp = armUp.update(mOperatorInterface.isGoButtonPressed());
-     boolean sendArmDown = armDown.update(mOperatorInterface.isBackButtonPressed());
-        if (sendArmUp == true) { 
-            inArmUpMode = true;
-            currentEncoderPos = getEncoder();
+
+    public static Arm getInstance() {
+        if (mInstance == null) {
+            mInstance = new Arm();
         }
-        if (sendArmDown == true) {
-            inArmDownMode = true;
-            currentEncoderPos = getEncoder();
-        } 
-
-        if (inArmUpMode) {
-            System.out.println(currentEncoderPos);
-            System.out.println(encoderUpGoal());
-            if (getEncoder() < encoderUpGoal()) {setJaguars(0.15);} else {inArmUpMode = false;}
-        }
-        else if (inArmDownMode) {
-            if (getEncoder() > encoderDownGoal()) {setJaguars(-0.15);} else {inArmDownMode = false;}
-        }
-        else {
-            setJaguars(0);
-        }
+        return mInstance;
     }
 
-    void testPeriodic(){
-        // get the value of the joysticks Y Axis
-        double yaxisValue = mOperatorInterface.shoulderExtension_value();
-        shoulderTalon.set(ControlMode.PercentOutput, yaxisValue);
-        double armOut = mOperatorInterface.armExtension_value();
-        armTalon.set(ControlMode.PercentOutput, armOut);
-
+    public void rotateArmSpeed(double speed) {
+        speed = Math.max(Math.min(speed, 1), -1);
+        mRotator.set(TalonSRXControlMode.Position, speed);
     }
 
+    public void rotateArm() {
+        rotateArmSpeed(Constants.Arm.rotatorSpeedDefault);
+    }
+    
+    public void rotateArmDistance(double degrees) {
+    
+    }
+
+    public void extendArmSpeed(double speed) {
+        speed = Math.max(Math.min(speed, 1), -1);
+        mExtender.set(speed);
+    }
+
+    public void extendArm() {
+        extendArmSpeed(Constants.Arm.extenderSpeedDefault);
+    }
+
+    public void extendArmDistance(double cm) {
+        
+    }
 }

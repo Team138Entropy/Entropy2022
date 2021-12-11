@@ -7,9 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.controller.RamseteController;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
+import frc.robot.auto.AutoModeExecutor;
+import frc.robot.auto.modes.AutoModeBase;
+import frc.robot.auto.modes.DoNothingMode;
+import frc.robot.auto.modes.TestDriveMode;
 
 
 
@@ -31,10 +34,11 @@ public class Robot extends TimedRobot {
   private final Drive mDrive = Drive.getInstance();
   private final Arm mArm = Arm.getInstance();
 
-  // Using the default constructor of RamseteController. Here
-  // the gains are initialized to 2.0 and 0.7.
-  RamseteController AutoRamseteController = new RamseteController();
+  // Autonomous Execution Thread
+  private AutoModeExecutor mAutoModeExecutor = null;
 
+  // Autonomous Modes
+  private SendableChooser<AutoModeBase> mAutoModes;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -43,6 +47,15 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
+    // populate autonomous list
+    populateAutonomousModes();
+  }
+  
+  // Fill Autonomous Modes List
+  private void populateAutonomousModes(){
+    mAutoModes = new SendableChooser<AutoModeBase>();
+    mAutoModes.addOption("Nothing", new DoNothingMode());
+    mAutoModes.addOption("Test Drive", new TestDriveMode());
   }
 
   /**
@@ -61,20 +74,39 @@ public class Robot extends TimedRobot {
   /** Called at the Start of Autonomous **/
   @Override
   public void autonomousInit() {
-  
+    // set auto mode
 
+    // Get Selected AutoMode
+    AutoModeBase selectedMode = mAutoModes.getSelected();
+    if(selectedMode == null){
+      System.out.println("Selected Auto Mode is Null");
+    }
+
+
+    TestDriveMode tdm = new TestDriveMode();
+    mAutoModeExecutor.setAutoMode(tdm);
+
+    // Start Autonomous Thread
+    // This thread will run until disabled
+    mAutoModeExecutor.start();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    
+    // Autonomous is run through the AutoModeExecutor
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    // Disable Auto Thread (if running)
+    if (mAutoModeExecutor != null) {
+        mAutoModeExecutor.stop();
+    }
 
+    // Zero Drive Sensors
+    mDrive.zeroSensors();
 
   }
 
@@ -88,13 +120,19 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-  
+    // Reset all auto mode state.
+    if (mAutoModeExecutor != null) {
+        mAutoModeExecutor.stop();
+    }
+
+    // create Auto Mode Executor
+    mAutoModeExecutor = new AutoModeExecutor();
   }
 
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-
+    // Set Mode for the Auto Mode to use in Thread
 
   }
 

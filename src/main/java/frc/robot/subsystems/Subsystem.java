@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import frc.robot.SubsystemManager;
 import frc.robot.util.loops.ILooper;
 
 /*
