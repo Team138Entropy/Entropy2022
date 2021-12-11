@@ -15,6 +15,7 @@ import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.GenericHID;
 
 
 /**
@@ -23,7 +24,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends TimedRobot {  
+
   // Controller Reference
   private final OperatorInterface mOperatorInterface = OperatorInterface.getInstance();
 
@@ -83,6 +85,8 @@ public class Robot extends TimedRobot {
   /** Called at the Start of Autonomous **/
   @Override
   public void autonomousInit() {
+    mOperatorInterface.setRumble(false);
+
     // set auto mode
 
     // Get Selected AutoMode
@@ -90,8 +94,6 @@ public class Robot extends TimedRobot {
     // if(selectedMode == null){
     //   System.out.println("Selected Auto Mode is Null");
     // }
-
-
     TestDriveMode selectedMode = new TestDriveMode();
     mAutoModeExecutor.setAutoMode(selectedMode);
 
@@ -109,6 +111,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    mOperatorInterface.setRumble(false);
     
     // Disable Auto Thread (if running)
     if (mAutoModeExecutor != null) {
@@ -130,6 +133,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
+
     // Reset all auto mode state.
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();
@@ -140,24 +144,26 @@ public class Robot extends TimedRobot {
 
   }
 
+  int mRumbleTimer = 0;
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-    // Set Mode for the Auto Mode to use in Thread
-
+    // Activate rumble on op controller every second or so
+    if (mRumbleTimer > 100){ mOperatorInterface.setRumble(true); }
+    if (mRumbleTimer > 200){ mOperatorInterface.setRumble(false); mRumbleTimer = 0; }
+    mRumbleTimer++;
   }
 
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
-
+    mOperatorInterface.setRumble(false);
 
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-
 
   }
 
