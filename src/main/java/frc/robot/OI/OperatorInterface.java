@@ -36,5 +36,16 @@ public class OperatorInterface {
     public double getDriveTurn() {
         return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
     }
-
+    public boolean isGoButtonPressed() {
+        return joysticks.isButton4Pressed_L();
+    }
+    public boolean isBackButtonPressed() {
+        return joysticks.isButton5Pressed_L();
+    }
+    public int shoulderExtension_value() {
+        return joysticks.getYJoyStick_L();
+    }
+    public int armExtension_value() {
+        return joysticks.getYJoyStick_R();
+    }
 }

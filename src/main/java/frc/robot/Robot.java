@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
   
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
+  private final Arm mArm = Arm.getInstance();
 
   // Autonomous Execution Thread
   private AutoModeExecutor mAutoModeExecutor = null;
@@ -126,7 +127,6 @@ public class Robot extends TimedRobot {
 
     // create Auto Mode Executor
     mAutoModeExecutor = new AutoModeExecutor();
-
   }
 
   /** This function is called periodically when disabled. */
@@ -146,12 +146,11 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-
-
+    mArm.periodic();
   }
 
   private void teleopRobotLoop(){
-    teleopDriveLoop();
+    
   }
 
   private void teleopDriveLoop(){
