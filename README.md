@@ -1,5 +1,5 @@
 # Entropy 2022
-[![WPILib License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/Team138Entropy/Entropy2022/blob/main/WPILib-License.md)
+[![WPILib License](https://img.shields.io/badge/license-WPI_Lib-blue)](https://github.com/Team138Entropy/Entropy2022/blob/main/WPILib-License.md)
 [![Issues](https://img.shields.io/github/issues-raw/tterb/PlayMusic.svg?maxAge=25000)](https://github.com/Team138Entropy/Entropy2022/issues) 
 [![PR's Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://github.com/Team138Entropy/Entropy2022/compare)
 [![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org/)
