@@ -37,6 +37,11 @@ public class Constants {
 
     // Talon Can IDs
     public static class Talons {
+        public static class Arm {
+          // NOTE: This is not a talon. You have been warned. -a
+          public static final int lidarCanID = 0;
+        }
+        
         public static class Drive {
             public static final int leftMaster = 1;
             public static final int leftSlave = 2;
@@ -147,5 +152,9 @@ public class Constants {
 
       public static class Arm {
         public static final double ticksPerMeters;
+        public static final int extenderChannel = 0;
+        public static final double ticksPerDegree = 0;
+        public static final double rotatorSpeedDefault = .1;
+        public static final double extenderSpeedDefault = .1;
       }
 }

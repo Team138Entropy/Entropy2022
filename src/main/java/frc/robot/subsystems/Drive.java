@@ -199,7 +199,7 @@ public class Drive extends Subsystem {
 
   public synchronized void setDrive(double throttle, double wheel, boolean quickTurn) {
     DriveSignal s = getCheesyBrianDrive(throttle, wheel, quickTurn);
-    setOpenLoop(s);    
+    setOpenLoop(s);
   }
 
   // Original Cheesy Drive Equation
@@ -302,7 +302,7 @@ public class Drive extends Subsystem {
   public void periodic() {
     // Update the odometry in the periodic block
     //m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
-
+    
   }
 
 
