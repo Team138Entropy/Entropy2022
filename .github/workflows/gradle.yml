@@ -14,7 +14,7 @@ jobs:
       with:
         java-version: '11.0.4'
     - name: Run Linter
-      run: .githooks/pre-commit.sh
+      run: .githooks/pre-commit
     - name: Cache Gradle dependendies
       uses: actions/cache@v1
       with:
