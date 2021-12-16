@@ -142,6 +142,7 @@ public class Constants {
       }
 
       public static class Misc {
+        public static final int LED_Channel = -123; // because idk the channel yet
         public static final double pi = 3.14159;  
         public static final double inchesToMeters = 0.0254; //multiple inches to get meters
       }
