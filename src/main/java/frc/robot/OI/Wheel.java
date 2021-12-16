@@ -19,7 +19,7 @@ public class Wheel {
       return mInstance;
   }
 
-   Joystick wheel = new Joystick(4);
+   Joystick wheel = new Joystick(5);
    JoystickButton button1_W = new JoystickButton(wheel, 1),
     button2_W = new JoystickButton(wheel, 2),
     button3_W = new JoystickButton(wheel, 3),
