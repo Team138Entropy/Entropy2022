@@ -18,6 +18,7 @@ public class OperatorInterface {
     private XboxController NewOperatorController;
     private NykoController OperatorController;
     private JoystickController joysticks;
+    private Wheel driveWheel;
     public static synchronized OperatorInterface getInstance() {
         if (mInstance == null) {
             mInstance = new OperatorInterface();
@@ -30,14 +31,17 @@ public class OperatorInterface {
         NewOperatorController = new XboxController(Constants.Controllers.Operator.port);
         OperatorController = new NykoController(Constants.Controllers.Operator.port);
         //joysticks = JoystickController.getInstance();
+        driveWheel = Wheel.getInstance();
     }
 
     public double getDriveThrottle() {
-        return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
+        //return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
+        return driveWheel.getYWheel();
       }
     
     public double getDriveTurn() {
-        return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
+        //return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
+        return driveWheel.getXWheel();
     }
 
     public void setRumble(boolean a){ 
