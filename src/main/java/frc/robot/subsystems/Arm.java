@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
@@ -13,13 +14,13 @@ public class Arm extends Subsystem {
   private static Arm mInstance;
 
   private TalonSRX mShoulder;
-  private Talon mExtender;
-  private Encoder mExtenderEncoder;
+  private Talon mForearm;
+  private Encoder mForearmEncoder;
 
   public Arm() {
     mShoulder = new TalonSRX(0);
-    mExtender = new Talon(Constants.Arm.extenderChannel);
-    mExtenderEncoder = new Encoder(0, 1);
+    mForearm = new Talon(Constants.Arm.forearmChannel);
+    mForearmEncoder = new Encoder(0, 1);
   }
 
   public static Arm getInstance() {
@@ -29,53 +30,62 @@ public class Arm extends Subsystem {
     return mInstance;
   }
 
-  public void rotateArm(double speed) {
+  public void rotate(double speed) {
     speed = Math.max(Math.min(speed, 1), -1);
-    mShoulder.set(ControlMode.MotionMagic, speed);
+    mShoulder.set(ControlMode.PercentOutput, speed);
   }
 
-  public void rotateArmUp() {
-    rotateArm(Constants.Arm.shoulderJogSpeed);
+  public void rotateDistance(double degrees) {
+    degrees = Math.max(Math.min(degrees, (Constants.Arm.maxEncoderPositionShoulder - getShoulderPosition()) / Constants.Arm.ticksPerDegreeShoulder), -getShoulderPosition() / Constants.Arm.ticksPerDegreeShoulder);
+    mShoulder.set(ControlMode.MotionMagic, getShoulderPosition() + degrees * Constants.Arm.ticksPerDegreeShoulder, DemandType.ArbitraryFeedForward, getGravityFeedForward());
   }
 
-  public void rotateArmDown() {
-    rotateArm(-Constants.Arm.shoulderJogSpeed);
+  private double getGravityFeedForward() {
+    int currentPos = getShoulderPosition() - Constants.Arm.positionHorizontal;
+    double currentRads = currentPos * Constants.Arm.ticksPerRadianShoulder;
+    double ff = Constants.Arm.maxGravityFF * Math.cos(currentRads);
+    return ff;
   }
 
-  public void stopArmRotate() {
-    rotateArm(0);
-  }
-  
-  public void rotateArmDistance(double degrees) {
-  
+  public void jogRotateUp() {
+    rotate(Constants.Arm.jogSpeedShoulder);
   }
 
-  public void extendArm(double speed) {
+  public void jogRotateDown() {
+    rotate(-Constants.Arm.jogSpeedShoulder);
+  }
+
+  public void stopShoulder() {
+    rotate(0);
+  }
+
+  public void extend(double speed) {
     speed = Math.max(Math.min(speed, 1), -1);
-    mExtender.set(speed);
+    mForearm.set(speed);
   }
 
-  public void jogArmUp() {
-    extendArm(Constants.Arm.extenderJogSpeed);
+  public void extendDistance(double cm) {
+    // mForearm.setPosition(cm );
   }
 
-  public void jogArmDown() {
-    extendArm(-Constants.Arm.extenderJogSpeed);
+  public void jogUp() {
+    extend(Constants.Arm.forearmJogSpeed);
   }
 
-  public void stopArmExtend() {
-    extendArm(0);
-  }
-  public void extendArmDistance(double cm) {
-    
+  public void jogDown() {
+    extend(-Constants.Arm.forearmJogSpeed);
   }
 
-  public int getShoulderTicks() {
+  public void stopForearm() {
+    extend(0);
+  }
+
+  public int getShoulderPosition() {
     return mShoulder.getSelectedSensorPosition();
   }
 
-  public int getExtenderTicks() {
-    return mExtenderEncoder.get();
+  public int getForearmPosition() {
+    return mForearmEncoder.get();
   }
 
   @Override

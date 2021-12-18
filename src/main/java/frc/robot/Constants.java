@@ -140,15 +140,25 @@ public class Constants {
     private static final double RotationsPerMeter = 1.0/WheelCircumferenceMeters; // meters (rotations per meter)
   }
 
+  public static class Arm {
+    public static final double jogSpeedShoulder = .2;
+    public static final int ticksPerRotationShoulder = 0;
+    public static final double ticksPerDegreeShoulder = ticksPerRotationShoulder / 360;
+    public static final double ticksPerRadianShoulder = ticksPerRotationShoulder * Misc.degreeToRadian;
+    public static final int maxEncoderPositionShoulder = 0;
+    public static final int positionHorizontal = 0;
+    public static final double maxGravityFF = .07;
+
+    public static final int forearmChannel = 0;
+    public static final double forearmJogSpeed = .2;
+    public static final int ticksPerRotationForearm = 0;
+    public static final int ticksPerMeter = 0;
+    public static final int maxEncoderPositionForearm = 0;
+  }
+
   public static class Misc {
     public static final double pi = 3.14159;  
     public static final double inchesToMeters = 0.0254; //multiple inches to get meters
-  }
-
-  public static class Arm {
-    public static final int extenderChannel = 0;
-    public static final double ticksPerDegree = 0;
-    public static final double shoulderJogSpeed = .1;
-    public static final double extenderJogSpeed = .1;
+    public static final double degreeToRadian = Math.PI / 180;
   }
 }

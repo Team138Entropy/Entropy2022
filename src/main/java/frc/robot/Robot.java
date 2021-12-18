@@ -147,28 +147,31 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     if (mOperatorInterface.getButton1()) {
-      mArm.jogArmDown();
+      mArm.jogDown();
     } else {
-      mArm.stopArmExtend();
+      mArm.stopForearm();
     }
 
      if (mOperatorInterface.getButton2()) {
-      mArm.rotateArmUp();
+      mArm.jogRotateUp();
     } else {
-      mArm.stopArmExtend();
+      mArm.stopForearm();
     }
 
     if (mOperatorInterface.getButton3()) {
-      mArm.rotateArmUp();
+      mArm.jogRotateUp();
     } else {
-      mArm.stopArmRotate();
+      mArm.stopShoulder();
     }
     
     if (mOperatorInterface.getButton4()) {
-      mArm.jogArmUp();
+      mArm.jogUp();
     } else {
-      mArm.stopArmRotate();
+      mArm.stopShoulder();
     }
+
+    System.out.println("Shoulder position = " + mArm.getShoulderPosition());
+    System.out.println("Forearm position = " + mArm.getForearmPosition());
   }
 
   private void teleopRobotLoop(){
