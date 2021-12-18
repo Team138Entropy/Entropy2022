@@ -12,11 +12,13 @@ import frc.robot.util.LatchedBoolean;
 public class OperatorInterface {
     
     private static OperatorInterface mInstance;
-    boolean XboxInUse = false;
+    int controllerInUse = 0;
     // Instances of the Driver and Operator Controller
     private XboxController DriverController;
     private NykoController OperatorController;
     private JoystickController joysticks;
+    private Wheel wheel;
+    private uselessController controllerThing;
     public static synchronized OperatorInterface getInstance() {
         if (mInstance == null) {
             mInstance = new OperatorInterface();
@@ -28,29 +30,46 @@ public class OperatorInterface {
         DriverController = new XboxController(3);
         OperatorController = new NykoController(Constants.Controllers.Operator.port);
         joysticks = JoystickController.getInstance();
+        wheel = Wheel.getInstance();
+        controllerThing = uselessController.getInstance();
     }
-    public void setXboxInUse(boolean value) { 
-    XboxInUse = value;
-    System.out.println(XboxInUse);
+    public void setControllerInUse(int value) { 
+    controllerInUse = value;
+    System.out.println(controllerInUse);
     }
-    public boolean getXboxInUse() {
-        return XboxInUse;
+    public int getControllerInUse() {
+        return controllerInUse;
     }
     public double getDriveThrottle() {
-        if (XboxInUse == true){
+        if (controllerInUse == 0){
              return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
         } 
-        else 
-            {return joysticks.getYJoyStick_L();}
+        if (controllerInUse == 1){
+            return joysticks.getYJoyStick_L();
+        }
+        if (controllerInUse == 2){
+            return wheel.getYWheel();
+        }
+        if (controllerInUse == 3){
+            return controllerThing.getY_thing();
+        }
+        return 0;
       }
     
     public double getDriveTurn() {
-        if (XboxInUse == true) {
-            
+        if (controllerInUse == 0) {  
              return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
         }
-        else
-            {return joysticks.getXJoyStick_R();}
+        if (controllerInUse == 1) {
+             return joysticks.getXJoyStick_R();
+        }
+        if (controllerInUse == 2){
+            return wheel.getXWheel();
+        }
+        if (controllerInUse == 3){
+            return controllerThing.getX_thing();
+        }
+        return 0;
     }
 
 }

@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
 
   // Autonomous Modes
   private SendableChooser<Integer> mControllerModes;
-  boolean XboxInUse = false;
+  //int controllerInUse = 0;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -66,6 +66,8 @@ public class Robot extends TimedRobot {
     mControllerModes = new SendableChooser<Integer>();
     mControllerModes.setDefaultOption("Xbox Controller", 0);
     mControllerModes.addOption("Joysticks", 1);
+    mControllerModes.addOption("Wheel", 2);
+    mControllerModes.addOption("Thing", 3);
     SmartDashboard.putData(mControllerModes);
   }
   /**
@@ -118,10 +120,16 @@ public class Robot extends TimedRobot {
     Integer selectedController = mControllerModes.getSelected();
     //System.out.println(selectedController);
     if(selectedController == 0){
-      mOperatorInterface.setXboxInUse(true);
+      mOperatorInterface.setControllerInUse(0);
     }
         if(selectedController == 1){
-      mOperatorInterface.setXboxInUse(false);
+      mOperatorInterface.setControllerInUse(1);
+    }
+        if(selectedController == 2){
+      mOperatorInterface.setControllerInUse(2);
+    }
+        if(selectedController == 3){
+      mOperatorInterface.setControllerInUse(3);
     }
     // Zero Drive Sensors
     mDrive.zeroSensors();
