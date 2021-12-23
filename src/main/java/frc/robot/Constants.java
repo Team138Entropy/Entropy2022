@@ -141,7 +141,7 @@ public class Constants {
   }
 
   public static class Arm {
-    public static final double jogSpeedShoulder = .2;
+    public static final double jogSpeedShoulder = .35;
     public static final int ticksPerRotationShoulder = 0;
     public static final double ticksPerDegreeShoulder = ticksPerRotationShoulder / 360;
     public static final double ticksPerRadianShoulder = ticksPerRotationShoulder * Misc.degreeToRadian;

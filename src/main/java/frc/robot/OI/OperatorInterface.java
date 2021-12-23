@@ -12,6 +12,9 @@ import frc.robot.util.LatchedBoolean;
 public class OperatorInterface {
     private static OperatorInterface mInstance;
 
+    LatchedBoolean lb1 = new LatchedBoolean();
+    LatchedBoolean lb2 = new LatchedBoolean();
+
     // Instances of the Driver and Operator Controller
     private XboxController DriverController;
     private NykoController OperatorController;
@@ -41,14 +44,15 @@ public class OperatorInterface {
      * Return true if Button 1 is pressed.
      */
     public boolean getButton1() {
-        return OperatorController.getButton(NykoController.Button.BUTTON_1);
+        return lb1.update(OperatorController.getButton(NykoController.Button.BUTTON_1));
     }
 
     /**
      * Return true if Button 2 is pressed.
      */
     public boolean getButton2() {
-        return OperatorController.getButton(NykoController.Button.BUTTON_2);
+        return lb2.update(OperatorController.getButton(NykoController.Button.BUTTON_2));
+
     }
 
     /**

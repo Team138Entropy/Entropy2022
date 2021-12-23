@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
   private final OperatorInterface mOperatorInterface = OperatorInterface.getInstance();
 
   // Subsystem Manager
-  private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
+  //private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
   
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
@@ -146,32 +146,29 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    if (mOperatorInterface.getButton1()) {
-      mArm.jogDown();
-    } else {
-      mArm.stopForearm();
-    }
 
-     if (mOperatorInterface.getButton2()) {
-      mArm.jogRotateUp();
-    } else {
-      mArm.stopForearm();
-    }
 
-    if (mOperatorInterface.getButton3()) {
+    if (mOperatorInterface.getButton3() && false  ) {
+      System.out.println("Jogging Rotate Up!");
       mArm.jogRotateUp();
+    } else if (mOperatorInterface.getButton4() && false) {
+      System.out.println("Jogging Rotate Down!");
+      mArm.jogRotateDown();
+    } else if(mOperatorInterface.getButton1()){
+      System.out.println("Buttton 1");
+      mArm.testRotate();
+    } else if(mOperatorInterface.getButton2()){
+      System.out.println("Button 2");
+     // mArm.testRotate();
     } else {
-      mArm.stopShoulder();
-    }
-    
-    if (mOperatorInterface.getButton4()) {
-      mArm.jogUp();
-    } else {
-      mArm.stopShoulder();
+      //System.out.println("STOP");
+     //mArm.stopShoulder();
     }
 
     System.out.println("Shoulder position = " + mArm.getShoulderPosition());
-    System.out.println("Forearm position = " + mArm.getForearmPosition());
+    //System.out.println("Shoulder speed = " + mArm.getShoulderVe());
+
+   // System.out.println("Forearm position = " + mArm.getForearmPosition());
   }
 
   private void teleopRobotLoop(){
