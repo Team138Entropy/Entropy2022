@@ -44,7 +44,7 @@ public class Constants {
     }
 
     public static class Arm {
-      public static final int rotator = 5;
+      public static final int shoulder = 5;
     }
   }
 
@@ -142,11 +142,10 @@ public class Constants {
 
   public static class Arm {
     public static final double jogSpeedShoulder = .35;
-    public static final int ticksPerRotationShoulder = 0;
-    public static final double ticksPerDegreeShoulder = ticksPerRotationShoulder / 360;
-    public static final double ticksPerRadianShoulder = ticksPerRotationShoulder * Misc.degreeToRadian;
-    public static final int maxEncoderPositionShoulder = 0;
-    public static final int positionHorizontal = 0;
+    public static final int ticksPerRotationShoulder = 8192;
+    public static final int maxEncoderPositionShoulder = 220;
+    public static final int minEncoderPositionShoulder = -60;
+    public static final int positionHorizontal = 840;
     public static final double maxGravityFF = .07;
 
     public static final int forearmChannel = 0;
