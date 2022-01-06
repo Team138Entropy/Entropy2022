@@ -23,17 +23,17 @@ public class Arm extends Subsystem {
     mForearmEncoder = new Encoder(0, 1);
 
     // Sensor is flipped, TODO: Tell mechanical to stop eating crayons and fix it
-    mShoulder.setSensorPhase(true);
-    mShoulder.setSelectedSensorPosition(60);
+    //mShoulder.setSensorPhase(true);
+    mShoulder.setSelectedSensorPosition(-60);
     System.out.println("Starting Position: " + getShoulderPosition());
     
     // Configure Sensor Feedback
-    mShoulder.configSelectedFeedbackCoefficient(360 / Constants.Arm.ticksPerRotationShoulder);
-
     // PID constants
-    mShoulder.config_kP(0, 20, 10);
+    mShoulder.config_kP(0, 0, 10);
 		mShoulder.config_kI(0, 0, 10);
-		mShoulder.config_kD(0, .25, 10);
+    mShoulder.config_kD(0, 0, 10);
+    
+    mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.ticksPerRotationShoulder);
 
     //mShoulder.ConfigSelectedFeedbackCoefficient(kTurnTravelUnitsPerRotation / kEncoderUnitsPerRotation, 1, 10);
     
@@ -41,7 +41,7 @@ public class Arm extends Subsystem {
   }
 
   /** Joe method - use jog instead*/
-  public void testRotate(){
+  public void testRotate() {
     /*
     double degrees = (currentPos) / kTicksPerDegree;
     double radians = java.lang.Math.toRadians(degrees);
@@ -90,9 +90,13 @@ public class Arm extends Subsystem {
    * @param degrees the position to rotate to
    */
   public void rotateShoulderPosition(double degrees) {
-    degrees = Math.min(degrees, Constants.Arm.maxPositionShoulder);
-    degrees = Math.max(degrees, Constants.Arm.minPositionShoulder);
-    mShoulder.set(ControlMode.MotionMagic, degrees, DemandType.ArbitraryFeedForward, getGravityFeedForward());
+    degrees = Math.max(degrees, Constants.Arm.minEncoderPositionShoulder);
+    degrees = Math.min(degrees, Constants.Arm.maxEncoderPositionShoulder);
+    double ff = getGravityFeedForward();
+    System.out.println(ff);
+    System.out.println(degrees);
+    System.out.println(getShoulderPosition());
+    mShoulder.set(ControlMode.MotionMagic, degrees, DemandType.ArbitraryFeedForward, ff);
   }
 
   /**
@@ -100,8 +104,7 @@ public class Arm extends Subsystem {
    * @return gravity feed forward value
    */
   private double getGravityFeedForward() {
-    int currentPos = getShoulderPosition() - Constants.Arm.positionHorizontal;
-    double currentRads = currentPos * Constants.Misc.degreeToRadian;
+    double currentRads = getShoulderPosition() * Constants.Misc.degreeToRadian;
     double ff = Constants.Arm.maxGravityFF * Math.cos(currentRads);
     return ff;
   }

@@ -143,9 +143,9 @@ public class Constants {
   public static class Arm {
     public static final double jogSpeedShoulder = .35;
     public static final int ticksPerRotationShoulder = 8192;
-    public static final int maxPositionShoulder = 220;
-    public static final int minPositionShoulder = -60;
     public static final int positionHorizontal = 0;
+    public static final int minPositionShoulder = -60;
+    public static final int maxPositionShoulder = 220;
     public static final double maxGravityFF = .07;
 
     public static final int forearmChannel = 0;
