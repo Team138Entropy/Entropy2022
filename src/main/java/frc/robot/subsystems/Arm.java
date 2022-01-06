@@ -90,8 +90,8 @@ public class Arm extends Subsystem {
    * @param degrees the position to rotate to
    */
   public void rotateShoulderPosition(double degrees) {
-    degrees = Math.max(degrees, Constants.Arm.minEncoderPositionShoulder);
-    degrees = Math.min(degrees, Constants.Arm.maxEncoderPositionShoulder);
+    degrees = Math.max(degrees, Constants.Arm.minPositionShoulder);
+    degrees = Math.min(degrees, Constants.Arm.maxPositionShoulder);
     double ff = getGravityFeedForward();
     System.out.println(ff);
     System.out.println(degrees);
