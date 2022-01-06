@@ -146,7 +146,7 @@ public class Constants {
     public static final int maxEncoderPositionShoulder = 220;
     public static final int minEncoderPositionShoulder = -60;
     public static final int positionHorizontal = 840;
-    public static final double maxGravityFF = .07;
+    public static final double maxGravityFF = .5;
 
     public static final int forearmChannel = 0;
     public static final double forearmJogSpeed = .2;

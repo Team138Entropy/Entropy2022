@@ -143,32 +143,42 @@ public class Robot extends TimedRobot {
 
   }
 
+  boolean isJog = false;
+
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-
-
-    if (mOperatorInterface.getButton3() && false  ) {
-      System.out.println("Jogging Rotate Up!");
+    /*if (mOperatorInterface.getButton3()) {
+      isJog = true;
+      System.out.println("Buttton 3");
       mArm.jogRotateUp();
-    } else if (mOperatorInterface.getButton4() && false) {
-      System.out.println("Jogging Rotate Down!");
+    } else if (mOperatorInterface.getButton4()) {
+      isJog = true;
+      System.out.println("Buttton 4");
       mArm.jogRotateDown();
-    } else if(mOperatorInterface.getButton1()){
-      System.out.println("Buttton 1");
-      mArm.testRotate();
-    } else if(mOperatorInterface.getButton2()){
-      System.out.println("Button 2");
-     // mArm.testRotate();
-    } else {
-      //System.out.println("STOP");
-     //mArm.stopShoulder();
-    }
+    } else if (isJog) {
+      mArm.stopShoulder();
+      isJog = false;
+      System.out.println("STOP!!" + isJog);
+    }*/
 
-    System.out.println("Shoulder position = " + mArm.getShoulderPosition());
+    if (mOperatorInterface.getButton1()) {
+      System.out.println("Button 1");
+      mArm.rotateShoulderPosition(-60);
+    } else if (mOperatorInterface.getButton2()) {
+      System.out.println("Button 2");
+      mArm.rotateShoulderPosition(0);
+    } else if (mOperatorInterface.getButton3()) {
+      System.out.println("Button 3");
+      mArm.rotateShoulderPosition(90);
+    } else if (mOperatorInterface.getButton4()) {
+      System.out.println("Button 4");
+      mArm.rotateShoulderPosition(180);
+    }
+    //System.out.println(mArm.getShoulderPosition());
     //System.out.println("Shoulder speed = " + mArm.getShoulderVe());
 
-   // System.out.println("Forearm position = " + mArm.getForearmPosition());
+    // System.out.println("Forearm position = " + mArm.getForearmPosition());
   }
 
   private void teleopRobotLoop(){

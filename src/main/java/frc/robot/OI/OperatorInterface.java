@@ -14,6 +14,8 @@ public class OperatorInterface {
 
     LatchedBoolean lb1 = new LatchedBoolean();
     LatchedBoolean lb2 = new LatchedBoolean();
+    LatchedBoolean lb3 = new LatchedBoolean();
+    LatchedBoolean lb4 = new LatchedBoolean();
 
     // Instances of the Driver and Operator Controller
     private XboxController DriverController;
@@ -59,13 +61,13 @@ public class OperatorInterface {
      * Return true if Button 3 is pressed.
      */
     public boolean getButton3() {
-        return OperatorController.getButton(NykoController.Button.BUTTON_3);
+        return lb3.update(OperatorController.getButton(NykoController.Button.BUTTON_3));
     }
 
     /**
      * Return true if Button 4 is pressed.
      */
     public boolean getButton4() {
-        return OperatorController.getButton(NykoController.Button.BUTTON_4);
+        return lb4.update(OperatorController.getButton(NykoController.Button.BUTTON_4));
     }
 }
