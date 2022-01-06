@@ -143,21 +143,22 @@ public class Constants {
   public static class Arm {
     public static final double jogSpeedShoulder = .35;
     public static final int ticksPerRotationShoulder = 8192;
-    public static final int maxEncoderPositionShoulder = 220;
-    public static final int minEncoderPositionShoulder = -60;
-    public static final int positionHorizontal = 840;
+    public static final int maxPositionShoulder = 220;
+    public static final int minPositionShoulder = -60;
+    public static final int positionHorizontal = 0;
     public static final double maxGravityFF = .07;
 
     public static final int forearmChannel = 0;
     public static final double forearmJogSpeed = .2;
-    public static final int ticksPerRotationForearm = 0;
-    public static final int ticksPerMeter = 0;
     public static final int maxEncoderPositionForearm = 0;
+    /** In centimeters */
+    public static final int forearmLength = 0;
+    public static final int ticksPerCM = maxEncoderPositionForearm / forearmLength;
   }
 
   public static class Misc {
     public static final double pi = 3.14159;  
     public static final double inchesToMeters = 0.0254; //multiple inches to get meters
-    public static final double degreeToRadian = Math.PI / 180;
+    public static final double degreeToRadian = 0.0174;
   }
 }
