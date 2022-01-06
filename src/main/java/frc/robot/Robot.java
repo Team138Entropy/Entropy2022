@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   private SendableChooser<AutoModeBase> mAutoModes;
 
   //Power dist. panel
-  private final PowerDistributionPanel m_pdp = new PowerDistributionPanel(25);
+  //private final PowerDistributionPanel m_pdp = new PowerDistributionPanel(25);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -71,14 +71,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-
+    SmartDashboard.putNumber("encoder_left", mDrive.getLeftEncoderPosition());
+    SmartDashboard.putNumber("encoder_right", mDrive.getRightEncoderPosition());
     // Put PowerDistributionBoard stats onto the smart dashboard
-    SmartDashboard.putNumber("PDP-Temp", m_pdp.getTemperature());
-    SmartDashboard.putNumber("PDP-Voltage", m_pdp.getVoltage());
-    for (int i = 0; i < 15; i++){ // This way we can get all the channels info
-      SmartDashboard.putNumber(("PDP-Current-"+i), m_pdp.getCurrent(i));
-    }
-    SmartDashboard.updateValues();
+    // SmartDashboard.putNumber("PDP-Temp", m_pdp.getTemperature());
+    // SmartDashboard.putNumber("PDP-Voltage", m_pdp.getVoltage());
+    // for (int i = 0; i < 15; i++){ // This way we can get all the channels info
+    //   SmartDashboard.putNumber(("PDP-Current-"+i), m_pdp.getCurrent(i));
+    // }
+    // SmartDashboard.updateValues();
   }
 
 

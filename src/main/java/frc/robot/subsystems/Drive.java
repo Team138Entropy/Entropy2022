@@ -26,8 +26,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.util.drivers.CTREUnits;
 import frc.robot.util.drivers.EntropyTalonFX;
 import frc.robot.util.drivers.MotorConfigUtils;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 
 
@@ -38,6 +37,7 @@ public class Drive extends Subsystem {
 
   // Drive Talons
   private EntropyTalonFX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
+  WPI_TalonSRX mLeftMasterSRX, mRightMasterSRX;
 
   // Potential Drive Modes
   public enum DriveControlState {
@@ -99,6 +99,11 @@ public class Drive extends Subsystem {
         MotorConfigUtils.POSITION_SLOT_IDX, MotorConfigUtils.VELOCITY_SLOT_IDX);
     mRightMaster = new EntropyTalonFX(Constants.Talons.Drive.rightSlave, Constants.Drive.Encoders.ticksPerMeters, 
       MotorConfigUtils.POSITION_SLOT_IDX, MotorConfigUtils.VELOCITY_SLOT_IDX);
+
+    // These are so we can get encoders on test bed
+    mLeftMasterSRX = new WPI_TalonSRX(Constants.Talons.Drive.leftSlave);
+    mRightMasterSRX = new WPI_TalonSRX(Constants.Talons.Drive.rightSlave);
+
 
     // Configure Each TalonFX 
     MotorConfigUtils.setDefaultTalonFXConfig(mLeftSlave);
@@ -419,15 +424,19 @@ public class Drive extends Subsystem {
   }
 
   // Get the left encoder data in meters
-  private double getLeftEncoderPosition() {
-      return CTREUnits.talonPosistionToMeters(mLeftMaster.getSelectedSensorPosition());
+  public double getLeftEncoderPosition() {
+    // Use SRX class to get encoder because its srx motors
+    System.out.println(CTREUnits.talonPosistionToMeters(mLeftMasterSRX.getSelectedSensorPosition()));
+    return CTREUnits.talonPosistionToMeters(mLeftMasterSRX.getSelectedSensorPosition());
   }
 
   /**
    * Get the encoder data in meters
    */
   // Get the right encoder data in meters
-  private double getRightEncoderPosition() {
-      return CTREUnits.talonPosistionToMeters(mRightMaster.getSelectedSensorPosition());
+  public double getRightEncoderPosition() {
+    // Use SRX class to get encoder because its srx motors
+    System.out.println(CTREUnits.talonPosistionToMeters(mRightMasterSRX.getSelectedSensorPosition()));
+    return CTREUnits.talonPosistionToMeters(mRightMasterSRX.getSelectedSensorPosition());
   }
 }

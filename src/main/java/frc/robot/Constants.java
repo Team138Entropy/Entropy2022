@@ -46,7 +46,7 @@ public class Constants {
     }
     public static class CanIDs {
       // Power dist. panel
-      public static final int PDPid = 25;
+      // public static final int PDPid = 25;
     }
 
 
