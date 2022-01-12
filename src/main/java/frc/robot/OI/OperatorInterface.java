@@ -42,6 +42,10 @@ public class OperatorInterface {
         return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
     }
 
+    public double getOperatorThrottle() {
+        return OperatorController.getJoystick(NykoController.Side.LEFT, NykoController.Axis.Y);
+    }
+
     /**
      * Return true if Button 1 is pressed.
      */

@@ -148,23 +148,11 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    /*if (mOperatorInterface.getButton3()) {
-      isJog = true;
-      System.out.println("Buttton 3");
-      mArm.jogRotateUp();
-    } else if (mOperatorInterface.getButton4()) {
-      isJog = true;
-      System.out.println("Buttton 4");
-      mArm.jogRotateDown();
-    } else if (isJog) {
-      mArm.stopShoulder();
-      isJog = false;
-      System.out.println("STOP!!" + isJog);
-    }*/
-
+    
+    
     if (mOperatorInterface.getButton1()) {
       System.out.println("Button 1");
-      mArm.rotateShoulderPosition(-60);
+      mArm.rotateShoulderPosition(-50);
     } else if (mOperatorInterface.getButton2()) {
       System.out.println("Button 2");
       mArm.rotateShoulderPosition(0);
@@ -175,10 +163,10 @@ public class Robot extends TimedRobot {
       System.out.println("Button 4");
       mArm.rotateShoulderPosition(180);
     }
-    //System.out.println(mArm.getShoulderPosition());
-    //System.out.println("Shoulder speed = " + mArm.getShoulderVe());
-
-    // System.out.println("Forearm position = " + mArm.getForearmPosition());
+    //mArm.setPercentOutput(mOperatorInterface.getOperatorThrottle());
+  
+  
+    SmartDashboard.putNumber("shoulderPosition", mArm.getShoulderPosition());
   }
 
   private void teleopRobotLoop(){

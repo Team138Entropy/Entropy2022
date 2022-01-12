@@ -23,12 +23,15 @@ public class Arm extends Subsystem {
     mForearmEncoder = new Encoder(0, 1);
 
     // Sensor is flipped, TODO: Tell mechanical to stop eating crayons and fix it
-    //mShoulder.setSensorPhase(true);
-    mShoulder.setSelectedSensorPosition(-60);
+    mShoulder.setSelectedSensorPosition(60);
+    mShoulder.setSensorPhase(true);
+
+
     System.out.println("Starting Position: " + getShoulderPosition());
     
     // Configure Sensor Feedback
     // PID constants
+    mShoulder.config_kF(0, 0);
     mShoulder.config_kP(0, 0, 10);
 		mShoulder.config_kI(0, 0, 10);
     mShoulder.config_kD(0, 0, 10);
@@ -51,14 +54,16 @@ public class Arm extends Subsystem {
     int currentPos = mShoulder.getSelectedSensorPosition();
     double radians = java.lang.Math.toRadians(currentPos);
     double cos = java.lang.Math.cos(radians);
-    //double absCos = java.lang.Math.abs(cos);
-
     double maxGravityFF = 0.5;
     double feedforward = maxGravityFF * cos;
     System.out.println("FeedForward: " + feedforward);
     int targetPos = 0;
     feedforward = 0;
     mShoulder.set(ControlMode.MotionMagic, targetPos, DemandType.ArbitraryFeedForward, feedforward);
+  }
+
+  public void setPercentOutput(double output){
+    mShoulder.set(ControlMode.PercentOutput, output, DemandType.ArbitraryFeedForward, .05);
   }
 
   public static Arm getInstance() {
@@ -93,9 +98,10 @@ public class Arm extends Subsystem {
     degrees = Math.max(degrees, Constants.Arm.minPositionShoulder);
     degrees = Math.min(degrees, Constants.Arm.maxPositionShoulder);
     double ff = getGravityFeedForward();
-    System.out.println(ff);
-    System.out.println(degrees);
-    System.out.println(getShoulderPosition());
+    System.out.println("-----");
+    System.out.println("Feed Fordward: " + ff);
+    System.out.println("Degrees: " + degrees);
+    System.out.println("Shoulder Position: " + getShoulderPosition());
     mShoulder.set(ControlMode.MotionMagic, degrees, DemandType.ArbitraryFeedForward, ff);
   }
 
