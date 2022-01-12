@@ -36,17 +36,22 @@ def main():
     # Wait for NetworkTables to start
     time.sleep(0.5)
 
-    index = -1
-    for imagePath in images:
-        index += 1
-        img = cv2.imread(imagePath) 
+    while True:
+        start_time = time.time()
+        frame_time, input_img = input_stream.grabFrame(img)
+        output_img = np.copy(input_img)
+
+        # Notify output of error and skip iteration
+        if frame_time == 0:
+            output_stream.notifyError(input_stream.getError())
+            continue
+
+        img = cv2.imread(input_img) 
         #plt.imshow(img)
 
         hue = [97.12230215827337, 131.51515151515153]
         sat = [41.276978417266186, 255.0]
-        val = [29.81115107913669, 255.0]
-
-        
+        val = [29.81115107913669, 255.0]  
 
         # we only care about low portion of frame
         cutOffHeight = height * .5
@@ -60,13 +65,10 @@ def main():
                             (hue[1], sat[1], val[1]))
         contours, hiearchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
-
-
         # Sort contours by area size (biggest to smallest)
         cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
 
         con = []
-
         for cnt in cntsSorted:
             # Get moments of contour; mainly for centroid
             M = cv2.moments(cnt)
