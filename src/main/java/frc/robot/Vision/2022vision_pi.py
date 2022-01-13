@@ -8,7 +8,6 @@ import time
 from threading import Thread
 
 import cv2
-#import matplotlib.pyplot as plt
 import numpy as np
 from cscore import CameraServer
 from networktables import NetworkTables
@@ -18,7 +17,6 @@ from networktables import NetworkTables
 
 if __name__ == "__main__":
     print('2022 Ball Vision Yellow Starting')
-
     team = 138
     cameraConfig = ''
     
@@ -27,16 +25,15 @@ if __name__ == "__main__":
         camera = cameraConfig['cameras'][0]
 
     #print(cameraConfig)
-
     width = camera['width']
     height = camera['height']
     
     cs = CameraServer.getInstance()
     camera = cs.startAutomaticCapture()
     
+    #Important to configure pixel format, otherwise the camera server will expect jpeg capture while the PSEye uses yuyv
     cameraConfig['pixel format'] = 'yuyv'
     camera.setConfigJson(json.dumps(cameraConfig))
-    
     
     input_stream = cs.getVideo()
     output_stream = cs.putVideo('Processed', width, height)
@@ -63,7 +60,7 @@ if __name__ == "__main__":
             output_stream.notifyError(input_stream.getError())
             continue
 
-        img = cv2.imread(input_img) 
+        img = cv2.imread(output_img) 
         #plt.imshow(img)
 
         #hue = [0, 22]
@@ -71,9 +68,9 @@ if __name__ == "__main__":
         #val = [53, 255]  
 
         #Yellow Ball params
-        hue = [16,95]
-        sat = [87,255]
-        lum = [36,165]
+        yelHue = [24,49]
+        yelSat = [92,255]
+        yelVal = [110,255]
 
         # we only care about low portion of frame
         cutOffHeight = height * .5
@@ -82,9 +79,9 @@ if __name__ == "__main__":
         #out = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         #cv2.inRange(out, (hue[0], sat[0], val[0]),  (hue[1], sat[1], val[1]))
 
-        out = cv2.cvtColor(out, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(out, (hue[0], sat[0], lum[0]),
-                            (hue[1], sat[1], lum[1]))
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(img, (yelHue[0], yelSat[0], yelVal[0]),
+                            (yelHue[1], yelSat[1], yelVal[1]))
         contours, hiearchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
         # Sort contours by area size (biggest to smallest)
