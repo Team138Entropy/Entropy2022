@@ -43,5 +43,24 @@ public class OperatorInterface {
     public void setRumble(boolean a){ 
         NewOperatorController.setRumble(a);
     }
-
+    public boolean getIntakeActive(){
+        return NewOperatorController.getButton(Button.RB);
+    }
+    public double getArmPos(){
+        if (NewOperatorController.getButton(Button.A)){
+            return -60;
+        }
+        if (NewOperatorController.getButton(Button.B)){
+            return 0;
+        }
+        if (NewOperatorController.getButton(Button.X)){
+            return 60;
+        }
+        if (NewOperatorController.getButton(Button.Y)){
+            return 110;
+        }
+        else {
+            return null;
+        }
+    }
 }
