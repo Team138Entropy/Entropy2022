@@ -8,7 +8,7 @@ import time
 from threading import Thread
 
 import cv2
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
 from cscore import CameraServer
 from networktables import NetworkTables
@@ -16,17 +16,24 @@ from networktables import NetworkTables
 #Below link has a barebones version, useful for getting the camera server stuff
 #https://docs.wpilib.org/en/stable/docs/software/vision-processing/wpilibpi/basic-vision-example.html
 
+if __name__ == "__main__":
+    print('2022 Ball Vision Yellow Starting')
 
-def main():
     with open('/boot/frc.json') as f:
         config = json.load(f)
         camera = config['cameras'][0]
-    
+
     width = camera['width']
     height = camera['height']
-    input_stream = CameraServer.getVideo()
-    output_stream = CameraServer.putVideo('Processed', width, height)
     
+    cs = CameraServer.getInstance()
+    camera = cs.startAutomaticCapture()
+    
+    #config.config['pixel format'] = 'yuyv'
+
+    input_stream = cs.getVideo()
+    output_stream = cs.putVideo('Processed', width, height)
+
     # Table for vision output information
     vision_nt = NetworkTables.getTable('Vision')
 
@@ -36,7 +43,10 @@ def main():
     # Wait for NetworkTables to start
     time.sleep(0.5)
 
+    print('Setup steps complete')
+
     while True:
+        print('Starting image detection')
         start_time = time.time()
         frame_time, input_img = input_stream.grabFrame(img)
         output_img = np.copy(input_img)
@@ -49,9 +59,14 @@ def main():
         img = cv2.imread(input_img) 
         #plt.imshow(img)
 
-        hue = [97.12230215827337, 131.51515151515153]
-        sat = [41.276978417266186, 255.0]
-        val = [29.81115107913669, 255.0]  
+        #hue = [0, 22]
+        #sat = [110, 255]
+        #val = [53, 255]  
+
+        #Yellow Ball params
+        hue = [16,95]
+        sat = [87,255]
+        lum = [36,165]
 
         # we only care about low portion of frame
         cutOffHeight = height * .5
@@ -61,8 +76,8 @@ def main():
         #cv2.inRange(out, (hue[0], sat[0], val[0]),  (hue[1], sat[1], val[1]))
 
         out = cv2.cvtColor(out, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(out, (hue[0], sat[0], val[0]),
-                            (hue[1], sat[1], val[1]))
+        mask = cv2.inRange(out, (hue[0], sat[0], lum[0]),
+                            (hue[1], sat[1], lum[1]))
         contours, hiearchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
         # Sort contours by area size (biggest to smallest)
@@ -98,7 +113,7 @@ def main():
 
 
             validCnt = True 
-            validCnt &= (y > cutOffHeight)
+            #validCnt &= (y > cutOffHeight)
             #validCnt &= (cntArea > 20) 
             validCnt &= (len(approximateShape) >= 8)
             validCnt &= (ratio > .2) and (ratio < 3.5)
@@ -121,7 +136,7 @@ def main():
         contimage = img
 
         # mask out rectange
-        cv2.rectangle(contimage, (0, 0), (width, int(cutOffHeight)), (0, 0, 0), -1)
+        #cv2.rectangle(contimage, (0, 0), (width, int(cutOffHeight)), (0, 0, 0), -1)
 
         conCount = 0
         for cnt in con:
@@ -136,26 +151,28 @@ def main():
             centerX = int(centerX)
             centerY = int(centerY)
 
+        print('Passed image processing')
+        print(centerX, centerY)
 
 
 
 
             # draw contour
-            cv2.drawContours(contimage, cnt, -1, (0, 255, 0), 20)
+            #cv2.drawContours(contimage, cnt, -1, (0, 255, 0), 20)
 
-            cv2.putText(contimage, 'X', (centerX, centerY), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 3, cv2.LINE_AA)
+            #cv2.putText(contimage, 'X', (centerX, centerY), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 3, cv2.LINE_AA)
 
 
         # put header text 
-        cv2.putText(contimage,'Ball Vision Camera - Image ' + str(index),(0,100), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 255, 0), 14, cv2.LINE_AA)
-        cv2.putText(contimage,str(len(con)) + " Ball(s) Detected",(0,260), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 255, 0), 14, cv2.LINE_AA)
+        #cv2.putText(contimage,'Ball Vision Camera - Image ' + str(index),(0,100), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 255, 0), 14, cv2.LINE_AA)
+        #cv2.putText(contimage,str(len(con)) + " Ball(s) Detected",(0,260), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 255, 0), 14, cv2.LINE_AA)
 
 
 
 
 
-        print("writing image " + str(index))
+        #print("writing image " + str(index))
 
-        cv2.imwrite("output" + str(index) + ".jpg", contimage)
+        #cv2.imwrite("output" + str(index) + ".jpg", contimage)
 
-main()
+
