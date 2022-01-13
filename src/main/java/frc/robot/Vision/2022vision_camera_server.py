@@ -19,9 +19,14 @@ from networktables import NetworkTables
 if __name__ == "__main__":
     print('2022 Ball Vision Yellow Starting')
 
+    team = 138
+    cameraConfig = ''
+    
     with open('/boot/frc.json') as f:
-        config = json.load(f)
-        camera = config['cameras'][0]
+        cameraConfig = json.load(f)
+        camera = cameraConfig['cameras'][0]
+
+    #print(cameraConfig)
 
     width = camera['width']
     height = camera['height']
@@ -29,8 +34,10 @@ if __name__ == "__main__":
     cs = CameraServer.getInstance()
     camera = cs.startAutomaticCapture()
     
-    #config.config['pixel format'] = 'yuyv'
-
+    cameraConfig['pixel format'] = 'yuyv'
+    camera.setConfigJson(json.dumps(cameraConfig))
+    
+    
     input_stream = cs.getVideo()
     output_stream = cs.putVideo('Processed', width, height)
 
