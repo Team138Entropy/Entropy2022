@@ -5,7 +5,6 @@ import socket
 import sys
 import threading
 import time
-from threading import Thread
 
 import cv2
 import numpy as np
@@ -14,6 +13,37 @@ from networktables import NetworkTables
 
 #Below link has a barebones version, useful for getting the camera server stuff
 #https://docs.wpilib.org/en/stable/docs/software/vision-processing/wpilibpi/basic-vision-example.html
+
+# Queue of Packets
+# Thread Safe.. Packets being sent to robot are placed here!
+PacketQueue = queue.Queue()
+
+# Creates a socket
+#No clue if this will work, just pulled it from last year
+class SocketWorker(threading.Thread):
+    def __init__(self, q, *args, **kwargs):
+        self.queue = q
+        super().__init__(*args, **kwargs)
+
+        # Initialize Socket Connect
+        SocketHost = "10.1.38.2"
+        SocketPort = 5800
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.connect((SocketHost, SocketPort))
+
+    def run(self):
+        while True:
+            try:
+                packet = self.queue.get()
+                # Convert Packet to JSON
+                # Send Message Over Socket
+                try:
+                    data_string = json.dumps(packet)
+                    self.sock.sendall(data_string.encode())
+                except Exception as e:
+                    print("Socket Exception " + str(e))
+            except Exception as e1:
+                pass
 
 if __name__ == "__main__":
     print('2022 Ball Vision Yellow Starting')
@@ -38,18 +68,20 @@ if __name__ == "__main__":
     input_stream = cs.getVideo()
     output_stream = cs.putVideo('Processed', width, height)
 
-    # Table for vision output information
-    vision_nt = NetworkTables.getTable('Vision')
-
     # Allocating new images is very expensive, always try to preallocate
     img = np.zeros(shape=(640, 480, 3), dtype=np.uint8)
 
-    # Wait for NetworkTables to start
-    time.sleep(0.5)
+    SocketThread = SocketWorker(PacketQueue).start()
+
 
     print('Setup steps complete')
 
     while True:
+        #Create info for packet
+        PacketValue = {}
+        PacketValue['cameraid'] = 0
+        PacketValue['ballColor'] = 'yellow'
+
         print('Starting image detection')
         start_time = time.time()
         frame_time, input_img = input_stream.grabFrame(img)
@@ -113,9 +145,6 @@ if __name__ == "__main__":
                 x = int(M['m10']/M['m00'])
                 y = int(M['m01']/M['m00'])
 
-        
-
-
             validCnt = True 
             #validCnt &= (y > cutOffHeight)
             #validCnt &= (cntArea > 20) 
@@ -158,8 +187,9 @@ if __name__ == "__main__":
         print('Passed image processing')
         print(centerX, centerY)
 
-
-
+        PacketQueue['BallX'] = centerX
+        PacketQueue['BallY'] = centerY
+        PacketQueue.put_nowait(PacketValue)
 
             # draw contour
             #cv2.drawContours(contimage, cnt, -1, (0, 255, 0), 20)
@@ -170,10 +200,6 @@ if __name__ == "__main__":
         # put header text 
         #cv2.putText(contimage,'Ball Vision Camera - Image ' + str(index),(0,100), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 255, 0), 14, cv2.LINE_AA)
         #cv2.putText(contimage,str(len(con)) + " Ball(s) Detected",(0,260), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 255, 0), 14, cv2.LINE_AA)
-
-
-
-
 
         #print("writing image " + str(index))
 
