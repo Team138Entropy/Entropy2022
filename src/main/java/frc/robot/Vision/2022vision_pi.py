@@ -75,9 +75,14 @@ if __name__ == "__main__":
     #val = [53, 255]  
 
     #Yellow Ball params
-    yelHue = [24,49]
-    yelSat = [92,255]
-    yelVal = [110,255]
+    '''
+    yelHue = [11,72]
+    yelSat = [50,255]
+    yelVal = [0,255]
+    '''
+    yelHue = [11,72]
+    yelSat = [50,255]
+    yelVal = [0,255]
 
     print('Setup steps complete, quick sleep')
     time.sleep(0.5)
@@ -100,17 +105,21 @@ if __name__ == "__main__":
             output_stream.notifyError(input_stream.getError())
             continue
 
-
+        input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
         input_img = cv2.blur(input_img, ksize)
-        cv2.imwrite('blured.jpeg', input_img)
+        #cv2.imwrite('blured.jpeg', input_img)
 
         mask = cv2.inRange(input_img, (yelHue[0], yelSat[0], yelVal[0]),
                             (yelHue[1], yelSat[1], yelVal[1]))
 
         res = cv2.bitwise_and(input_img,input_img,mask = mask)
-        cv2.imwrite('masked.jpg', res)
+        res = cv2.cvtColor(res, cv2.COLOR_HSV2BGR)
+        #cv2.imwrite('masked.jpg', res)
 
         _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
+
+        contSaveImage = cv2.drawContours(res, contours, -1, (0, 255, 0), 3)
+        cv2.imwrite('contours.jpeg', contSaveImage)
         
         print('after contouring')
 
@@ -148,10 +157,19 @@ if __name__ == "__main__":
 
             validCnt = True 
             #validCnt &= (y > cutOffHeight)
-            #validCnt &= (cntArea > 20) 
+            #20
+            validCnt &= (cntArea > 100) 
             validCnt &= (len(approximateShape) >= 8)
             validCnt &= (ratio > 0) and (ratio < 1000)
+            #300
             validCnt &= cntArea > 300
+            #700 - 10
+            validCnt &= (h <= 2000) and (h >= 100)
+            #370 - 10
+            validCnt &= (w <= 2000) and (w >= 100)
+            #100
+            validCnt &= (cv2.arcLength(cnt, True) < 500)
+            
             
             circularity = 0
             if(perimeter == 0):
