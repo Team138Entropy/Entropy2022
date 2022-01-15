@@ -123,6 +123,9 @@ if __name__ == "__main__":
         # Sort contours by area size (biggest to smallest)
         cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
 
+        centerX = ''
+        centerY = ''
+
         con = []
         for cnt in cntsSorted:
             # Get moments of contour; mainly for centroid
@@ -191,8 +194,8 @@ if __name__ == "__main__":
         print('Passed image processing')
         print(centerX, centerY)
 
-        PacketQueue['BallX'] = centerX
-        PacketQueue['BallY'] = centerY
+        PacketValue['BallX'] = centerX
+        PacketValue['BallY'] = centerY
         PacketQueue.put_nowait(PacketValue)
 
             # draw contour
