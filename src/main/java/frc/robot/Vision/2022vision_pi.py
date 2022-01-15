@@ -117,9 +117,6 @@ if __name__ == "__main__":
         #cv2.imwrite('masked.jpg', res)
 
         _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
-
-        contSaveImage = cv2.drawContours(res, contours, -1, (0, 255, 0), 3)
-        cv2.imwrite('contours.jpeg', contSaveImage)
         
         print('after contouring')
 
@@ -158,17 +155,16 @@ if __name__ == "__main__":
             validCnt = True 
             #validCnt &= (y > cutOffHeight)
             #20
-            validCnt &= (cntArea > 100) 
             validCnt &= (len(approximateShape) >= 8)
-            validCnt &= (ratio > 0) and (ratio < 1000)
+            validCnt &= (ratio >= 0) and (ratio < 100)
             #300
-            validCnt &= cntArea > 300
+            validCnt &= (cntArea > 0) and (cntArea < 20000 )
             #700 - 10
-            validCnt &= (h <= 2000) and (h >= 100)
+            validCnt &= (h >= 10) and (h <= 5000)
             #370 - 10
-            validCnt &= (w <= 2000) and (w >= 100)
+            validCnt &= (w >= 10) and (w <= 5000)
             #100
-            validCnt &= (cv2.arcLength(cnt, True) < 500)
+            validCnt &= (cv2.arcLength(cnt, True) < 10000)
             
             
             circularity = 0
@@ -180,10 +176,10 @@ if __name__ == "__main__":
             
 
             if(validCnt):
+                contSaveImage = cv2.drawContours(res, cnt, -1, (0, 255, 0), 3)
+                #cv2.imwrite('contours.jpeg', contSaveImage)
                 print(cntArea, circularity, ratio)
                 con.append(cnt)
-
-
 
         contimage = input_img
 
@@ -202,9 +198,8 @@ if __name__ == "__main__":
             centerY = cy
             centerX = int(centerX)
             centerY = int(centerY)
+            print('X center:', centerX, 'Y center:',centerY)
 
-        print('Passed image processing')
-        print(centerX, centerY)
 
         PacketValue['BallX'] = centerX
         PacketValue['BallY'] = centerY
