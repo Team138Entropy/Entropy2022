@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
 import frc.robot.auto.AutoModeExecutor;
-import frc.robot.auto.modes.AutoModeBase;
+import frc.robot.auto.modes.*;
 import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     SendableChooser<AutoModeBase> mAutoModes = new SendableChooser<>();
     // populate autonomous list
-    //populateAutonomousModes();
+    populateAutonomousModes();
   }
   
   // Fill Autonomous Modes List
@@ -60,6 +60,7 @@ public class Robot extends TimedRobot {
     mAutoModes = new SendableChooser<AutoModeBase>();
     mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
     mAutoModes.addOption("Test Drive", new TestDriveMode());
+    mAutoModes.addOption("Tarmac1_B2_B3_Tarmac2", new Tarmac1_B2_B3_Tarmac2());
     SmartDashboard.putData(mAutoModes);
   }
   /**
@@ -95,8 +96,8 @@ public class Robot extends TimedRobot {
     // if(selectedMode == null){
     //   System.out.println("Selected Auto Mode is Null");
     // }
-    TestDriveMode selectedMode = new TestDriveMode();
-    mAutoModeExecutor.setAutoMode(selectedMode);
+    //TestDriveMode selectedMode = new TestDriveMode();
+    mAutoModeExecutor.setAutoMode(mAutoModes.getSelected());
 
     // Start Autonomous Thread
     // This thread will run until disabled

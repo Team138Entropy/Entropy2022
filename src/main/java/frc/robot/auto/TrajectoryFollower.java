@@ -81,6 +81,8 @@ public class TrajectoryFollower {
 
     // Called Once at the Start of following the Path
     public void Start(){
+        mComplete = false;
+        mRun = true;
         // Initialize the timer.
         mTimer = new Timer();
         mTimer.start();

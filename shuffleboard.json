@@ -10,17 +10,6 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "0,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/SendableChooser[1]",
-              "_title": "SendableChooser[1]"
-            }
-          },
           "2,0": {
             "size": [
               1,
@@ -32,9 +21,9 @@
               "_title": "SendableChooser[0]/default"
             }
           },
-          "1,0": {
+          "5,4": {
             "size": [
-              1,
+              2,
               1
             ],
             "content": {
@@ -435,6 +424,61 @@
               "_source0": "network_table:///SmartDashboard/PDP-Current-1",
               "_title": "PDP-Current-1"
             }
+          },
+          "10,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/encoder_left",
+              "_title": "encoder_left"
+            }
+          },
+          "11,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/encoder_right",
+              "_title": "encoder_right"
+            }
+          },
+          "0,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SendableChooser[1]/selected",
+              "_title": "SendableChooser[1]/selected"
+            }
+          },
+          "1,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SendableChooser[1]/default",
+              "_title": "SendableChooser[1]/default"
+            }
+          },
+          "12,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SendableChooser[1]/active",
+              "_title": "SendableChooser[1]/active"
+            }
           }
         }
       }
@@ -490,6 +534,18 @@
                   "_source0": "network_table:///LiveWindow/Ungrouped/PowerDistributionPanel[25]",
                   "_title": "PowerDistributionPanel[25]",
                   "Visuals/Show voltage and current values": true
+                },
+                {
+                  "_type": "Speed Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon SRX [4]",
+                  "_title": "Talon SRX [4]",
+                  "Visuals/Orientation": "HORIZONTAL"
+                },
+                {
+                  "_type": "Speed Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Talon SRX [2]",
+                  "_title": "Talon SRX [2]",
+                  "Visuals/Orientation": "HORIZONTAL"
                 }
               ]
             }
@@ -531,9 +587,11 @@
               "_source14": "network_table:///SmartDashboard/PDP-Current-1",
               "_title": "Channels",
               "Graph/Visible time": 100.0,
+              "Graph/X-axis auto scrolling": true,
               "Y-axis/Automatic bounds": false,
               "Y-axis/Upper bound": 12.0,
-              "Y-axis/Lower bound": 0.0
+              "Y-axis/Lower bound": 0.0,
+              "Y-axis/Unit": "ul"
             }
           },
           "5,0": {
@@ -546,9 +604,11 @@
               "_source0": "network_table:///SmartDashboard/PDP-Voltage",
               "_title": "Graph",
               "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
-              "Y-axis/Lower bound": -1.0
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul"
             }
           },
           "5,2": {
@@ -596,17 +656,7 @@
               "imageHeight": -1
             }
           },
-          "0,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_title": "ComboBox Chooser"
-            }
-          },
-          "0,2": {
+          "13,1": {
             "size": [
               2,
               2
@@ -675,6 +725,28 @@
               "_title": "Boolean Box",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "10,4": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Auto Selector",
+              "_title": "/SmartDashboard/Auto Selector"
+            }
+          },
+          "15,4": {
+            "size": [
+              5,
+              2
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/SendableChooser[1]",
+              "_title": "Auto selector"
             }
           }
         }
@@ -787,12 +859,72 @@
           }
         }
       }
+    },
+    {
+      "title": "debug",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/encoder_left",
+              "_title": "Left encoder",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5,
+              "Visuals/Show text": true
+            }
+          },
+          "0,2": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/encoder_right",
+              "_title": "Right encoder",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5,
+              "Visuals/Show text": true
+            }
+          },
+          "3,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Gyro",
+              "_source0": "network_table:///LiveWindow/Ungrouped/ADXRS450_Gyro[0]",
+              "_title": "LiveWindow/Ungrouped/ADXRS450_Gyro[0]",
+              "Visuals/Major tick spacing": 45.0,
+              "Visuals/Starting angle": 180.0,
+              "Visuals/Show tick mark ring": true,
+              "Visuals/Counter clockwise": false
+            }
+          }
+        }
+      }
     }
   ],
   "windowGeometry": {
-    "x": 0.0,
-    "y": 0.0,
-    "width": 1536.0,
-    "height": 824.0
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1936.0,
+    "height": 1056.0
   }
 }

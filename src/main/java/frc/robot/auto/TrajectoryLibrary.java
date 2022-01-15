@@ -73,6 +73,61 @@ public class TrajectoryLibrary {
       }
       return traj;
      }
+     public Trajectory get_Tarmac1_B2_trajectory(){
+      Trajectory traj = null;
+      String fileName = "Tarmac1_B2.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_B2_B3_trajectory(){
+      Trajectory traj = null;
+      String fileName = "B2_B3.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_B3_Tarmac2_trajectory(){
+      Trajectory traj = null;
+      String fileName = "B3_Tarmac2.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_Tarmac1_B2_Backwords(){
+      Trajectory traj = null;
+      String fileName = "Tarmac1_B2.Backwords.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_B2_Tarmac1_trajectory(){
+      Trajectory traj = null;
+      String fileName = "B2_Tarmac1.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
      
 }
 
