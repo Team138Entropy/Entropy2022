@@ -60,7 +60,7 @@ public class OperatorInterface {
             return 110;
         }
         else {
-            return null;
+            return null; // this errors, who did this? cant return null in the double method :pepega:
         }
     }
 }
