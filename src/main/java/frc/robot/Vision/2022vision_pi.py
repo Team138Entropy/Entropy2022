@@ -81,6 +81,8 @@ if __name__ == "__main__":
 
     print('Setup steps complete, quick sleep')
     time.sleep(0.5)
+    kernel = np.ones((5,5),np.float32)/25
+    ksize = (5, 5)
 
     while True:
         #Create info for packet
@@ -98,24 +100,16 @@ if __name__ == "__main__":
             output_stream.notifyError(input_stream.getError())
             continue
 
-        '''
-        img = input_stream.grabFrame(img)
-        #img = cv2.imread(img)
-        cv2.imwrite('test.jpg', img)
-        # we only care about low portion of frame
-        #cutOffHeight = height * .5
-        '''
 
-        #out = img
-        #out = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        #cv2.inRange(out, (hue[0], sat[0], val[0]),  (hue[1], sat[1], val[1]))
+        input_img = cv2.blur(input_img, ksize)
+        cv2.imwrite('blured.jpeg', input_img)
 
-        print('Before handoff to opencv')
-
-        img=np.array(input_img)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(img, (yelHue[0], yelSat[0], yelVal[0]),
+        mask = cv2.inRange(input_img, (yelHue[0], yelSat[0], yelVal[0]),
                             (yelHue[1], yelSat[1], yelVal[1]))
+
+        res = cv2.bitwise_and(input_img,input_img,mask = mask)
+        cv2.imwrite('masked.jpg', res)
+
         _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
         
         print('after contouring')
@@ -156,8 +150,8 @@ if __name__ == "__main__":
             #validCnt &= (y > cutOffHeight)
             #validCnt &= (cntArea > 20) 
             validCnt &= (len(approximateShape) >= 8)
-            validCnt &= (ratio > .2) and (ratio < 3.5)
-            validCnt &= cntArea > 10000
+            validCnt &= (ratio > 0) and (ratio < 1000)
+            validCnt &= cntArea > 300
             
             circularity = 0
             if(perimeter == 0):
@@ -173,7 +167,7 @@ if __name__ == "__main__":
 
 
 
-        contimage = img
+        contimage = input_img
 
         # mask out rectange
         #cv2.rectangle(contimage, (0, 0), (width, int(cutOffHeight)), (0, 0, 0), -1)
@@ -197,6 +191,7 @@ if __name__ == "__main__":
         PacketValue['BallX'] = centerX
         PacketValue['BallY'] = centerY
         PacketQueue.put_nowait(PacketValue)
+        cv2.imwrite('testImg.jpeg', contimage)
 
             # draw contour
             #cv2.drawContours(contimage, cnt, -1, (0, 255, 0), 20)
