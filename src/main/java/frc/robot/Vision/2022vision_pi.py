@@ -64,7 +64,7 @@ if __name__ == "__main__":
     cameraConfig['pixel format'] = 'yuyv'
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
 
-    input_stream = cs.getVideo(cameraSettings = cameraSettings)
+    input_stream = cs.getVideo()
     output_stream = cs.putVideo('Processed', width, height)
     
     SocketThread = SocketWorker(PacketQueue).start()
