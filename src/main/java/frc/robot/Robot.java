@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.GenericHID;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {  
+public class Robot extends TimedRobot {
 
   // Controller Reference
   private final OperatorInterface mOperatorInterface = OperatorInterface.getInstance();
