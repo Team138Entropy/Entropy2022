@@ -48,33 +48,39 @@ class SocketWorker(threading.Thread):
 if __name__ == "__main__":
     print('2022 Ball Vision Yellow Starting')
     team = 138
-    cameraConfig = ''
     
     with open('/boot/frc.json') as f:
         cameraConfig = json.load(f)
+        #print(cameraConfig)
         camera = cameraConfig['cameras'][0]
 
     #print(cameraConfig)
     width = camera['width']
     height = camera['height']
     
+    #cs = CameraServer.getInstance()
     cs = CameraServer.getInstance()
-    camera = cs.startAutomaticCapture()
-    
-    #Important to configure pixel format, otherwise the camera server will expect jpeg capture while the PSEye uses yuyv
-    cameraConfig['pixel format'] = 'yuyv'
-    camera.setConfigJson(json.dumps(cameraConfig))
-    
+    cameraSettings = cs.startAutomaticCapture()
+    cameraConfig['pixel format'] = 'YUYV'
+    cameraSettings.setConfigJson(json.dumps(cameraConfig))
+
     input_stream = cs.getVideo()
     output_stream = cs.putVideo('Processed', width, height)
-
-    # Allocating new images is very expensive, always try to preallocate
+    
     img = np.zeros(shape=(640, 480, 3), dtype=np.uint8)
-
     SocketThread = SocketWorker(PacketQueue).start()
 
+    #hue = [0, 22]
+    #sat = [110, 255]
+    #val = [53, 255]  
 
-    print('Setup steps complete')
+    #Yellow Ball params
+    yelHue = [24,49]
+    yelSat = [92,255]
+    yelVal = [110,255]
+
+    print('Setup steps complete, quick sleep')
+    time.sleep(0.5)
 
     while True:
         #Create info for packet
@@ -85,36 +91,32 @@ if __name__ == "__main__":
         print('Starting image detection')
         start_time = time.time()
         frame_time, input_img = input_stream.grabFrame(img)
-        output_img = np.copy(input_img)
+        output_img = np.copy(input_img)        
 
         # Notify output of error and skip iteration
         if frame_time == 0:
             output_stream.notifyError(input_stream.getError())
             continue
 
-        img = cv2.imread(output_img) 
-        #plt.imshow(img)
-
-        #hue = [0, 22]
-        #sat = [110, 255]
-        #val = [53, 255]  
-
-        #Yellow Ball params
-        yelHue = [24,49]
-        yelSat = [92,255]
-        yelVal = [110,255]
-
+        img = input_stream.grabFrame(img)
+        #img = cv2.imread(img)
+        cv2.imwrite('test.jpg', img)
         # we only care about low portion of frame
-        cutOffHeight = height * .5
+        #cutOffHeight = height * .5
 
         out = img
         #out = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         #cv2.inRange(out, (hue[0], sat[0], val[0]),  (hue[1], sat[1], val[1]))
 
+
+        print('Before handoff to opencv')
+        img=np.array(np.rot90(img,-1))
         img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(img, (yelHue[0], yelSat[0], yelVal[0]),
                             (yelHue[1], yelSat[1], yelVal[1]))
-        contours, hiearchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
+        _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
+        
+        print('after contouring')
 
         # Sort contours by area size (biggest to smallest)
         cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
