@@ -71,8 +71,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("encoder_left", mDrive.getLeftEncoderPosition());
-    SmartDashboard.putNumber("encoder_right", mDrive.getRightEncoderPosition());
+    
     // Put PowerDistributionBoard stats onto the smart dashboard
     // SmartDashboard.putNumber("PDP-Temp", m_pdp.getTemperature());
     // SmartDashboard.putNumber("PDP-Voltage", m_pdp.getVoltage());

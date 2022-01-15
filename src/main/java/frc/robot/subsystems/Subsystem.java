@@ -17,6 +17,8 @@ public abstract class Subsystem {
   public abstract void zeroSensors();
 
   public abstract void checkSubsystem();
+  
+  public abstract void updateSmartDashBoard();
 
   // Optional Design Pattern. which gets called from the looper
   // part of this design is to avoid over utiuilization of the can

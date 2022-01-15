@@ -27,6 +27,7 @@ import frc.robot.util.drivers.CTREUnits;
 import frc.robot.util.drivers.EntropyTalonFX;
 import frc.robot.util.drivers.MotorConfigUtils;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 
@@ -314,6 +315,11 @@ public class Drive extends Subsystem {
   public void checkSubsystem() {
 
 
+  }
+
+  public void updateSmartDashBoard() {
+    SmartDashboard.putNumber("encoder_left", getLeftEncoderPosition());
+    SmartDashboard.putNumber("encoder_right", getRightEncoderPosition());
   }
 
   // Zero Encoder of Each Falcon500
