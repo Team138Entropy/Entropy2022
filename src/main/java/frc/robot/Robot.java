@@ -39,6 +39,8 @@ public class Robot extends TimedRobot {
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
 
+  private double shoulderRotatePoint = -60;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -148,25 +150,28 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    
-    
     if (mOperatorInterface.getButton1()) {
       System.out.println("Button 1");
-      mArm.rotateShoulderPosition(-50);
+      shoulderRotatePoint = -50;
     } else if (mOperatorInterface.getButton2()) {
       System.out.println("Button 2");
-      mArm.rotateShoulderPosition(0);
+      shoulderRotatePoint = 3;
     } else if (mOperatorInterface.getButton3()) {
       System.out.println("Button 3");
-      mArm.rotateShoulderPosition(90);
+      shoulderRotatePoint = 63;
     } else if (mOperatorInterface.getButton4()) {
       System.out.println("Button 4");
-      mArm.rotateShoulderPosition(180);
+      shoulderRotatePoint = 177;
     }
-    //mArm.setPercentOutput(mOperatorInterface.getOperatorThrottle());
-  
-  
+    // mArm.setPercentOutput(mOperatorInterface.getOperatorThrottle());
+    mArm.rotateShoulderPosition(shoulderRotatePoint);
+    
+    SmartDashboard.putNumber("velocity", mArm.getShoulderVelocity());
+    SmartDashboard.putNumber("throttle", mOperatorInterface.getOperatorThrottle());
+    SmartDashboard.putNumber("shoulderTarget", shoulderRotatePoint);
     SmartDashboard.putNumber("shoulderPosition", mArm.getShoulderPosition());
+    SmartDashboard.putNumber("shoulderOutput", mArm.getShoulderOutput());
+    SmartDashboard.putNumber("feedForward", mArm.getGravityFeedForward());
   }
 
   private void teleopRobotLoop(){

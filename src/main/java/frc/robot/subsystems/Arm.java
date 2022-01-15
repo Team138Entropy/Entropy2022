@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
 import frc.robot.Constants;
@@ -31,10 +33,12 @@ public class Arm extends Subsystem {
     
     // Configure Sensor Feedback
     // PID constants
-    mShoulder.config_kF(0, 0);
-    mShoulder.config_kP(0, 0, 10);
-		mShoulder.config_kI(0, 0, 10);
-    mShoulder.config_kD(0, 0, 10);
+    mShoulder.config_kF(0, 1, 10);
+    mShoulder.config_kP(0, 33, 10);
+		mShoulder.config_kI(0, .01, 10);
+    mShoulder.config_kD(0, 330, 0);
+
+    //mShoulder.configClosedLoopPeriod(slotIdx, loopTimeMs)
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.ticksPerRotationShoulder);
 
@@ -63,7 +67,7 @@ public class Arm extends Subsystem {
   }
 
   public void setPercentOutput(double output){
-    mShoulder.set(ControlMode.PercentOutput, output, DemandType.ArbitraryFeedForward, .05);
+    mShoulder.set(ControlMode.PercentOutput, output);
   }
 
   public static Arm getInstance() {
@@ -71,6 +75,10 @@ public class Arm extends Subsystem {
       mInstance = new Arm();
     }
     return mInstance;
+  }
+
+  public double getShoulderOutput() {
+    return mShoulder.getMotorOutputPercent();
   }
 
   /**
@@ -98,10 +106,6 @@ public class Arm extends Subsystem {
     degrees = Math.max(degrees, Constants.Arm.minPositionShoulder);
     degrees = Math.min(degrees, Constants.Arm.maxPositionShoulder);
     double ff = getGravityFeedForward();
-    System.out.println("-----");
-    System.out.println("Feed Fordward: " + ff);
-    System.out.println("Degrees: " + degrees);
-    System.out.println("Shoulder Position: " + getShoulderPosition());
     mShoulder.set(ControlMode.MotionMagic, degrees, DemandType.ArbitraryFeedForward, ff);
   }
 
@@ -109,9 +113,10 @@ public class Arm extends Subsystem {
    * Find the gravity feed forward value for the motion magic control mode for the shoulder Talon.
    * @return gravity feed forward value
    */
-  private double getGravityFeedForward() {
+  public double getGravityFeedForward() {
     double currentRads = getShoulderPosition() * Constants.Misc.degreeToRadian;
     double ff = Constants.Arm.maxGravityFF * Math.cos(currentRads);
+    if (ff < 0) ff -= 0;
     return ff;
   }
 
