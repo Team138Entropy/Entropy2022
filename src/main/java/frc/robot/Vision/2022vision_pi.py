@@ -95,7 +95,6 @@ if __name__ == "__main__":
         PacketValue['cameraid'] = 0
         PacketValue['ballColor'] = 'yellow'
 
-        print('Starting image detection')
         start_time = time.time()
         frame_time, input_img = input_stream.grabFrame(imgForm)
         output_img = np.copy(input_img)
@@ -117,8 +116,6 @@ if __name__ == "__main__":
         #cv2.imwrite('masked.jpg', res)
 
         _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
-        
-        print('after contouring')
 
         # Sort contours by area size (biggest to smallest)
         cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
@@ -158,7 +155,7 @@ if __name__ == "__main__":
             validCnt &= (len(approximateShape) >= 8)
             validCnt &= (ratio >= 0) and (ratio < 100)
             #300
-            validCnt &= (cntArea > 0) and (cntArea < 20000 )
+            validCnt &= (cntArea > 200) and (cntArea < 15000 )
             #700 - 10
             validCnt &= (h >= 10) and (h <= 5000)
             #370 - 10
@@ -178,7 +175,7 @@ if __name__ == "__main__":
             if(validCnt):
                 contSaveImage = cv2.drawContours(res, cnt, -1, (0, 255, 0), 3)
                 #cv2.imwrite('contours.jpeg', contSaveImage)
-                print(cntArea, circularity, ratio)
+                #print(cntArea, circularity, ratio)
                 con.append(cnt)
 
         contimage = input_img
