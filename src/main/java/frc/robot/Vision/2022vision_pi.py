@@ -61,14 +61,14 @@ if __name__ == "__main__":
     #cs = CameraServer.getInstance()
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
-    cameraConfig['pixel format'] = 'YUYV'
+    cameraConfig['pixel format'] = 'yuyv'
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
 
-    input_stream = cs.getVideo()
+    input_stream = cs.getVideo(cameraSettings = cameraSettings)
     output_stream = cs.putVideo('Processed', width, height)
     
-    img = np.zeros(shape=(640, 480, 3), dtype=np.uint8)
     SocketThread = SocketWorker(PacketQueue).start()
+    imgForm = np.zeros(shape=(height, width, 3), dtype=np.uint8)
 
     #hue = [0, 22]
     #sat = [110, 255]
@@ -90,27 +90,29 @@ if __name__ == "__main__":
 
         print('Starting image detection')
         start_time = time.time()
-        frame_time, input_img = input_stream.grabFrame(img)
-        output_img = np.copy(input_img)        
+        frame_time, input_img = input_stream.grabFrame(imgForm)
+        output_img = np.copy(input_img)
 
         # Notify output of error and skip iteration
         if frame_time == 0:
             output_stream.notifyError(input_stream.getError())
             continue
 
+        '''
         img = input_stream.grabFrame(img)
         #img = cv2.imread(img)
         cv2.imwrite('test.jpg', img)
         # we only care about low portion of frame
         #cutOffHeight = height * .5
+        '''
 
-        out = img
+        #out = img
         #out = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         #cv2.inRange(out, (hue[0], sat[0], val[0]),  (hue[1], sat[1], val[1]))
 
-
         print('Before handoff to opencv')
-        img=np.array(np.rot90(img,-1))
+
+        img=np.array(input_img)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(img, (yelHue[0], yelSat[0], yelVal[0]),
                             (yelHue[1], yelSat[1], yelVal[1]))
