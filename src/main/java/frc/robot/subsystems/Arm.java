@@ -3,10 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Talon;
 import frc.robot.Constants;
 
 /**
@@ -16,13 +14,11 @@ public class Arm extends Subsystem {
   private static Arm mInstance;
 
   private TalonSRX mShoulder;
-  private Talon mForearm;
-  private Encoder mForearmEncoder;
+  private TalonSRX mForearm;
 
   public Arm() {
     mShoulder = new TalonSRX(Constants.Talons.Arm.shoulder);
-    mForearm = new Talon(Constants.Arm.forearmChannel);
-    mForearmEncoder = new Encoder(0, 1);
+    mForearm = new TalonSRX(Constants.Talons.Arm.forearm);
 
     // Sensor is flipped, TODO: Tell mechanical to stop eating crayons and fix it
     mShoulder.setSelectedSensorPosition(60);
@@ -38,36 +34,14 @@ public class Arm extends Subsystem {
 		mShoulder.config_kI(0, .01, 10);
     mShoulder.config_kD(0, 330, 0);
 
-    //mShoulder.configClosedLoopPeriod(slotIdx, loopTimeMs)
+    // Testing
+    // mShoulder.configClosedLoopPeriod(slotIdx, loopTimeMs)
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.ticksPerRotationShoulder);
 
     //mShoulder.ConfigSelectedFeedbackCoefficient(kTurnTravelUnitsPerRotation / kEncoderUnitsPerRotation, 1, 10);
     
     //TODO: Configure forearm here
-  }
-
-  /** Joe method - use jog instead*/
-  public void testRotate() {
-    /*
-    double degrees = (currentPos) / kTicksPerDegree;
-    double radians = java.lang.Math.toRadians(degrees);
-    double cosineScalar = java.lang.Math.cos(radians);
-    */
-
-    int currentPos = mShoulder.getSelectedSensorPosition();
-    double radians = java.lang.Math.toRadians(currentPos);
-    double cos = java.lang.Math.cos(radians);
-    double maxGravityFF = 0.5;
-    double feedforward = maxGravityFF * cos;
-    System.out.println("FeedForward: " + feedforward);
-    int targetPos = 0;
-    feedforward = 0;
-    mShoulder.set(ControlMode.MotionMagic, targetPos, DemandType.ArbitraryFeedForward, feedforward);
-  }
-
-  public void setPercentOutput(double output){
-    mShoulder.set(ControlMode.PercentOutput, output);
   }
 
   public static Arm getInstance() {
@@ -77,16 +51,11 @@ public class Arm extends Subsystem {
     return mInstance;
   }
 
-  public double getShoulderOutput() {
-    return mShoulder.getMotorOutputPercent();
-  }
-
   /**
    * Rotate the shoulder at a percent speed.
    * @param speed speed based on percent, -1 to 1
    */
   public void rotate(double speed) {
-    speed = Math.max(Math.min(speed, 1), -1);
     mShoulder.set(ControlMode.PercentOutput, speed);
   }
 
@@ -116,19 +85,18 @@ public class Arm extends Subsystem {
   public double getGravityFeedForward() {
     double currentRads = getShoulderPosition() * Constants.Misc.degreeToRadian;
     double ff = Constants.Arm.maxGravityFF * Math.cos(currentRads);
-    if (ff < 0) ff -= 0;
     return ff;
   }
 
   /**
-   * Jog the shoulder up at the speed defined in Constants.
+   * Jog the shoulder up at a constant power.
    */
   public void jogRotateUp() {
     rotate(Constants.Arm.jogSpeedShoulder);
   }
 
   /**
-   * Jog the shoulder down at the speed defined in Constants.
+   * Jog the shoulder down at a constant power.
    */
   public void jogRotateDown() {
     rotate(-Constants.Arm.jogSpeedShoulder);
@@ -142,23 +110,27 @@ public class Arm extends Subsystem {
   }
 
   /**
-   * Extend the forearm at a percent speed between -1 and 1.
-   * @param speed percent speed between -1 and 1
+   * Extend the forearm at a percent power between -.5 and .5.
+   * @param speed percent power between -.5 and .5
    */
   public void extend(double speed) {
-    speed = Math.max(Math.min(speed, 1), -1);
-    mForearm.set(speed);
+    speed = Math.max(Math.min(speed, .9), -.9);
+    System.out.println("Forearm::extend! " + speed);
+
+    mForearm.set(ControlMode.PercentOutput, speed);
   }
 
-  public void extendDistance(double cm) {
-    // mForearm.setPosition(cm );
-  }
-
-  public void jogUp() {
+  /**
+   * Jog the forearm out at a constant power.
+   */
+  public void jogOut() {
     extend(Constants.Arm.forearmJogSpeed);
   }
 
-  public void jogDown() {
+    /**
+   * Jog the forearm in at a constant power.
+   */
+  public void jogIn() {
     extend(-Constants.Arm.forearmJogSpeed);
   }
 
@@ -173,9 +145,17 @@ public class Arm extends Subsystem {
   public int getShoulderVelocity() {
     return mShoulder.getSelectedSensorVelocity();
   }
+  
+  public double getShoulderOutput() {
+    return mShoulder.getMotorOutputPercent();
+  }
 
-  public int getForearmPosition() {
-    return mForearmEncoder.get();
+  public boolean isForearmExtended() {
+    return mForearm.getSensorCollection().isFwdLimitSwitchClosed();
+  }
+
+  public boolean isForearmMoving() {
+    return !(mForearm.getSensorCollection().isFwdLimitSwitchClosed() || mForearm.getSensorCollection().isFwdLimitSwitchClosed());
   }
 
   @Override
@@ -186,14 +166,5 @@ public class Arm extends Subsystem {
   @Override
   public void checkSubsystem() {
     // TODO Auto-generated method stub
-  }
-
-  public void printPIDConstants(){
-    /*
-_rightMaster.config_kP(Constants.kSlot_Distanc, Constants.kGains_Distanc.kP, Constants.kTimeoutMs);
-		_rightMaster.config_kI(Constants.kSlot_Distanc, Constants.kGains_Distanc.kI, Constants.kTimeoutMs);
-		_rightMaster.config_kD(Constants.kSlot_Distanc, Constants.kGains_Distanc.kD, Constants.kTimeoutMs);
-    */
-   // mShoulde
   }
 }

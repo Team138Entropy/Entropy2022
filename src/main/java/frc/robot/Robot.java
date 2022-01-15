@@ -150,22 +150,49 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    if (mOperatorInterface.getButton1()) {
-      System.out.println("Button 1");
-      shoulderRotatePoint = -50;
-    } else if (mOperatorInterface.getButton2()) {
-      System.out.println("Button 2");
-      shoulderRotatePoint = 3;
-    } else if (mOperatorInterface.getButton3()) {
-      System.out.println("Button 3");
-      shoulderRotatePoint = 63;
-    } else if (mOperatorInterface.getButton4()) {
-      System.out.println("Button 4");
-      shoulderRotatePoint = 177;
+    // if (mOperatorInterface.getButton1()) {
+    //   System.out.println("Button 1");
+    //   shoulderRotatePoint = -50;
+    // } else if (mOperatorInterface.getButton2()) {
+    //   System.out.println("Button 2");
+    //   shoulderRotatePoint = 3;
+    // } else if (mOperatorInterface.getButton3()) {
+    //   System.out.println("Button 3");
+    //   shoulderRotatePoint = 63;
+    // } else if (mOperatorInterface.getButton4()) {
+    //   System.out.println("Button 4");
+    //   shoulderRotatePoint = 177;
+    // }
+
+    if (mOperatorInterface.getArmExtend()) {
+      mArm.extend(.8);
+    } else if (mOperatorInterface.getArmRetract()) {
+      mArm.extend(-.8);
     }
-    // mArm.setPercentOutput(mOperatorInterface.getOperatorThrottle());
+
+    double magnitude = Math.pow(Math.pow(mOperatorInterface.getOperatorThrottle(), 2) + Math.pow(mOperatorInterface.getOperatorTurn(), 2), .5);
+    double direction = Math.atan(mOperatorInterface.getOperatorThrottle() / mOperatorInterface.getOperatorTurn());
+    direction *= 1 / Constants.Misc.degreeToRadian;
+
+    if (mOperatorInterface.getOperatorTurn() < 0) {
+      direction += 180;
+    }
+
+    int[] directions = {-50, 0, 60, 90, 120, 210};
+    
+    int error = 360;
+    for (int i : directions) {
+      if (magnitude < .5) break;
+      if (Math.abs(i - (int) direction) < error) {
+        shoulderRotatePoint = i - 3;
+        error = Math.abs(i - (int) direction);
+      }
+    }
+    
+    // Make the arm move
     mArm.rotateShoulderPosition(shoulderRotatePoint);
     
+    SmartDashboard.putNumber("throttleAngle", direction);
     SmartDashboard.putNumber("velocity", mArm.getShoulderVelocity());
     SmartDashboard.putNumber("throttle", mOperatorInterface.getOperatorThrottle());
     SmartDashboard.putNumber("shoulderTarget", shoulderRotatePoint);

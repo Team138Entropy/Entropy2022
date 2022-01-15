@@ -16,6 +16,8 @@ public class OperatorInterface {
     LatchedBoolean lb2 = new LatchedBoolean();
     LatchedBoolean lb3 = new LatchedBoolean();
     LatchedBoolean lb4 = new LatchedBoolean();
+    private LatchedBoolean isRightBumperPressed = new LatchedBoolean();
+    private LatchedBoolean isRightTriggerPressed = new LatchedBoolean();
 
     // Instances of the Driver and Operator Controller
     private XboxController DriverController;
@@ -46,6 +48,10 @@ public class OperatorInterface {
         return OperatorController.getJoystick(NykoController.Side.LEFT, NykoController.Axis.Y);
     }
 
+    public double getOperatorTurn() {
+        return OperatorController.getJoystick(NykoController.Side.LEFT, NykoController.Axis.X);
+    }
+
     /**
      * Return true if Button 1 is pressed.
      */
@@ -73,5 +79,21 @@ public class OperatorInterface {
      */
     public boolean getButton4() {
         return lb4.update(OperatorController.getButton(NykoController.Button.BUTTON_4));
+    }
+
+    public boolean getArmExtend() {
+        return isRightBumperPressed.update(OperatorController.getButton(NykoController.Button.RIGHT_BUMPER));
+    }
+
+    public boolean getArmRetract() {
+        return isRightTriggerPressed.update(OperatorController.getButton(NykoController.Button.RIGHT_TRIGGER));
+    }
+
+    public boolean getArmExtendManual() {
+        return OperatorController.getDPad() == NykoController.DPad.UP;
+    }
+
+    public boolean getArmRetractManual() {
+        return OperatorController.getDPad() == NykoController.DPad.DOWN;
     }
 }

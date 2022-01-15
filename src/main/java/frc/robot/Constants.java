@@ -45,6 +45,7 @@ public class Constants {
 
     public static class Arm {
       public static final int shoulder = 5;
+      public static final int forearm = 6;
     }
   }
 
@@ -148,12 +149,7 @@ public class Constants {
     public static final int maxPositionShoulder = 220;
     public static final double maxGravityFF = .045;
 
-    public static final int forearmChannel = 0;
-    public static final double forearmJogSpeed = .2;
-    public static final int maxEncoderPositionForearm = 0;
-    /** In centimeters */
-    public static final int forearmLength = 0;
-    public static final int ticksPerCM = maxEncoderPositionForearm / forearmLength;
+    public static final double forearmJogSpeed = .3;
   }
 
   public static class Misc {
