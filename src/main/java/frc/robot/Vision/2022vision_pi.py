@@ -94,10 +94,10 @@ if __name__ == "__main__":
         PacketValue = {}
         PacketValue['cameraid'] = 0
         PacketValue['ballColor'] = 'yellow'
-
-        start_time = time.time()
+        
+        #start_time = time.time()
         frame_time, input_img = input_stream.grabFrame(imgForm)
-        output_img = np.copy(input_img)
+        #output_img = np.copy(input_img)
 
         # Notify output of error and skip iteration
         if frame_time == 0:
@@ -119,9 +119,6 @@ if __name__ == "__main__":
 
         # Sort contours by area size (biggest to smallest)
         cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
-
-        centerX = ''
-        centerY = ''
 
         con = []
         for cnt in cntsSorted:
@@ -183,6 +180,9 @@ if __name__ == "__main__":
         # mask out rectange
         #cv2.rectangle(contimage, (0, 0), (width, int(cutOffHeight)), (0, 0, 0), -1)
 
+        cy = ''
+        cx = ''
+        
         conCount = 0
         for cnt in con:
             conCount = conCount + 1
@@ -191,17 +191,19 @@ if __name__ == "__main__":
             M = cv2.moments(cnt)
             cy = int(M["m01"] / M["m00"])
             cx = int(M["m10"] / M["m00"])
-            centerX = cx 
-            centerY = cy
-            centerX = int(centerX)
-            centerY = int(centerY)
-            print('X center:', centerX, 'Y center:',centerY)
+
+            print('X center:', cx, 'Y center:',cy)
 
 
-        PacketValue['BallX'] = centerX
-        PacketValue['BallY'] = centerY
+        PacketValue['BallX'] = cy
+        PacketValue['BallY'] = cx
         PacketQueue.put_nowait(PacketValue)
-        cv2.imwrite('testImg.jpeg', contimage)
+
+        #processing_time = time.time() - start_time
+        #fps = 1 / processing_time
+        #print('FPS:' , fps)
+        
+        #cv2.imwrite('testImg.jpeg', contimage)
 
             # draw contour
             #cv2.drawContours(contimage, cnt, -1, (0, 255, 0), 20)
