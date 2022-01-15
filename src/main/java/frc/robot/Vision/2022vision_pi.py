@@ -46,19 +46,17 @@ class SocketWorker(threading.Thread):
                 pass
 
 if __name__ == "__main__":
+    #Avoid touching camera server settings
     print('2022 Ball Vision Yellow Starting')
-    team = 138
-    
+
     with open('/boot/frc.json') as f:
         cameraConfig = json.load(f)
         #print(cameraConfig)
         camera = cameraConfig['cameras'][0]
 
-    #print(cameraConfig)
     width = camera['width']
     height = camera['height']
     
-    #cs = CameraServer.getInstance()
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
     cameraConfig['pixel format'] = 'yuyv'
@@ -75,19 +73,14 @@ if __name__ == "__main__":
     #val = [53, 255]  
 
     #Yellow Ball params
-    '''
-    yelHue = [11,72]
-    yelSat = [50,255]
-    yelVal = [0,255]
-    '''
     yelHue = [11,72]
     yelSat = [50,255]
     yelVal = [0,255]
 
-    print('Setup steps complete, quick sleep')
-    time.sleep(0.5)
     kernel = np.ones((5,5),np.float32)/25
     ksize = (5, 5)
+
+    print('Yellowball vision setup complete')
 
     while True:
         #Create info for packet
@@ -95,9 +88,8 @@ if __name__ == "__main__":
         PacketValue['cameraid'] = 0
         PacketValue['ballColor'] = 'yellow'
         
-        #start_time = time.time()
+        #start_time = time.time() #Use this to get FPS below
         frame_time, input_img = input_stream.grabFrame(imgForm)
-        #output_img = np.copy(input_img)
 
         # Notify output of error and skip iteration
         if frame_time == 0:
@@ -106,7 +98,6 @@ if __name__ == "__main__":
 
         input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
         input_img = cv2.blur(input_img, ksize)
-        #cv2.imwrite('blured.jpeg', input_img)
 
         mask = cv2.inRange(input_img, (yelHue[0], yelSat[0], yelVal[0]),
                             (yelHue[1], yelSat[1], yelVal[1]))
@@ -136,9 +127,7 @@ if __name__ == "__main__":
 
             x, y, w, h = cv2.boundingRect(cnt)
             ratio = float(w) / h
-
             perimeter = cv2.arcLength(cnt, True)
-
 
             # finding center point of shape
             M = cv2.moments(cnt)
@@ -148,18 +137,12 @@ if __name__ == "__main__":
 
             validCnt = True 
             #validCnt &= (y > cutOffHeight)
-            #20
             validCnt &= (len(approximateShape) >= 8)
             validCnt &= (ratio >= 0) and (ratio < 100)
-            #300
             validCnt &= (cntArea > 200) and (cntArea < 15000 )
-            #700 - 10
             validCnt &= (h >= 10) and (h <= 5000)
-            #370 - 10
             validCnt &= (w >= 10) and (w <= 5000)
-            #100
             validCnt &= (cv2.arcLength(cnt, True) < 10000)
-            
             
             circularity = 0
             if(perimeter == 0):
@@ -168,9 +151,8 @@ if __name__ == "__main__":
                 circularity = 4*math.pi*(cntArea/(perimeter*perimeter))
                 validCnt &= (.5 < circularity < 1.5)
             
-
             if(validCnt):
-                contSaveImage = cv2.drawContours(res, cnt, -1, (0, 255, 0), 3)
+                #contSaveImage = cv2.drawContours(res, cnt, -1, (0, 255, 0), 3)
                 #cv2.imwrite('contours.jpeg', contSaveImage)
                 #print(cntArea, circularity, ratio)
                 con.append(cnt)
@@ -182,7 +164,7 @@ if __name__ == "__main__":
 
         cy = ''
         cx = ''
-        
+
         conCount = 0
         for cnt in con:
             conCount = conCount + 1
@@ -194,29 +176,15 @@ if __name__ == "__main__":
 
             print('X center:', cx, 'Y center:',cy)
 
-
         PacketValue['BallX'] = cy
         PacketValue['BallY'] = cx
+        print(PacketValue)
         PacketQueue.put_nowait(PacketValue)
 
+        #Calculates FPS part 2
         #processing_time = time.time() - start_time
         #fps = 1 / processing_time
         #print('FPS:' , fps)
-        
+
+        #Used to output image with contours drawn on it        
         #cv2.imwrite('testImg.jpeg', contimage)
-
-            # draw contour
-            #cv2.drawContours(contimage, cnt, -1, (0, 255, 0), 20)
-
-            #cv2.putText(contimage, 'X', (centerX, centerY), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 3, cv2.LINE_AA)
-
-
-        # put header text 
-        #cv2.putText(contimage,'Ball Vision Camera - Image ' + str(index),(0,100), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 255, 0), 14, cv2.LINE_AA)
-        #cv2.putText(contimage,str(len(con)) + " Ball(s) Detected",(0,260), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 255, 0), 14, cv2.LINE_AA)
-
-        #print("writing image " + str(index))
-
-        #cv2.imwrite("output" + str(index) + ".jpg", contimage)
-
-
