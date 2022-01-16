@@ -60,7 +60,7 @@ public class OperatorInterface {
             return 110;
         }
         else {
-            return 0;
+            return 0.0;
         }
     }
 }
