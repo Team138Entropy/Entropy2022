@@ -432,7 +432,6 @@ public class Drive extends Subsystem {
   // Get the left encoder data in meters
   public double getLeftEncoderPosition() {
     // Use SRX class to get encoder because its srx motors
-    System.out.println(CTREUnits.talonPosistionToMeters(mLeftMasterSRX.getSelectedSensorPosition()));
     return CTREUnits.talonPosistionToMeters(mLeftMasterSRX.getSelectedSensorPosition());
   }
 
@@ -442,7 +441,6 @@ public class Drive extends Subsystem {
   // Get the right encoder data in meters
   public double getRightEncoderPosition() {
     // Use SRX class to get encoder because its srx motors
-    System.out.println(CTREUnits.talonPosistionToMeters(mRightMasterSRX.getSelectedSensorPosition()));
     return CTREUnits.talonPosistionToMeters(mRightMasterSRX.getSelectedSensorPosition());
   }
 }
