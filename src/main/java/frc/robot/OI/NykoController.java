@@ -109,8 +109,11 @@ public class NykoController {
   /*
       Xbox Controller D-Pad
       up -> 0, right -> 90, down -> 180, left -> 270
+      This doesnt work properly, don't use
   */
   DPad getDPad() {
+    
+    // TODO: Fix this, the d-pad can occupy 8 directions, not 4
     switch (mController.getPOV()) {
       case 0:
         return DPad.UP;

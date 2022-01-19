@@ -150,8 +150,16 @@ public class Arm extends Subsystem {
     return mShoulder.getMotorOutputPercent();
   }
 
+  public double getForearmOutput() {
+    return mForearm.getMotorOutputPercent();
+  }
+  
   public boolean isForearmExtended() {
     return mForearm.getSensorCollection().isFwdLimitSwitchClosed();
+  }
+
+  public boolean isForearmRetracted() {
+    return mForearm.getSensorCollection().isRevLimitSwitchClosed();
   }
 
   public boolean isForearmMoving() {

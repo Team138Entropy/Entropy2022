@@ -44,11 +44,11 @@ public class OperatorInterface {
         return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
     }
 
-    public double getOperatorThrottle() {
+    public double getOperatorStickY() {
         return OperatorController.getJoystick(NykoController.Side.LEFT, NykoController.Axis.Y);
     }
 
-    public double getOperatorTurn() {
+    public double getOperatorStickX() {
         return OperatorController.getJoystick(NykoController.Side.LEFT, NykoController.Axis.X);
     }
 
@@ -89,6 +89,7 @@ public class OperatorInterface {
         return isRightTriggerPressed.update(OperatorController.getButton(NykoController.Button.RIGHT_TRIGGER));
     }
 
+    // TODO: Don't use the D-pad
     public boolean getArmExtendManual() {
         return OperatorController.getDPad() == NykoController.DPad.UP;
     }
