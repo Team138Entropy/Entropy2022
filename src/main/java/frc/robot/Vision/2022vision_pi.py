@@ -2,9 +2,7 @@ import json
 import math
 import queue
 import socket
-import sys
 import threading
-import time
 
 import cv2
 import numpy as np
@@ -49,24 +47,28 @@ if __name__ == "__main__":
     #Avoid touching camera server settings
     print('2022 Ball Vision Yellow Starting')
 
+    #Load camera config (eg. Exposure, resolution, FPS)
     with open('/boot/frc.json') as f:
         cameraConfig = json.load(f)
         #print(cameraConfig)
         camera = cameraConfig['cameras'][0]
 
-    width = camera['width']
-    height = camera['height']
+    res_width = camera['width']
+    res_height = camera['height']
     
+    #Start camera server, start capturing from the camera and set the pixel format
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
     cameraConfig['pixel format'] = 'yuyv'
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
 
     input_stream = cs.getVideo()
-    output_stream = cs.putVideo('Processed', width, height)
+    output_stream = cs.putVideo('Processed', res_width, res_height)
     
     SocketThread = SocketWorker(PacketQueue).start()
-    imgForm = np.zeros(shape=(height, width, 3), dtype=np.uint8)
+
+    #Numpy creates an array of zeros in the size of the image width/height. Its mentioned in documentation this can be performance intensive, and to do it outside the loop
+    imgForm = np.zeros(shape=(res_height, res_width, 3), dtype=np.uint8)
 
     #hue = [0, 22]
     #sat = [110, 255]
@@ -77,18 +79,31 @@ if __name__ == "__main__":
     yelSat = [52,255]
     yelVal = [166,255]
 
-    kernel = np.ones((5,5),np.float32)/25
+    #Creating settings for blur filter
     radius = 5.855855855855857
     ksize = (2 * round(radius) + 1)
 
-    solidLow = 70
-    solidHigh = 100
+    #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
+    hull_area_low = 250
+    hull_area_high = 5000
+    minimum_perimeter = 50
+    width_minimum = 25
+    width_maximum = 350
+    height_minimum = 15
+    height_maximum = 300
+    solid_Low = 70
+    solid_High = 100
     max_vertices = 50
-
+    rat_low = 0
+    rat_high = 5
     cy = ''
     cx = ''
     solid = 0
+    last_cnt_area = 0
+    conCount = 0
 
+    #Create info for packet
+    PacketValue = {}
     print('Yellowball vision setup complete')
 
     while True:
@@ -97,7 +112,7 @@ if __name__ == "__main__":
         PacketValue['cameraid'] = 0
         PacketValue['ballColor'] = 'yellow'
         
-        start_time = time.time() #Use this to get FPS below
+        #start_time = time.time() #Use this to get FPS below
         frame_time, input_img = input_stream.grabFrame(imgForm)
 
         # Notify output of error and skip iteration
@@ -110,10 +125,6 @@ if __name__ == "__main__":
 
         mask = cv2.inRange(input_img, (yelHue[0], yelSat[0], yelVal[0]),
                             (yelHue[1], yelSat[1], yelVal[1]))
-
-        res = cv2.bitwise_and(input_img,input_img,mask = mask)
-        res = cv2.cvtColor(res, cv2.COLOR_HSV2BGR)
-        #cv2.imwrite('masked.jpg', res)
 
         _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
@@ -130,7 +141,7 @@ if __name__ == "__main__":
             cntArea = cv2.contourArea(cnt)
             # calculate area of convex hull
             hullArea = cv2.contourArea(hull)
-
+                
             # Approximate shape
             approximateShape = cv2.approxPolyDP(hull, 0.01 * cv2.arcLength(hull, True), True)
 
@@ -145,25 +156,28 @@ if __name__ == "__main__":
                 x = int(M['m10']/M['m00'])
                 y = int(M['m01']/M['m00'])
 
+            #Frequently attempts to divide by zero, so a check that they aren't is necessary
             if cntArea != 0 and hullArea != 0:
                 solid = 100 * cntArea / hullArea
 
+            #Filtering out the contours based on tuned values we are looking for
             validCnt = True 
-            #print('Hullarea: ' , hullArea)
-            validCnt &= (hullArea > 250) and (hullArea < 5000)
-            #print('Perimeter:', perimeter)
-            validCnt &= (perimeter > 50)
-            #print('Width:', w)
-            validCnt &= (w >= 25) and (w <= 350)
-            #print('Height:', h)
-            validCnt &= (h >= 15) and (h <= 300)
-            #print('Solid:', solid)
+            validCnt &= (hullArea > hull_area_low) and (hullArea < hull_area_high)
+            validCnt &= (perimeter > minimum_perimeter)
+            validCnt &= (w >= width_minimum) and (w <= width_maximum)
+            validCnt &= (h >= height_minimum) and (h <= height_maximum)
             if solid != 0:
-                validCnt &= (solid > solidLow) and (solid <= solidHigh)
-            #print('Approximate Shape:', approximateShape)
+                validCnt &= (solid > solid_Low) and (solid <= solid_High)
             validCnt &= (len(approximateShape) >= 8)
+            validCnt &= (ratio >= rat_low) and (ratio < rat_high)
+
+            #print('Hullarea: ' , hullArea)
+            #print('Perimeter:', perimeter)
+            #print('Width:', w)
+            #print('Height:', h)
+            #print('Solid:', solid)
+            #print('Approximate Shape:', approximateShape)
             #print('Ratio:', ratio)
-            validCnt &= (ratio >= 0) and (ratio < 5)
             
             #validCnt &= (y > cutOffHeight)
 
@@ -176,29 +190,17 @@ if __name__ == "__main__":
                 circularity = 4*math.pi*(cntArea/(perimeter*perimeter))
                 validCnt &= (.5 < circularity < 1.5)
             
-            if(validCnt):
-                #contSaveImage = cv2.drawContours(res, cnt, -1, (0, 255, 0), 3)
-                #cv2.imwrite('contours.jpeg', contSaveImage)
+            if(validCnt) and last_cnt_area < hullArea:
                 #print(cntArea, circularity, ratio)
-                con.append(cnt)
+                cnt_to_process = cnt
 
-        contimage = input_img
+        x, y, w, h = cv2.boundingRect(cnt_to_process)
+        
+        M = cv2.moments(cnt_to_process)
+        cy = int(M["m01"] / M["m00"])
+        cx = int(M["m10"] / M["m00"])
 
-        # mask out rectange
-        #cv2.rectangle(contimage, (0, 0), (width, int(cutOffHeight)), (0, 0, 0), -1)
-
-
-
-        conCount = 0
-        for cnt in con:
-            conCount = conCount + 1
-            x, y, w, h = cv2.boundingRect(cnt)
-            
-            M = cv2.moments(cnt)
-            cy = int(M["m01"] / M["m00"])
-            cx = int(M["m10"] / M["m00"])
-
-            print('X center:', cx, 'Y center:',cy)
+        print('X center:', cx, 'Y center:',cy)
 
         PacketValue['BallX'] = cy
         PacketValue['BallY'] = cx
@@ -206,11 +208,6 @@ if __name__ == "__main__":
         PacketQueue.put_nowait(PacketValue)
         cx = ''
         cy = ''
+        last_cnt_area = 0
+        cnt_to_process = ''
 
-        #Calculates FPS part 2
-        #processing_time = time.time() - start_time
-        #fps = 1 / processing_time
-        #print('FPS:' , fps)
-
-        #Used to output image with contours drawn on it        
-        #cv2.imwrite('testImg.jpeg', contimage)
