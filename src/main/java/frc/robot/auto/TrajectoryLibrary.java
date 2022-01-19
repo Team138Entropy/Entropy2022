@@ -128,6 +128,18 @@ public class TrajectoryLibrary {
       }
       return traj;
      }
+     public Trajectory get_DEMO(){
+      Trajectory traj = null;
+      String fileName = "DEMO3.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     
      
 }
 

@@ -61,6 +61,8 @@ public class Robot extends TimedRobot {
     mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
     mAutoModes.addOption("Test Drive", new TestDriveMode());
     mAutoModes.addOption("Tarmac1_B2_B3_Tarmac2", new Tarmac1_B2_B3_Tarmac2());
+    mAutoModes.addOption("One Ball", new OneBall());
+    mAutoModes.addOption("DEMO", new DEMO());
     SmartDashboard.putData(mAutoModes);
   }
   /**
