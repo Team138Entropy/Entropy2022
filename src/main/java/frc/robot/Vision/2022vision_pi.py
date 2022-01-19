@@ -73,12 +73,21 @@ if __name__ == "__main__":
     #val = [53, 255]  
 
     #Yellow Ball params
-    yelHue = [11,72]
-    yelSat = [50,255]
-    yelVal = [0,255]
+    yelHue = [18,49]
+    yelSat = [52,255]
+    yelVal = [166,255]
 
     kernel = np.ones((5,5),np.float32)/25
-    ksize = (5, 5)
+    radius = 5.855855855855857
+    ksize = (2 * round(radius) + 1)
+
+    solidLow = 70
+    solidHigh = 100
+    max_vertices = 50
+
+    cy = ''
+    cx = ''
+    solid = 0
 
     print('Yellowball vision setup complete')
 
@@ -88,7 +97,7 @@ if __name__ == "__main__":
         PacketValue['cameraid'] = 0
         PacketValue['ballColor'] = 'yellow'
         
-        #start_time = time.time() #Use this to get FPS below
+        start_time = time.time() #Use this to get FPS below
         frame_time, input_img = input_stream.grabFrame(imgForm)
 
         # Notify output of error and skip iteration
@@ -97,7 +106,7 @@ if __name__ == "__main__":
             continue
 
         input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
-        input_img = cv2.blur(input_img, ksize)
+        input_img = cv2.blur(input_img, (ksize, ksize))
 
         mask = cv2.inRange(input_img, (yelHue[0], yelSat[0], yelVal[0]),
                             (yelHue[1], yelSat[1], yelVal[1]))
@@ -123,25 +132,41 @@ if __name__ == "__main__":
             hullArea = cv2.contourArea(hull)
 
             # Approximate shape
-            approximateShape = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
+            approximateShape = cv2.approxPolyDP(hull, 0.01 * cv2.arcLength(hull, True), True)
 
-            x, y, w, h = cv2.boundingRect(cnt)
+            x, y, w, h = cv2.boundingRect(hull)
             ratio = float(w) / h
+
             perimeter = cv2.arcLength(cnt, True)
 
             # finding center point of shape
-            M = cv2.moments(cnt)
+            M = cv2.moments(hull)
             if M['m00'] != 0.0:
                 x = int(M['m10']/M['m00'])
                 y = int(M['m01']/M['m00'])
 
+            if cntArea != 0 and hullArea != 0:
+                solid = 100 * cntArea / hullArea
+
             validCnt = True 
-            #validCnt &= (y > cutOffHeight)
+            #print('Hullarea: ' , hullArea)
+            validCnt &= (hullArea > 250) and (hullArea < 5000)
+            #print('Perimeter:', perimeter)
+            validCnt &= (perimeter > 50)
+            #print('Width:', w)
+            validCnt &= (w >= 25) and (w <= 350)
+            #print('Height:', h)
+            validCnt &= (h >= 15) and (h <= 300)
+            #print('Solid:', solid)
+            if solid != 0:
+                validCnt &= (solid > solidLow) and (solid <= solidHigh)
+            #print('Approximate Shape:', approximateShape)
             validCnt &= (len(approximateShape) >= 8)
-            validCnt &= (ratio >= 0) and (ratio < 100)
-            validCnt &= (cntArea > 200) and (cntArea < 15000 )
-            validCnt &= (h >= 10) and (h <= 5000)
-            validCnt &= (w >= 10) and (w <= 5000)
+            #print('Ratio:', ratio)
+            validCnt &= (ratio >= 0) and (ratio < 5)
+            
+            #validCnt &= (y > cutOffHeight)
+
             validCnt &= (cv2.arcLength(cnt, True) < 10000)
             
             circularity = 0
@@ -162,8 +187,7 @@ if __name__ == "__main__":
         # mask out rectange
         #cv2.rectangle(contimage, (0, 0), (width, int(cutOffHeight)), (0, 0, 0), -1)
 
-        cy = ''
-        cx = ''
+
 
         conCount = 0
         for cnt in con:
@@ -178,8 +202,10 @@ if __name__ == "__main__":
 
         PacketValue['BallX'] = cy
         PacketValue['BallY'] = cx
-        print(PacketValue)
+        #print(PacketValue)
         PacketQueue.put_nowait(PacketValue)
+        cx = ''
+        cy = ''
 
         #Calculates FPS part 2
         #processing_time = time.time() - start_time
