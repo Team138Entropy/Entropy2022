@@ -75,6 +75,11 @@ if __name__ == "__main__":
     redSat = [109, 255]
     redVal = [58, 255]  
 
+    #Blue ball estimates
+    blueHue = [78, 120]
+    blueSat = [156, 255]
+    blueVal = [28, 255]  
+
     #Yellow Ball params
     #yelHue = [18,49]
     #yelSat = [52,255]
@@ -85,25 +90,24 @@ if __name__ == "__main__":
     ksize = (2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
-    hull_area_low = 250
+    hull_area_low = 3000
     hull_area_high = 7000
     minimum_perimeter = 75
-    width_minimum = 30
+    width_minimum = 100
     width_maximum = 300
     height_minimum = 30
     height_maximum = 300
-    solid_Low = 90
+    solid_Low = 94
     solid_High = 100
-    max_vertices = 70
+    max_vertices = 100
     rat_low = 0
-    rat_high = 5
+    rat_high = 10
     cy = ''
     cx = ''
     solid = 0
     last_cnt_area = 0
     conCount = 0
     cnt_to_process = 0
-
     lowest_y = 1000000
 
     #Create info for packet
@@ -128,8 +132,8 @@ if __name__ == "__main__":
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             input_img = cv2.blur(input_img, (ksize, ksize))
 
-            mask = cv2.inRange(input_img, (redHue[0], redSat[0], redVal[0]),
-                                (redHue[1], redSat[1], redVal[1]))
+            mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
+                                (blueHue[1], blueSat[1], blueVal[1]))
 
             _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 

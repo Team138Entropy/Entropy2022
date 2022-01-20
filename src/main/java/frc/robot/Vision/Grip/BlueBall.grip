@@ -1,10 +1,16 @@
 <grip:Pipeline>
   <sources>
+    <grip:Camera>
+      <property name="address" value="http://wpilibpi.local:1181/stream.mjpg"/>
+    </grip:Camera>
+    <grip:Camera>
+      <property name="address" value="http://frcvision.local:1181/stream.mjpg"/>
+    </grip:Camera>
     <grip:MultiImageFile>
       <property name="numImages" value="5"/>
       <property name="path[0]" value="C:\Users\nickp\Documents\GitHub\Entropy2022\src\main\java\frc\robot\Vision\Vision Samples\Balls1.png.png"/>
       <property name="path[1]" value="C:\Users\nickp\Documents\GitHub\Entropy2022\src\main\java\frc\robot\Vision\Vision Samples\Balls2.png.png"/>
-      <property name="index" value="0"/>
+      <property name="index" value="4"/>
       <property name="path[2]" value="C:\Users\nickp\Documents\GitHub\Entropy2022\src\main\java\frc\robot\Vision\Vision Samples\Balls3.png.png"/>
       <property name="path[3]" value="C:\Users\nickp\Documents\GitHub\Entropy2022\src\main\java\frc\robot\Vision\Vision Samples\Balls4.png.png"/>
       <property name="path[4]" value="C:\Users\nickp\Documents\GitHub\Entropy2022\src\main\java\frc\robot\Vision\Vision Samples\Balls5.png.png"/>
@@ -17,31 +23,31 @@
         <value>BOX</value>
       </grip:Input>
       <grip:Input step="0" socket="2">
-        <value>9.909909909909912</value>
+        <value>5.855855855855857</value>
       </grip:Input>
-      <grip:Output step="0" socket="0" previewed="true"/>
+      <grip:Output step="0" socket="0" previewed="false"/>
     </grip:Step>
     <grip:Step name="HSV Threshold">
       <grip:Input step="1" socket="0"/>
       <grip:Input step="1" socket="1">
         <value>
-          <double>74.46043165467627</double>
-          <double>133.92491467576792</double>
+          <double>77.6978417266187</double>
+          <double>120.1023890784983</double>
         </value>
       </grip:Input>
       <grip:Input step="1" socket="2">
         <value>
-          <double>43.57014388489208</double>
+          <double>155.93525179856115</double>
           <double>255.0</double>
         </value>
       </grip:Input>
       <grip:Input step="1" socket="3">
         <value>
-          <double>11.465827338129495</double>
+          <double>27.51798561151079</double>
           <double>255.0</double>
         </value>
       </grip:Input>
-      <grip:Output step="1" socket="0" previewed="true"/>
+      <grip:Output step="1" socket="0" previewed="false"/>
     </grip:Step>
     <grip:Step name="Find Contours">
       <grip:Input step="2" socket="0"/>
@@ -50,58 +56,54 @@
       </grip:Input>
       <grip:Output step="2" socket="0" previewed="false"/>
     </grip:Step>
-    <grip:Step name="Filter Contours">
+    <grip:Step name="Convex Hulls">
       <grip:Input step="3" socket="0"/>
-      <grip:Input step="3" socket="1">
-        <value>8500.0</value>
+      <grip:Output step="3" socket="0" previewed="false"/>
+    </grip:Step>
+    <grip:Step name="Filter Contours">
+      <grip:Input step="4" socket="0"/>
+      <grip:Input step="4" socket="1">
+        <value>3000.0</value>
       </grip:Input>
-      <grip:Input step="3" socket="2">
-        <value>300.0</value>
+      <grip:Input step="4" socket="2">
+        <value>75.0</value>
       </grip:Input>
-      <grip:Input step="3" socket="3">
-        <value>50.0</value>
-      </grip:Input>
-      <grip:Input step="3" socket="4">
-        <value>325.0</value>
-      </grip:Input>
-      <grip:Input step="3" socket="5">
+      <grip:Input step="4" socket="3">
         <value>100.0</value>
       </grip:Input>
-      <grip:Input step="3" socket="6">
-        <value>1000.0</value>
+      <grip:Input step="4" socket="4">
+        <value>300.0</value>
       </grip:Input>
-      <grip:Input step="3" socket="7">
+      <grip:Input step="4" socket="5">
+        <value>30.0</value>
+      </grip:Input>
+      <grip:Input step="4" socket="6">
+        <value>300.0</value>
+      </grip:Input>
+      <grip:Input step="4" socket="7">
         <value>
-          <double>80.93525179856115</double>
+          <double>93.77100497460474</double>
           <double>100.0</double>
         </value>
       </grip:Input>
-      <grip:Input step="3" socket="8">
-        <value>1000000.0</value>
+      <grip:Input step="4" socket="8">
+        <value>100.0</value>
       </grip:Input>
-      <grip:Input step="3" socket="9">
+      <grip:Input step="4" socket="9">
         <value>0.0</value>
       </grip:Input>
-      <grip:Input step="3" socket="10">
+      <grip:Input step="4" socket="10">
         <value>0.0</value>
       </grip:Input>
-      <grip:Input step="3" socket="11">
-        <value>1000.0</value>
+      <grip:Input step="4" socket="11">
+        <value>10.0</value>
       </grip:Input>
-      <grip:Output step="3" socket="0" previewed="true"/>
-    </grip:Step>
-    <grip:Step name="Convex Hulls">
-      <grip:Input step="4" socket="0"/>
       <grip:Output step="4" socket="0" previewed="true"/>
     </grip:Step>
   </steps>
   <connections>
     <grip:Connection>
-      <grip:Output source="0" socket="0" previewed="true"/>
-      <grip:Input step="0" socket="0"/>
-    </grip:Connection>
-    <grip:Connection>
-      <grip:Output step="0" socket="0" previewed="true"/>
+      <grip:Output step="0" socket="0" previewed="false"/>
       <grip:Input step="1" socket="0"/>
     </grip:Connection>
     <grip:Connection>
@@ -109,11 +111,15 @@
       <grip:Input step="3" socket="0"/>
     </grip:Connection>
     <grip:Connection>
-      <grip:Output step="3" socket="0" previewed="true"/>
+      <grip:Output step="3" socket="0" previewed="false"/>
       <grip:Input step="4" socket="0"/>
     </grip:Connection>
     <grip:Connection>
-      <grip:Output step="1" socket="0" previewed="true"/>
+      <grip:Output source="2" socket="0" previewed="true"/>
+      <grip:Input step="0" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output step="1" socket="0" previewed="false"/>
       <grip:Input step="2" socket="0"/>
     </grip:Connection>
   </connections>
@@ -127,7 +133,7 @@
     <deployJvmOptions>-Xmx50m -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:MaxNewSize=16m</deployJvmOptions>
   </settings>
   <codeGenerationSettings>
-    <language>Java</language>
+    <language>Python</language>
     <className>GripPipeline</className>
     <implementWpilibPipeline>false</implementWpilibPipeline>
     <saveDir>C:\Users\nickp\GRIP</saveDir>
