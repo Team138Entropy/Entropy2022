@@ -70,14 +70,15 @@ if __name__ == "__main__":
     #Numpy creates an array of zeros in the size of the image width/height. Its mentioned in documentation this can be performance intensive, and to do it outside the loop
     imgForm = np.zeros(shape=(res_height, res_width, 3), dtype=np.uint8)
 
-    #hue = [0, 22]
-    #sat = [110, 255]
-    #val = [53, 255]  
+    #Red Ball
+    redHue = [0, 12]
+    redSat = [109, 255]
+    redVal = [58, 255]  
 
     #Yellow Ball params
-    yelHue = [18,49]
-    yelSat = [52,255]
-    yelVal = [166,255]
+    #yelHue = [18,49]
+    #yelSat = [52,255]
+    #yelVal = [166,255]
 
     #Creating settings for blur filter
     radius = 5.855855855855857
@@ -85,15 +86,15 @@ if __name__ == "__main__":
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
     hull_area_low = 250
-    hull_area_high = 5000
-    minimum_perimeter = 50
-    width_minimum = 25
-    width_maximum = 350
-    height_minimum = 15
+    hull_area_high = 7000
+    minimum_perimeter = 75
+    width_minimum = 30
+    width_maximum = 300
+    height_minimum = 30
     height_maximum = 300
-    solid_Low = 70
+    solid_Low = 90
     solid_High = 100
-    max_vertices = 50
+    max_vertices = 70
     rat_low = 0
     rat_high = 5
     cy = ''
@@ -101,6 +102,9 @@ if __name__ == "__main__":
     solid = 0
     last_cnt_area = 0
     conCount = 0
+    cnt_to_process = 0
+
+    lowest_y = 1000000
 
     #Create info for packet
     PacketValue = {}
@@ -108,106 +112,113 @@ if __name__ == "__main__":
 
     while True:
         #Create info for packet
-        PacketValue = {}
-        PacketValue['cameraid'] = 0
-        PacketValue['ballColor'] = 'yellow'
-        
-        #start_time = time.time() #Use this to get FPS below
-        frame_time, input_img = input_stream.grabFrame(imgForm)
+        try:
+            PacketValue = {}
+            PacketValue['cameraid'] = 0
+            PacketValue['ballColor'] = 'yellow'
+            
+            #start_time = time.time() #Use this to get FPS below
+            frame_time, input_img = input_stream.grabFrame(imgForm)
 
-        # Notify output of error and skip iteration
-        if frame_time == 0:
-            output_stream.notifyError(input_stream.getError())
-            continue
+            # Notify output of error and skip iteration
+            if frame_time == 0:
+                output_stream.notifyError(input_stream.getError())
+                continue
 
-        input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
-        input_img = cv2.blur(input_img, (ksize, ksize))
+            input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
+            input_img = cv2.blur(input_img, (ksize, ksize))
 
-        mask = cv2.inRange(input_img, (yelHue[0], yelSat[0], yelVal[0]),
-                            (yelHue[1], yelSat[1], yelVal[1]))
+            mask = cv2.inRange(input_img, (redHue[0], redSat[0], redVal[0]),
+                                (redHue[1], redSat[1], redVal[1]))
 
-        _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
+            _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
-        # Sort contours by area size (biggest to smallest)
-        cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
+            # Sort contours by area size (biggest to smallest)
+            cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
 
-        con = []
-        for cnt in cntsSorted:
-            # Get moments of contour; mainly for centroid
-            M = cv2.moments(cnt)
-            # Get convex hull (bounding polygon on contour)
-            hull = cv2.convexHull(cnt)
-            # Calculate Contour area
-            cntArea = cv2.contourArea(cnt)
-            # calculate area of convex hull
-            hullArea = cv2.contourArea(hull)
+            con = []
+            for cnt in cntsSorted:
+                # Get moments of contour; mainly for centroid
+                M = cv2.moments(cnt)
+                # Get convex hull (bounding polygon on contour)
+                hull = cv2.convexHull(cnt)
+                # Calculate Contour area
+                cntArea = cv2.contourArea(cnt)
+                # calculate area of convex hull
+                hullArea = cv2.contourArea(hull)
+                    
+                # Approximate shape
+                approximateShape = cv2.approxPolyDP(hull, 0.01 * cv2.arcLength(hull, True), True)
+
+                x, y, w, h = cv2.boundingRect(hull)
+                ratio = float(w) / h
+
+                perimeter = cv2.arcLength(cnt, True)
                 
-            # Approximate shape
-            approximateShape = cv2.approxPolyDP(hull, 0.01 * cv2.arcLength(hull, True), True)
 
-            x, y, w, h = cv2.boundingRect(hull)
-            ratio = float(w) / h
+                # finding center point of shape
+                M = cv2.moments(hull)
+                if M['m00'] != 0.0:
+                    x = int(M['m10']/M['m00'])
+                    y = int(M['m01']/M['m00'])
 
-            perimeter = cv2.arcLength(cnt, True)
+                #Frequently attempts to divide by zero, so a check that they aren't is necessary
+                if cntArea != 0 and hullArea != 0:
+                    solid = 100 * cntArea / hullArea
 
-            # finding center point of shape
-            M = cv2.moments(hull)
-            if M['m00'] != 0.0:
-                x = int(M['m10']/M['m00'])
-                y = int(M['m01']/M['m00'])
+                #Filtering out the contours based on tuned values we are looking for
+                validCnt = True 
+                validCnt &= (hullArea > hull_area_low)# and (hullArea < hull_area_high)
+                validCnt &= (perimeter > minimum_perimeter)
+                validCnt &= (w >= width_minimum) and (w <= width_maximum)
+                validCnt &= (h >= height_minimum) and (h <= height_maximum)
+                if solid != 0:
+                    validCnt &= (solid > solid_Low) and (solid <= solid_High)
+                validCnt &= (len(approximateShape) >= 8)
+                validCnt &= (ratio >= rat_low) and (ratio < rat_high)
 
-            #Frequently attempts to divide by zero, so a check that they aren't is necessary
-            if cntArea != 0 and hullArea != 0:
-                solid = 100 * cntArea / hullArea
+                '''
+                print('Hullarea: ' , hullArea)
+                print('Perimeter:', perimeter)
+                print('Width:', w)
+                print('Height:', h)
+                print('Solid:', solid)
+                print('Approximate Shape:', approximateShape)
+                print('Ratio:', ratio)
+                '''
+                
+                #validCnt &= (y > cutOffHeight)
 
-            #Filtering out the contours based on tuned values we are looking for
-            validCnt = True 
-            validCnt &= (hullArea > hull_area_low) and (hullArea < hull_area_high)
-            validCnt &= (perimeter > minimum_perimeter)
-            validCnt &= (w >= width_minimum) and (w <= width_maximum)
-            validCnt &= (h >= height_minimum) and (h <= height_maximum)
-            if solid != 0:
-                validCnt &= (solid > solid_Low) and (solid <= solid_High)
-            validCnt &= (len(approximateShape) >= 8)
-            validCnt &= (ratio >= rat_low) and (ratio < rat_high)
+                validCnt &= (cv2.arcLength(cnt, True) < 10000)
+                
+                circularity = 0
+                if(perimeter == 0):
+                    validCnt = False 
+                else:
+                    circularity = 4*math.pi*(cntArea/(perimeter*perimeter))
+                    validCnt &= (.5 < circularity < 1.5)
+                
+                if(validCnt) and y < lowest_y :
+                    #print(cntArea, circularity, ratio)
+                    cnt_to_process = cnt
 
-            #print('Hullarea: ' , hullArea)
-            #print('Perimeter:', perimeter)
-            #print('Width:', w)
-            #print('Height:', h)
-            #print('Solid:', solid)
-            #print('Approximate Shape:', approximateShape)
-            #print('Ratio:', ratio)
+            x, y, w, h = cv2.boundingRect(cnt_to_process)
             
-            #validCnt &= (y > cutOffHeight)
+            M = cv2.moments(cnt_to_process)
+            cy = int(M["m01"] / M["m00"])
+            cx = int(M["m10"] / M["m00"])
 
-            validCnt &= (cv2.arcLength(cnt, True) < 10000)
-            
-            circularity = 0
-            if(perimeter == 0):
-                validCnt = False 
-            else:
-                circularity = 4*math.pi*(cntArea/(perimeter*perimeter))
-                validCnt &= (.5 < circularity < 1.5)
-            
-            if(validCnt) and last_cnt_area < hullArea:
-                #print(cntArea, circularity, ratio)
-                cnt_to_process = cnt
+            print('X center:', cx, 'Y center:',cy)
 
-        x, y, w, h = cv2.boundingRect(cnt_to_process)
-        
-        M = cv2.moments(cnt_to_process)
-        cy = int(M["m01"] / M["m00"])
-        cx = int(M["m10"] / M["m00"])
-
-        print('X center:', cx, 'Y center:',cy)
-
-        PacketValue['BallX'] = cy
-        PacketValue['BallY'] = cx
-        #print(PacketValue)
-        PacketQueue.put_nowait(PacketValue)
-        cx = ''
-        cy = ''
-        last_cnt_area = 0
-        cnt_to_process = ''
+            PacketValue['BallX'] = cy
+            PacketValue['BallY'] = cx
+            #print(PacketValue)
+            PacketQueue.put_nowait(PacketValue)
+            cx = ''
+            cy = ''
+            last_cnt_area = 0
+            cnt_to_process = ''
+            lowest_y = 1000000
+        except:
+            print('Error, likely that a ball wasnt found')
 
