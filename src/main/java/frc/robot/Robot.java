@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,9 +43,14 @@ public class Robot extends TimedRobot {
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
 
-  // Autonomous Modes
-  private SendableChooser<Integer> mControllerModes;
-  //int controllerInUse = 0;
+  // Driver Controller Modes
+  private SendableChooser<Integer> mDriverControllerModes;
+  
+  // Operator Controller Modes
+  private SendableChooser<Integer> mOperatorControllerModes;
+
+  private boolean inAutoMode = false;
+  private boolean inTeleop = false;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -52,7 +58,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     SendableChooser<AutoModeBase> mAutoModes = new SendableChooser<>();
-    SendableChooser<Integer> mControllerModes = new SendableChooser<>();
+    SendableChooser<Integer> mDriverControllerModes = new SendableChooser<>();
+    SendableChooser<Integer> mOperatorControllerModes = new SendableChooser<>();
     // populate autonomous list
     populateAutonomousModes();
   }
@@ -63,12 +70,18 @@ public class Robot extends TimedRobot {
     mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
     mAutoModes.addOption("Test Drive", new TestDriveMode());
     SmartDashboard.putData(mAutoModes);
-    mControllerModes = new SendableChooser<Integer>();
-    mControllerModes.setDefaultOption("Xbox Controller", 0);
-    mControllerModes.addOption("Joysticks", 1);
-    mControllerModes.addOption("Wheel", 2);
-    mControllerModes.addOption("Thing", 3);
-    SmartDashboard.putData(mControllerModes);
+    mDriverControllerModes = new SendableChooser<Integer>();
+    mDriverControllerModes.setDefaultOption("Xbox Controller", 0);
+    mDriverControllerModes.addOption("Joysticks", 1);
+    mDriverControllerModes.addOption("Wheel", 2);
+    mDriverControllerModes.addOption("Thing", 3);
+    SmartDashboard.putData(mDriverControllerModes);
+    mOperatorControllerModes = new SendableChooser<Integer>();
+    mOperatorControllerModes.setDefaultOption("Xbox Controller", 0);
+    mOperatorControllerModes.addOption("Joysticks", 1);
+    mOperatorControllerModes.addOption("Wheel", 2);
+    mOperatorControllerModes.addOption("Thing", 3);
+    SmartDashboard.putData(mOperatorControllerModes);
   }
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -79,22 +92,22 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-
+    SmartDashboard.putBoolean("In Auto", inAutoMode);
+    SmartDashboard.putBoolean("In Teleop", inTeleop);
+    SmartDashboard.putNumber("Speed", mOperatorInterface.getDriveThrottle());
+    SmartDashboard.putNumber("voltage", RobotController.getBatteryVoltage());
   }
-
 
   /** Called at the Start of Autonomous **/
   @Override
   public void autonomousInit() {
-    // set auto mode
-
+    inAutoMode = true;
+    inTeleop = false;
     // Get Selected AutoMode
     AutoModeBase selectedMode = mAutoModes.getSelected();
     if(selectedMode == null){
       System.out.println("Selected Auto Mode is Null");
     }
-    
-
     //TestDriveMode selectedMode = new TestDriveMode();
     mAutoModeExecutor.setAutoMode(selectedMode);
 
@@ -112,28 +125,40 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    
+    inTeleop = true;
+    inAutoMode = false;
     // Disable Auto Thread (if running)
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();
     }
-    Integer selectedController = mControllerModes.getSelected();
-    //System.out.println(selectedController);
-    if(selectedController == 0){
-      mOperatorInterface.setControllerInUse(0);
+    Integer selectedDriveController = mDriverControllerModes.getSelected();
+    Integer selectedOperatorController = mOperatorControllerModes.getSelected();
+    if(selectedDriveController == 0){
+      mOperatorInterface.setDriveControllerInUse(0);
     }
-        if(selectedController == 1){
-      mOperatorInterface.setControllerInUse(1);
+    if(selectedDriveController == 1){
+      mOperatorInterface.setDriveControllerInUse(1);
     }
-        if(selectedController == 2){
-      mOperatorInterface.setControllerInUse(2);
+    if(selectedDriveController == 2){
+      mOperatorInterface.setDriveControllerInUse(2);
     }
-        if(selectedController == 3){
-      mOperatorInterface.setControllerInUse(3);
+    if(selectedDriveController == 3){
+      mOperatorInterface.setDriveControllerInUse(3);
+    }
+    if(selectedOperatorController == 0){
+      mOperatorInterface.setOperatorControllerInUse(0);
+    }
+    if(selectedOperatorController == 1){
+      mOperatorInterface.setOperatorControllerInUse(1);
+    }
+    if(selectedOperatorController == 2){
+      mOperatorInterface.setOperatorControllerInUse(2);
+    }
+    if(selectedOperatorController == 3){
+      mOperatorInterface.setOperatorControllerInUse(3);
     }
     // Zero Drive Sensors
     mDrive.zeroSensors();
-
   }
 
   /** This function is called periodically during operator control. */
