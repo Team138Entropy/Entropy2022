@@ -2,7 +2,9 @@ import json
 import math
 import queue
 import socket
+from sqlite3 import Time
 import threading
+import time
 
 import cv2
 import numpy as np
@@ -76,9 +78,14 @@ if __name__ == "__main__":
     redVal = [58, 255]  
 
     #Blue ball estimates
+    '''
     blueHue = [78, 120]
     blueSat = [156, 255]
     blueVal = [28, 255]  
+    '''
+    blueHue = [78, 120]
+    blueSat = [154, 255]
+    blueVal = [0, 255]  
 
     #Yellow Ball params
     #yelHue = [18,49]
@@ -97,8 +104,9 @@ if __name__ == "__main__":
     width_maximum = 300
     height_minimum = 30
     height_maximum = 300
-    solid_Low = 90
+    solid_Low = 95
     solid_High = 100
+    min_vertices = 25
     max_vertices = 70
     rat_low = 0
     rat_high = 5
@@ -109,15 +117,45 @@ if __name__ == "__main__":
     conCount = 0
     cnt_to_process = 0
 
-    lowest_y = 1000000
+    #Used to pick the lowest detected contour in the image which is most likely the closest ball
+    lowest_y = 1000
+
+    last_contour_x = 1000
+    last_contour_y = 1000
+    current_frame = 0
+    frame_memory = 0
+    contour_found_once = False
 
     #Create info for packet
     PacketValue = {}
+
+    params = cv2.SimpleBlobDetector_Params()
+    
+    # Set Area filtering parameters
+    params.filterByArea = True
+    params.minArea = 0
+    
+    # Set Circularity filtering parameters
+    params.filterByCircularity = True
+    params.minCircularity = 0.5
+    
+    # Set Convexity filtering parameters
+    params.filterByConvexity = True
+    params.minConvexity = 0
+        
+    # Set inertia filtering parameters
+    params.filterByInertia = False
+    params.minInertiaRatio = 0
+    
+    # Create a detector with the parameters
+    detector = cv2.SimpleBlobDetector_create(params)
+
     print('Yellowball vision setup complete')
 
     while True:
         #Create info for packet
         try:
+            current_frame += 1
             PacketValue = {}
             PacketValue['cameraid'] = 0
             PacketValue['ballColor'] = 'yellow'
@@ -133,9 +171,20 @@ if __name__ == "__main__":
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             input_img = cv2.blur(input_img, (ksize, ksize))
 
-            mask = cv2.inRange(input_img, (redHue[0], redSat[0], redVal[0]),
-                                (redHue[1], redSat[1], redVal[1]))
+            mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
+                                (blueHue[1], blueSat[1], blueVal[1]))
 
+            # Create a detector with the parameters
+            detector = cv2.SimpleBlobDetector_create(params)
+                
+            # Detect blobs
+            keypoints = detector.detect(mask)
+            blank = np.zeros((1, 1))
+            blobs = cv2.drawKeypoints(mask, keypoints, blank, (0, 0, 255),
+                          cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+            cv2.imwrite('blobs.jpeg', blobs)
+            print('Blobs')
+            time.sleep(1)
             _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
             # Sort contours by area size (biggest to smallest)
@@ -170,6 +219,8 @@ if __name__ == "__main__":
                 #Frequently attempts to divide by zero, so a check that they aren't is necessary
                 if cntArea != 0 and hullArea != 0:
                     solid = 100 * cntArea / hullArea
+
+                #Check for roundness
 
                 #Filtering out the contours based on tuned values we are looking for
                 validCnt = True 
@@ -217,13 +268,17 @@ if __name__ == "__main__":
 
             PacketValue['BallX'] = cy
             PacketValue['BallY'] = cx
+
+            last_contour_x = cx
+            last_contour_y = cy
+            
             #print(PacketValue)
             PacketQueue.put_nowait(PacketValue)
             cx = ''
             cy = ''
             last_cnt_area = 0
             cnt_to_process = ''
-            lowest_y = 1000000
+            lowest_y = 1000
         except:
             print('Error, likely that a ball wasnt found')
 
