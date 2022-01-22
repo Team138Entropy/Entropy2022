@@ -149,6 +149,7 @@ if __name__ == "__main__":
     
     # Create a detector with the parameters
     detector = cv2.SimpleBlobDetector_create(params)
+    blank = np.zeros((1, 1))
 
     print('Yellowball vision setup complete')
 
@@ -174,17 +175,16 @@ if __name__ == "__main__":
             mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
                                 (blueHue[1], blueSat[1], blueVal[1]))
 
-            # Create a detector with the parameters
-            detector = cv2.SimpleBlobDetector_create(params)
-                
+
+            #TODO: Make blob detection work
             # Detect blobs
-            keypoints = detector.detect(mask)
-            blank = np.zeros((1, 1))
+            keypoints = detector.detect(mask) 
             blobs = cv2.drawKeypoints(mask, keypoints, blank, (0, 0, 255),
                           cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
             cv2.imwrite('blobs.jpeg', blobs)
             print('Blobs')
             time.sleep(1)
+
             _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
             # Sort contours by area size (biggest to smallest)
