@@ -50,19 +50,19 @@ public class OperatorInterface {
     }
     public double getDriveThrottle() {
         if (driveControllerInUse == 0){
-            System.out.println("Xbox in use!");
+
              return xbox1.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
         } 
         if (driveControllerInUse == 1){
-            System.out.println("Joysticks in use!");
+            
             return joysticks.getYJoyStick_L();
         }
         if (driveControllerInUse == 2){
-            System.out.println("Wheel in use!");
+            
             return wheel.getYWheel();
         }
         if (driveControllerInUse == 3){
-            System.out.println("RC in use!");
+           
             return controllerThing.getY_thing();
         }
         return 0;

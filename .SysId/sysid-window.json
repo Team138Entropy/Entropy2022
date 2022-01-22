@@ -1,0 +1,45 @@
+{
+  "MainWindow": {
+    "GLOBAL": {
+      "height": "720",
+      "maximized": "1",
+      "style": "0",
+      "userScale": "2",
+      "width": "1280",
+      "xpos": "0",
+      "ypos": "23"
+    }
+  },
+  "Window": {
+    "###Analyzer": {
+      "Collapsed": "0",
+      "Pos": "527,18",
+      "Size": "606,876"
+    },
+    "###Generator": {
+      "Collapsed": "0",
+      "Pos": "-1,18",
+      "Size": "531,269"
+    },
+    "###Logger": {
+      "Collapsed": "0",
+      "Pos": "-1,286",
+      "Size": "530,732"
+    },
+    "###Program Log": {
+      "Collapsed": "0",
+      "Pos": "527,893",
+      "Size": "605,125"
+    },
+    "Debug##Default": {
+      "Collapsed": "0",
+      "Pos": "60,60",
+      "Size": "400,400"
+    },
+    "Diagnostic Plots": {
+      "Collapsed": "0",
+      "Pos": "1131,17",
+      "Size": "790,1000"
+    }
+  }
+}
