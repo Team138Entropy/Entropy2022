@@ -420,7 +420,7 @@ public class Drive extends Subsystem {
   }
 
   // Get the left encoder data in meters
-  private double getLeftEncoderPosition() {
+  public double getLeftEncoderPosition() {
       return CTREUnits.talonPosistionToMeters(mLeftMaster.getSelectedSensorPosition());
   }
 
@@ -428,7 +428,7 @@ public class Drive extends Subsystem {
    * Get the encoder data in meters
    */
   // Get the right encoder data in meters
-  private double getRightEncoderPosition() {
+  public double getRightEncoderPosition() {
       return CTREUnits.talonPosistionToMeters(mRightMaster.getSelectedSensorPosition());
   }
 }

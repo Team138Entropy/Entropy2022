@@ -71,16 +71,16 @@ public class Robot extends TimedRobot {
     mAutoModes.addOption("Test Drive", new TestDriveMode());
     SmartDashboard.putData(mAutoModes);
     mDriverControllerModes = new SendableChooser<Integer>();
-    mDriverControllerModes.setDefaultOption("Xbox Controller", 0);
-    mDriverControllerModes.addOption("Joysticks", 1);
-    mDriverControllerModes.addOption("Wheel", 2);
-    mDriverControllerModes.addOption("Thing", 3);
+    mDriverControllerModes.setDefaultOption("Xbox Controller(Driver)", 0);
+    mDriverControllerModes.addOption("Joysticks(Driver)", 1);
+    mDriverControllerModes.addOption("Wheel(Driver)", 2);
+    mDriverControllerModes.addOption("Thing(Driver)", 3);
     SmartDashboard.putData(mDriverControllerModes);
     mOperatorControllerModes = new SendableChooser<Integer>();
-    mOperatorControllerModes.setDefaultOption("Xbox Controller", 0);
-    mOperatorControllerModes.addOption("Joysticks", 1);
-    mOperatorControllerModes.addOption("Wheel", 2);
-    mOperatorControllerModes.addOption("Thing", 3);
+    mOperatorControllerModes.setDefaultOption("Xbox Controller(Operator)", 0);
+    mOperatorControllerModes.addOption("Joysticks(Operator)", 1);
+    mOperatorControllerModes.addOption("Wheel(Operator)", 2);
+    mOperatorControllerModes.addOption("Thing(Operator)", 3);
     SmartDashboard.putData(mOperatorControllerModes);
   }
   /**
@@ -96,6 +96,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("In Teleop", inTeleop);
     SmartDashboard.putNumber("Speed", mOperatorInterface.getDriveThrottle());
     SmartDashboard.putNumber("voltage", RobotController.getBatteryVoltage());
+    SmartDashboard.putNumber("Left Encoder", mDrive.getLeftEncoderPosition());
+    SmartDashboard.putNumber("Right Encoder", mDrive.getRightEncoderPosition());
   }
 
   /** Called at the Start of Autonomous **/
@@ -179,7 +181,8 @@ public class Robot extends TimedRobot {
     // create Auto Mode Executor
     mAutoModeExecutor = new AutoModeExecutor();
 
-
+    inAutoMode = false;
+    inTeleop = false;
   }
 
   /** This function is called periodically when disabled. */
