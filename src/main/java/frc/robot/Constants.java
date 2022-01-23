@@ -5,6 +5,14 @@ import frc.robot.util.geometry.*;
 
 public class Constants {
 
+      // Potential Targets
+      public enum TargetType {
+        CAMERA_1_RED_CARGO,
+        CAMERA_1_BLUE_CARGO,
+        CAMERA_2_RED_CARGO,
+        CAMERA_2_BLUE_CARGO
+    };
+
     public enum Loggers {
       VISION(SupportedLevels.VERBOSE),
       POT(SupportedLevels.DEBUG),
@@ -47,6 +55,21 @@ public class Constants {
     public static class CanIDs {
       // Power dist. panel
       // public static final int PDPid = 25;
+    }
+
+    public static class Vision {
+      public static final double diagonalView = Math.toRadians(75);
+      public static final double horizontalAspect = 4;
+      public static final double verticalAspect = 3;
+      public static final double diagonalAspect = Math.hypot(horizontalAspect, verticalAspect);
+      public static final double horizontalView =
+          Math.atan(Math.tan(diagonalView / 2) * (horizontalAspect / diagonalView)) * 2;
+      public static final double verticalView =
+          Math.atan(Math.tan(diagonalView / 2) * (verticalAspect / diagonalView)) * 2;
+      
+      public static final Rotation2d kCameraHorizontalPlaneToLens =
+          Rotation2d.fromDegrees(0);
+    
     }
 
 

@@ -44,4 +44,8 @@ public class Grasper extends Subsystem {
     public void checkSubsystem() {
 
     }
+
+    public void updateSmartDashBoard() {
+
+    }
 }

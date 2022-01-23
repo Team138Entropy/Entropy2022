@@ -40,6 +40,10 @@ public class OperatorInterface {
         return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
     }
 
+    public boolean getDriveAutoSteer(){
+        return DriverController.getTrigger(XboxController.Side.RIGHT);
+    }
+
     public void setRumble(boolean a){ 
         NewOperatorController.setRumble(a);
     }

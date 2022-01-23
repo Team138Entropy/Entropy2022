@@ -9,12 +9,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
+import frc.robot.vision.TargetInfo;
+import frc.robot.vision.VisionManager;
 import frc.robot.auto.AutoModeExecutor;
 import frc.robot.auto.modes.*;
 import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
 import edu.wpi.first.wpilibj.GenericHID;
 
 
@@ -26,14 +30,19 @@ import edu.wpi.first.wpilibj.GenericHID;
  */
 public class Robot extends TimedRobot {  
 
-  // Controller Reference
+  // Controllers Reference
   private final OperatorInterface mOperatorInterface = OperatorInterface.getInstance();
+
+  // Vision Manager
+  private final VisionManager mVisionManager = VisionManager.getInstance();
 
   // Subsystem Manager
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
   
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
+  private final Grasper mGrasper = Grasper.getInstance();
+  private final Climber mClimber = Climber.getInstance();
 
   // Autonomous Execution Thread
   private AutoModeExecutor mAutoModeExecutor = null;
@@ -44,13 +53,19 @@ public class Robot extends TimedRobot {
   //Power dist. panel
   //private final PowerDistributionPanel m_pdp = new PowerDistributionPanel(25);
 
+  // Mode
+  public enum RobotMode {
+    CargoScorer,
+    Climber
+  };
+  public RobotMode mCurrentMode = RobotMode.CargoScorer;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
-    SendableChooser<AutoModeBase> mAutoModes = new SendableChooser<>();
     // populate autonomous list
     populateAutonomousModes();
   }
@@ -80,6 +95,8 @@ public class Robot extends TimedRobot {
     //   SmartDashboard.putNumber(("PDP-Current-"+i), m_pdp.getCurrent(i));
     // }
     // SmartDashboard.updateValues();
+
+    mSubsystemManager.updateSmartdashboards();
   }
 
 
@@ -91,11 +108,6 @@ public class Robot extends TimedRobot {
     // set auto mode
 
     // Get Selected AutoMode
-    // AutoModeBase selectedMode = mAutoModes.getSelected();
-    // if(selectedMode == null){
-    //   System.out.println("Selected Auto Mode is Null");
-    // }
-    //TestDriveMode selectedMode = new TestDriveMode();
     mAutoModeExecutor.setAutoMode(mAutoModes.getSelected());
 
     // Start Autonomous Thread
@@ -121,14 +133,12 @@ public class Robot extends TimedRobot {
 
     // Zero Drive Sensors
     mDrive.zeroSensors();
-
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
-    teleopRobotLoop();
+    RobotLoop();
   }
 
   /** This function is called once when the robot is disabled. */
@@ -168,16 +178,53 @@ public class Robot extends TimedRobot {
 
   }
 
-  private void teleopRobotLoop(){
-    teleopDriveLoop();
+  private void RobotLoop(){
+    // check for change of mode
+    checkModeChange();
+
+    if(mCurrentMode == RobotMode.CargoScorer){
+      // Objective is to Score Cargo
+      // Allow Driver and Operator to control arm and grasper
+    }else if(mCurrentMode == RobotMode.Climber){
+      // Objective is to Climb
+      // Do not allow manual control of arm and grasper
+
+    }
+    DriveLoop();
   }
 
-  private void teleopDriveLoop(){
+  // Check for Change of Mode 
+  private void checkModeChange(){
+
+  }
+
+  private void DriveLoop(){
     double driveThrottle = mOperatorInterface.getDriveThrottle();
+    driveThrottle *= .50;
     double driveTurn = mOperatorInterface.getDriveTurn();
 
-    //manual drive
-    mDrive.setDrive(driveThrottle, driveTurn, false);
+    boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
+    SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
+
+    TargetInfo ti = mVisionManager.getTarget(Constants.TargetType.CAMERA_1_BLUE_CARGO);
+    SmartDashboard.putBoolean("Valid Target", ti.isValid());
+    SmartDashboard.putNumber("Target Angle", ti.getErrorAngle());
+
+    if(wantsAutoSteer){
+    
+
+      if(ti.isValid()){ //only allow if valud packet
+        // autonomously steering robot towards cargo
+        SmartDashboard.putNumber("Vision Error Angle", ti.getErrorAngle());
+        mDrive.autoSteer(driveThrottle, -1 * ti.getErrorAngle());
+      }else{
+        System.out.println("Invalid Packet!");
+      }
+    }else{
+      SmartDashboard.putNumber("Vision Error Angle", 1000);
+      //manual drive
+      mDrive.setDrive(driveThrottle, driveTurn, false);
+    }
   }
 
 

@@ -49,7 +49,6 @@ public class TrajectoryLibrary {
        return Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSONFolder + "/" + TrajectoryName);
      }
 
-
      // Trajectories
      public Trajectory getTrajectoryByName(String fileName){
        Trajectory traj = null;
@@ -60,6 +59,11 @@ public class TrajectoryLibrary {
            System.out.println("Unable to open trajectory: " + fileName);
        }
        return traj;
+     }
+
+     // Creates a reversed Trajectory
+     public Trajectory getReversedTrajectory(Trajectory traj){
+      return null;
      }
 
      public Trajectory getBasicTrajectory(){

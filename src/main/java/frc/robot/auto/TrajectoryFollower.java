@@ -68,12 +68,6 @@ public class TrajectoryFollower {
     }
     
     private void init(){
-        // Mark Path as Incomplete
-        mComplete = false;
-
-        // Mark to run
-        mRun = true;
-
         // Create and push Field2d to SmartDashboard.
         mField = new Field2d();
         SmartDashboard.putData("Autonomous Field", mField);
@@ -81,8 +75,12 @@ public class TrajectoryFollower {
 
     // Called Once at the Start of following the Path
     public void Start(){
+        // Mark Trajectory as Incomplete
         mComplete = false;
+
+        // Allow Trajectory to run
         mRun = true;
+
         // Initialize the timer.
         mTimer = new Timer();
         mTimer.start();
@@ -108,10 +106,10 @@ public class TrajectoryFollower {
         if (mRun && mTimer.get() < mTrajectory.getTotalTimeSeconds()) {
             // Get the desired pose from the trajectory.
             var desiredPose = mTrajectory.sample(mTimer.get());
-      
+                  
             // Get the reference chassis speeds from the Ramsete controller.
             var refChassisSpeeds = mRamseteController.calculate(mDrive.getPose(), desiredPose);
-      
+            
             // Set the linear and angular speeds.
             mDrive.autoomousDrive(refChassisSpeeds.vxMetersPerSecond, refChassisSpeeds.omegaRadiansPerSecond);
           } else {
