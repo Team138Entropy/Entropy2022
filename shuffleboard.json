@@ -479,6 +479,74 @@
               "_source0": "network_table:///SmartDashboard/SendableChooser[1]/active",
               "_title": "SendableChooser[1]/active"
             }
+          },
+          "10,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/SendableChooser[1]",
+              "_title": "SendableChooser[1]"
+            }
+          },
+          "11,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/shoulderPosition",
+              "_title": "shoulderPosition"
+            }
+          },
+          "12,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/shoulderVelocity",
+              "_title": "shoulderVelocity"
+            }
+          },
+          "10,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/shoulderTarget",
+              "_title": "shoulderTarget"
+            }
+          },
+          "11,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/shoulderOutput",
+              "_title": "shoulderOutput"
+            }
+          },
+          "12,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/forearmCanStop",
+              "_title": "forearmCanStop",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
           }
         }
       }
@@ -762,13 +830,14 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "6,2": {
+          "6,4": {
             "size": [
               4,
               4
             ],
             "content": {
               "_type": "Gyro",
+              "_source0": "network_table:///LiveWindow/Ungrouped/ADXRS450_Gyro[0]",
               "_title": "Gyro",
               "Visuals/Major tick spacing": 45.0,
               "Visuals/Starting angle": 180.0,
@@ -776,17 +845,18 @@
               "Visuals/Counter clockwise": false
             }
           },
-          "0,0": {
+          "0,2": {
             "size": [
               4,
               2
             ],
             "content": {
               "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/SendableChooser[1]",
               "_title": "ComboBox Chooser"
             }
           },
-          "0,2": {
+          "0,4": {
             "size": [
               6,
               4
@@ -804,7 +874,7 @@
               "imageHeight": -1
             }
           },
-          "4,0": {
+          "4,2": {
             "size": [
               2,
               2
@@ -816,33 +886,39 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "8,0": {
+          "8,2": {
             "size": [
               2,
               2
             ],
             "content": {
-              "_type": "Simple Dial",
-              "_title": "Simple Dial",
-              "Range/Min": 0.0,
-              "Range/Max": 100.0,
-              "Visuals/Show value": true
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/encoder_right",
+              "_title": "Right",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5,
+              "Visuals/Show text": true
             }
           },
-          "6,0": {
+          "6,2": {
             "size": [
               2,
               2
             ],
             "content": {
-              "_type": "Simple Dial",
-              "_title": "Simple Dial",
-              "Range/Min": 0.0,
-              "Range/Max": 100.0,
-              "Visuals/Show value": true
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/encoder_left",
+              "_title": "Left",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5,
+              "Visuals/Show text": true
             }
           },
-          "0,6": {
+          "0,8": {
             "size": [
               10,
               2
