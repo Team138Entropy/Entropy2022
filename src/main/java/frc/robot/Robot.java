@@ -11,6 +11,7 @@ import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
 import frc.robot.vision.TargetInfo;
 import frc.robot.vision.VisionManager;
+import jdk.nashorn.internal.ir.BreakableNode;
 import frc.robot.auto.AutoModeExecutor;
 import frc.robot.auto.modes.*;
 import frc.robot.auto.modes.DoNothingMode;
@@ -59,6 +60,18 @@ public class Robot extends TimedRobot {
     Climber
   };
   public RobotMode mCurrentMode = RobotMode.CargoScorer;
+
+  // Get Robot Mode Name to String
+  public String modeToString(RobotMode s){
+    switch(s){
+      case CargoScorer:
+        return "CargoScorer";
+      case Climber:
+        return "Climber";
+      default:
+        return "";
+    }
+  }
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -196,8 +209,24 @@ public class Robot extends TimedRobot {
   }
 
   // Check for Change of Mode 
+  // Controlled by the Operator Controller
   private void checkModeChange(){
+    // Select Button is used to toggle from CargoScorer to Climber
+    if(mOperatorInterface.getSwitchModePress()){
+      switch(mCurrentMode){
+        case CargoScorer:
+          mCurrentMode = RobotMode.Climber;
+        break;
+        case Climber:
+          mCurrentMode = RobotMode.CargoScorer;
+        break;
+        default:
+        break;
+      }
+    }
 
+    // Log to Mode
+    SmartDashboard.putString("Robot Mode", modeToString(mCurrentMode));
   }
 
   private void DriveLoop(){
