@@ -454,4 +454,8 @@ public class Drive extends Subsystem {
     // Use SRX class to get encoder because its srx motors
     return CTREUnits.talonPosistionToMeters(mRightMasterSRX.getSelectedSensorPosition());
   }
+
+  public Gyro getGyro(){
+    return m_gyro;
+  }
 }
