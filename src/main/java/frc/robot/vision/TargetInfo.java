@@ -2,13 +2,15 @@ package frc.robot.vision;
 
 import frc.robot.Constants;
 import frc.robot.util.geometry.*;
+import edu.wpi.first.wpilibj.Timer;
+
 
 // TargetInfo describes a Target
 // A target could be a game piece, a reflective tape
 // It is what the vision system is trying to track
 public class TargetInfo {
     private boolean mValid;
-    private long mTimestamp;
+    private double mTimestamp;
     private double mTargetID;
     private double mX;
     private double mY;
@@ -27,8 +29,12 @@ public class TargetInfo {
         mY = y;
         mZ = z;
         mDistance = distance;
+
+        // set the timestamp of the packet
+        updateToCurrentTimestamp();
     }
 
+    // Constructor for Invalid Target
     TargetInfo(){
         mValid = false;
     }
@@ -38,8 +44,17 @@ public class TargetInfo {
         return mValid;
     }
 
-    public long getTimestamp(){
+    public double getTimestamp(){
         return mTimestamp;
+    }
+
+    public void setTimestamp(double ts){
+        mTimestamp = ts;
+    }
+
+    // sets the timestamp to the current timestamp
+    public void updateToCurrentTimestamp(){
+        mTimestamp = Timer.getFPGATimestamp();
     }
 
     // angle to target

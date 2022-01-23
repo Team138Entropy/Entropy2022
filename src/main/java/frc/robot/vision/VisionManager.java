@@ -9,6 +9,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import edu.wpi.first.wpilibj.Timer;
+
 
 import frc.robot.Constants;
 
@@ -126,16 +128,8 @@ class UDPReciever {
                     ((Number) CurrentPacket.get("BallX")).doubleValue(),
                    0);
     
-            // ti.SetY(((320/2)- .5) - 40);
-            // ti.SetZ((240/2)- .5);
-
-            // 
-    
             // Reconvert Field information
-            ti.CalculateFields();
-
-            //System.out.println(ti.getErrorAngle());
-    
+            ti.CalculateFields();   
     
             // Pass to executor to not block up this field
             RobotTrackerExecutor.execute(
@@ -213,5 +207,21 @@ class UDPReciever {
         return mTargetData.get(ttype);
     }
 
+    // Gets a Target within parameter of seconds
+    // if there is no target that recent, than null is returned
+    public TargetInfo getTarget(Constants.TargetType ttype, double withinSeconds){
+      TargetInfo t = mTargetData.get(ttype);
+
+      // verify the target is within the threshold critera
+      double currentSeconds = Timer.getFPGATimestamp();
+      double deltaSeconds = currentSeconds - t.getTimestamp();
+
+      // check if target is too old
+      if(deltaSeconds > withinSeconds){
+        // difference of seconds is greater than than difference
+        t = null;
+      }
+      return t;
+    }
     
 }

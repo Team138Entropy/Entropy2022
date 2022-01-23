@@ -200,19 +200,17 @@ public class Robot extends TimedRobot {
 
   private void DriveLoop(){
     double driveThrottle = mOperatorInterface.getDriveThrottle();
-    driveThrottle *= .50;
     double driveTurn = mOperatorInterface.getDriveTurn();
 
     boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
     SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 
-    TargetInfo ti = mVisionManager.getTarget(Constants.TargetType.CAMERA_1_BLUE_CARGO);
-    SmartDashboard.putBoolean("Valid Target", ti.isValid());
+    TargetInfo ti = mVisionManager.getTarget(Constants.TargetType.CAMERA_1_BLUE_CARGO, 1);
+    SmartDashboard.putBoolean("Valid Target", (ti != null) ?  ti.isValid() : null);
+    SmartDashboard.putNumber("Target Angle", (ti != null) ? ti.getErrorAngle() : 0);
     SmartDashboard.putNumber("Target Angle", ti.getErrorAngle());
 
-    if(wantsAutoSteer){
-    
-
+    if(wantsAutoSteer && ti != null){
       if(ti.isValid()){ //only allow if valud packet
         // autonomously steering robot towards cargo
         SmartDashboard.putNumber("Vision Error Angle", ti.getErrorAngle());
@@ -221,7 +219,6 @@ public class Robot extends TimedRobot {
         System.out.println("Invalid Packet!");
       }
     }else{
-      SmartDashboard.putNumber("Vision Error Angle", 1000);
       //manual drive
       mDrive.setDrive(driveThrottle, driveTurn, false);
     }
