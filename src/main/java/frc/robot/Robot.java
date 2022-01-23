@@ -9,6 +9,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
+<<<<<<< Updated upstream
+=======
+import frc.robot.vision.TargetInfo;
+import frc.robot.vision.VisionManager;
+>>>>>>> Stashed changes
 import frc.robot.auto.AutoModeExecutor;
 import frc.robot.auto.modes.*;
 import frc.robot.auto.modes.DoNothingMode;
@@ -63,6 +68,7 @@ public class Robot extends TimedRobot {
     mAutoModes.addOption("Tarmac1_B2_B3_Tarmac2", new Tarmac1_B2_B3_Tarmac2());
     mAutoModes.addOption("One Ball", new OneBall());
     mAutoModes.addOption("DEMO", new DEMO());
+    mAutoModes.addOption("TEST", new TEST());
     SmartDashboard.putData(mAutoModes);
   }
   /**
@@ -179,8 +185,31 @@ public class Robot extends TimedRobot {
     double driveThrottle = mOperatorInterface.getDriveThrottle();
     double driveTurn = mOperatorInterface.getDriveTurn();
 
+<<<<<<< Updated upstream
     //manual drive
     mDrive.setDrive(driveThrottle, driveTurn, false);
+=======
+    boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
+    SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
+
+    TargetInfo ti = mVisionManager.getTarget(Constants.TargetType.CAMERA_1_BLUE_CARGO, 1);
+    //SmartDashboard.putBoolean("Valid Target", (ti != null) ?  ti.isValid() : null);
+    //SmartDashboard.putNumber("Target Angle", (ti != null) ? ti.getErrorAngle() : 0);
+    //SmartDashboard.putNumber("Target Angle", ti.getErrorAngle());
+
+    if(wantsAutoSteer && ti != null){
+      if(ti.isValid()){ //only allow if valud packet
+        // autonomously steering robot towards cargo
+        SmartDashboard.putNumber("Vision Error Angle", ti.getErrorAngle());
+        mDrive.autoSteer(driveThrottle, -1 * ti.getErrorAngle());
+      }else{
+        System.out.println("Invalid Packet!");
+      }
+    }else{
+      //manual drive
+      mDrive.setDrive(driveThrottle, driveTurn, false);
+    }
+>>>>>>> Stashed changes
   }
 
 
