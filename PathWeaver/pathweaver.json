@@ -1,9 +1,0 @@
-{
-  "lengthUnit": "Foot",
-  "exportUnit": "Always Meters",
-  "maxVelocity": 12.0,
-  "maxAcceleration": 6.0,
-  "wheelBase": 1.0,
-  "gameName": "Infinite Recharge",
-  "outputDir": "../trajectories"
-}

@@ -1,7 +1,7 @@
 package frc.robot.auto;
-
-import edu.wpi.first.wpilibj.trajectory.*;
-import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
+import frc.robot.Constants;
+import edu.wpi.first.math.trajectory.*;
+import edu.wpi.first.math.trajectory.Trajectory.State;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -44,4 +44,17 @@ public class AutoUtil {
         return reversedTrajectory;
     }
     
+    /**
+     * Get Trajectory Config for this Robot
+     * ft/s 6 fts
+     * ft^2 4 fts
+     * @return
+     */
+    public static TrajectoryConfig getTrajectoryConfig(){
+        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+            Constants.Drive.Auto.VelocityMetersPerSecond,
+            Constants.Drive.Auto.AccelerationMetersPerSecondSq
+        );
+        return trajectoryConfig;
+    }
 }
