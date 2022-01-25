@@ -39,8 +39,6 @@ public class Robot extends TimedRobot {
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
 
-  private double shoulderTarget = -60;
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -145,62 +143,26 @@ public class Robot extends TimedRobot {
 
   }
 
-  private boolean isAutoExtending = false;
-
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    
-    // The following two arm control modes don't both work at once
     if (mOperatorInterface.getArmExtend()) {
-      mArm.extend(.8);
-      System.out.println("Extending");
-      isAutoExtending = true;
+      mArm.extendToMax();
     } else if (mOperatorInterface.getArmRetract()) {
-      mArm.extend(-.8);
-      isAutoExtending = true;
+      mArm.retractToMin();
     }
     
     if (mOperatorInterface.getArmExtendManual()) {
-      mArm.extend(.5);
-      isAutoExtending = false;
+      mArm.jogOut();
     } else if (mOperatorInterface.getArmRetractManual()) {
-      mArm.extend(-.5);
-      isAutoExtending = false;
-    } else if (!isAutoExtending) {
-      mArm.stopForearm();
+      mArm.jogIn();
     }
 
-    /* Joystick control of the arm */
-    int[] directions = {-50, 0, 60, 90, 120, 210}; // We are using a fixed list of points to navigate to
+    mArm.update(mOperatorInterface.getOperatorStickX(), mOperatorInterface.getOperatorStickY());
     
-    // Convert the joystick x and y positions into a 2D vector. Magnitude = sqrt(x^2+y^2).
-    // Angle (in radians) = arctangent(y / x)
-    double magnitude = Math.sqrt(Math.pow(mOperatorInterface.getOperatorStickY(), 2) + Math.pow(mOperatorInterface.getOperatorStickX(), 2));
-    double angle = Math.atan(mOperatorInterface.getOperatorStickY() / mOperatorInterface.getOperatorStickX());
-    
-    // Java arctangent method returns a number between -pi/2 to pi/2 (-90 to 90 degrees), so we have to convert to
-    // degrees. We have to add 180 degrees if we want the arm to be able to rotate past 90
-    angle *= -1 / Constants.Misc.degreeToRadian;
-    if (mOperatorInterface.getOperatorStickX() > 0) angle += 180;
-
-    int difference = 360; // The difference between each listed angle, and the actual joystick angle, used to find which listed angle is closest to the joystick
-    for (int i : directions) {
-      if (magnitude < .5) break; // If they aren't moving the joystick, don't move the arm
-      if (Math.abs(i - (int) angle) < difference) {
-        shoulderTarget = i + (i < 90 ? 3 : -3); // Offset the target by 3 degrees upwards to compensate for gravity/slop
-        difference = Math.abs(i - (int) angle); // Set the new difference
-      }
-    }
-    /* Joystick control of the arm */
-    
-    // Make the arm move
-    mArm.rotateShoulderPosition(shoulderTarget);
-    
-    SmartDashboard.putBoolean("dpadUp", mOperatorInterface.getArmExtendManual());
-    SmartDashboard.putNumber("dpad", mOperatorInterface.getDPadValue());
+    SmartDashboard.putBoolean("dpadOther", mOperatorInterface.isDPadOther());
     SmartDashboard.putNumber("forearmOutput", mArm.getForearmOutput());
-    SmartDashboard.putNumber("shoulderTarget", shoulderTarget);
+    SmartDashboard.putNumber("shoulderTarget", mArm.getShoulderTarget());
     SmartDashboard.putNumber("shoulderVelocity", mArm.getShoulderVelocity());
     SmartDashboard.putNumber("shoulderPosition", mArm.getShoulderPosition());
     SmartDashboard.putNumber("shoulderOutput", mArm.getShoulderOutput());

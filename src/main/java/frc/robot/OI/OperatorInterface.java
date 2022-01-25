@@ -89,12 +89,17 @@ public class OperatorInterface {
         return isRightTriggerPressed.update(OperatorController.getButton(NykoController.Button.RIGHT_TRIGGER));
     }
 
-    // TODO: Don't use the D-pad
     public boolean getArmExtendManual() {
-        return OperatorController.getDPad() == NykoController.DPad.UP;
+        return (OperatorController.getDPad() == NykoController.DPad.UP || OperatorController.getDPad() 
+            == NykoController.DPad.UP_RIGHT) || OperatorController.getDPad() == NykoController.DPad.UP_LEFT;
     }
 
     public boolean getArmRetractManual() {
-        return OperatorController.getDPad() == NykoController.DPad.DOWN;
+        return (OperatorController.getDPad() == NykoController.DPad.DOWN || OperatorController.getDPad() 
+            == NykoController.DPad.DOWN_RIGHT) || OperatorController.getDPad() == NykoController.DPad.DOWN_LEFT;
+    }
+
+    public boolean isDPadOther() {
+        return OperatorController.getDPad() == NykoController.DPad.OTHER;
     }
 }

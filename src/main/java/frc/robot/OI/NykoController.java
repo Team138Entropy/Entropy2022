@@ -27,6 +27,10 @@ public class NykoController {
     DOWN,
     LEFT,
     RIGHT,
+    UP_LEFT,
+    UP_RIGHT,
+    DOWN_LEFT,
+    DOWN_RIGHT,
     OTHER
   }
 
@@ -112,17 +116,23 @@ public class NykoController {
       This doesnt work properly, don't use
   */
   DPad getDPad() {
-    
-    // TODO: Fix this, the d-pad can occupy 8 directions, not 4
     switch (mController.getPOV()) {
       case 0:
         return DPad.UP;
+      case 45:
+        return DPad.UP_RIGHT;
       case 90:
         return DPad.RIGHT;
+      case 135:
+        return DPad.DOWN_RIGHT;
       case 180:
         return DPad.DOWN;
+      case 225:
+        return DPad.DOWN_LEFT;
       case 270:
         return DPad.LEFT;
+      case 315:
+        return DPad.UP_LEFT;
       default:
         return DPad.OTHER;
     }
