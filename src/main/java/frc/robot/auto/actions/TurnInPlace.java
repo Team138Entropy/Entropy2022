@@ -15,39 +15,43 @@ import frc.robot.subsystems.Drive;
 public class TurnInPlace implements Action {
     private boolean mStopWhenDone;
     private boolean mComplete;
-    private double mDagrees;
+    private double mDegrees;
     private Drive mDrive=Drive.getInstance();
     private PIDController mPidController;
 
-    public TurnInPlace(double drgrees,boolean stopWhenDone) {
+    public TurnInPlace(double degrees,boolean stopWhenDone) {
         mComplete = false;
         mStopWhenDone = stopWhenDone;
-        mDagrees = drgrees;
-        mPidController = new PIDController(0.2, 0, 0.015);
-        mPidController.setTolerance(1);
-        mPidController.setSetpoint(drgrees);
+        mDegrees = degrees;
     }
 
 
     @Override
     public void start() {
-        System.out.println("Target drgrees"+mDagrees);
+        System.out.println("Target drgrees" + mDagrees);
         mDrive.getGyro().reset();
     }
 
     @Override
     public void update() {
-        mComplete = mPidController.atSetpoint();
-        if(!mComplete){
-            double gyroAngle = mDrive.getGyro().getAngle();
-            double output = mPidController.calculate(gyroAngle);
-            System.out.println("Gyro Angle: " + gyroAngle);
-            System.out.println("Ouput: " + output);
-            mDrive.setDrive(0, output, false);
-        }else{
-            mDrive.setDrive(0, 0, false);
+        double gyroAngle = mDrive.getGyro().getAngle();
+        final double kP = 0.005;
+        
+        if (mDegrees > 180) {
+            mDegrees = -(360 - mDegrees);
+        } else if (mDa=egrees < -180) {
+            mDegrees = 360 + mDegrees;
         }
-
+        
+        double err = mDegrees - gyroAngle;
+        double speed = MathUtil.clamp(err * kP, -0.4, 0.4);
+        
+        if(Math.abs(err) > 2){
+          mDrive.setDrive(0, speed, true);   
+        }else{
+          mDrive.setDrive(0,0,false);
+          mComplete = true;   
+        }
     }
 
     // if trajectory is done
@@ -58,6 +62,7 @@ public class TurnInPlace implements Action {
 
     @Override
     public void done() {
+        mDrive.setDrive(0,0,false);
         System.out.println("turn in place complete");
     }
 }
