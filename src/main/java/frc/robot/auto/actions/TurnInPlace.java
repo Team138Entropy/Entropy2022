@@ -2,6 +2,7 @@ package frc.robot.auto.actions;
 
 import frc.robot.auto.TrajectoryFollower;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.Robot;
@@ -17,7 +18,6 @@ public class TurnInPlace implements Action {
     private boolean mComplete;
     private double mDegrees;
     private Drive mDrive=Drive.getInstance();
-    private PIDController mPidController;
 
     public TurnInPlace(double degrees,boolean stopWhenDone) {
         mComplete = false;
@@ -28,7 +28,7 @@ public class TurnInPlace implements Action {
 
     @Override
     public void start() {
-        System.out.println("Target drgrees" + mDagrees);
+        System.out.println("Target drgrees" + mDegrees);
         mDrive.getGyro().reset();
     }
 
@@ -39,7 +39,7 @@ public class TurnInPlace implements Action {
         
         if (mDegrees > 180) {
             mDegrees = -(360 - mDegrees);
-        } else if (mDa=egrees < -180) {
+        } else if (mDegrees < -180) {
             mDegrees = 360 + mDegrees;
         }
         
