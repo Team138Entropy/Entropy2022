@@ -2,14 +2,13 @@ import json
 import math
 import queue
 import socket
-from sqlite3 import Time
 import threading
 import time
+from sqlite3 import Time
 
 import cv2
 import numpy as np
 from cscore import CameraServer
-from networktables import NetworkTables
 
 #Below link has a barebones version, useful for getting the camera server stuff
 #https://docs.wpilib.org/en/stable/docs/software/vision-processing/wpilibpi/basic-vision-example.html
@@ -73,18 +72,15 @@ if __name__ == "__main__":
     imgForm = np.zeros(shape=(res_height, res_width, 3), dtype=np.uint8)
 
     #Red Ball
+    '''
     redHue = [0, 12]
     redSat = [109, 255]
     redVal = [58, 255]  
+    '''
 
-    #Blue ball estimates
-    '''
-    blueHue = [78, 120]
-    blueSat = [156, 255]
-    blueVal = [28, 255]  
-    '''
-    blueHue = [78, 120]
-    blueSat = [154, 255]
+    #Blue ball
+    blueHue = [86, 116]
+    blueSat = [155, 255]
     blueVal = [0, 255]  
 
     #Yellow Ball params
@@ -93,7 +89,7 @@ if __name__ == "__main__":
     #yelVal = [166,255]
 
     #Creating settings for blur filter
-    radius = 5.855855855855857
+    radius = 18
     ksize = (2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
@@ -132,20 +128,22 @@ if __name__ == "__main__":
     params = cv2.SimpleBlobDetector_Params()
     
     # Set Area filtering parameters
+    
     params.filterByArea = True
-    params.minArea = 0
+    params.minArea = 100
     
     # Set Circularity filtering parameters
     params.filterByCircularity = True
-    params.minCircularity = 0.5
+    params.minCircularity = 0.8
     
     # Set Convexity filtering parameters
-    params.filterByConvexity = True
+    params.filterByConvexity = False
     params.minConvexity = 0
         
     # Set inertia filtering parameters
     params.filterByInertia = False
-    params.minInertiaRatio = 0
+    params.minInertiaRatio = 0.01
+    
     
     # Create a detector with the parameters
     detector = cv2.SimpleBlobDetector_create(params)
@@ -175,13 +173,14 @@ if __name__ == "__main__":
             mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
                                 (blueHue[1], blueSat[1], blueVal[1]))
 
-
-            #TODO: Make blob detection work
+            inverted_img = cv2.bitwise_not(mask)    
             # Detect blobs
-            keypoints = detector.detect(mask) 
-            blobs = cv2.drawKeypoints(mask, keypoints, blank, (0, 0, 255),
-                          cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-            cv2.imwrite('blobs.jpeg', blobs)
+            keypoints = detector.detect(inverted_img)
+            
+            blank = np.zeros((1, 1))
+            blobs = cv2.drawKeypoints(mask, keypoints,np.array([]),(0, 0, 255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+            #TODO: Find way to fill in  the drawn keypoints
+            cv2.imwrite('blobs.jpg', blobs)
             print('Blobs')
             time.sleep(1)
 
