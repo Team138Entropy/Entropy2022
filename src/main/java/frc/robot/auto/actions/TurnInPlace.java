@@ -1,8 +1,8 @@
 package frc.robot.auto.actions;
 
 import frc.robot.auto.TrajectoryFollower;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.trajectory.*;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.Robot;
 import frc.robot.subsystems.Drive;
@@ -14,42 +14,54 @@ import frc.robot.subsystems.Drive;
  */
 public class TurnInPlace implements Action {
     private boolean mStopWhenDone;
-    private double mDagrees;
+    private boolean mComplete;
+    private double mDegrees;
     private Drive mDrive=Drive.getInstance();
-    private PIDController mPidController;
 
-    public TurnInPlace(double drgrees,boolean stopWhenDone) {
+    public TurnInPlace(double degrees,boolean stopWhenDone) {
+        mComplete = false;
         mStopWhenDone = stopWhenDone;
-        mDagrees = drgrees;
-        mPidController = new PIDController(0.2, 0, 0.015);
-        mPidController.setTolerance(1);
-        mPidController.setSetpoint(drgrees);
+        mDegrees = degrees;
     }
 
 
     @Override
     public void start() {
-        System.out.println("Target drgrees"+mDagrees);
+        System.out.println("Target drgrees" + mDegrees);
         mDrive.getGyro().reset();
     }
 
     @Override
     public void update() {
-       double gyroAngle = mDrive.getGyro().getAngle();
-       double output = mPidController.calculate(gyroAngle);
-       System.out.println("Gyro Angle: " + gyroAngle);
-       System.out.println("Ouput: " + output);
-       mDrive.setDrive(0, output, false);
+        double gyroAngle = mDrive.getGyro().getAngle();
+        final double kP = 0.005;
+        
+        if (mDegrees > 180) {
+            mDegrees = -(360 - mDegrees);
+        } else if (mDegrees < -180) {
+            mDegrees = 360 + mDegrees;
+        }
+        
+        double err = mDegrees - gyroAngle;
+        double speed = MathUtil.clamp(err * kP, -0.4, 0.4);
+        
+        if(Math.abs(err) > 2){
+          mDrive.setDrive(0, speed, true);   
+        }else{
+          mDrive.setDrive(0,0,false);
+          mComplete = true;   
+        }
     }
 
     // if trajectory is done
     @Override
     public boolean isFinished() {
-        return false;
+        return mComplete;
     }
 
     @Override
     public void done() {
+        mDrive.setDrive(0,0,false);
         System.out.println("turn in place complete");
     }
 }

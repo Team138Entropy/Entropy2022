@@ -331,6 +331,7 @@ public class Drive extends Subsystem {
   public void updateSmartDashBoard() {
     SmartDashboard.putNumber("encoder_left", getLeftEncoderPosition());
     SmartDashboard.putNumber("encoder_right", getRightEncoderPosition());
+    SmartDashboard.putNumber("gyro", getHeading());
   }
 
   // Zero Encoder of Each Falcon500

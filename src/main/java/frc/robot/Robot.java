@@ -11,7 +11,6 @@ import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
 import frc.robot.vision.TargetInfo;
 import frc.robot.vision.VisionManager;
-import jdk.nashorn.internal.ir.BreakableNode;
 import frc.robot.auto.AutoModeExecutor;
 import frc.robot.auto.modes.*;
 import frc.robot.auto.modes.DoNothingMode;
@@ -238,9 +237,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 
     TargetInfo ti = mVisionManager.getTarget(Constants.TargetType.CAMERA_1_BLUE_CARGO, 1);
-    SmartDashboard.putBoolean("Valid Target", (ti != null) ?  ti.isValid() : null);
-    SmartDashboard.putNumber("Target Angle", (ti != null) ? ti.getErrorAngle() : 0);
-    SmartDashboard.putNumber("Target Angle", ti.getErrorAngle());
+    //SmartDashboard.putBoolean("Valid Target", (ti != null) ?  ti.isValid() : null);
+    //SmartDashboard.putNumber("Target Angle", (ti != null) ? ti.getErrorAngle() : 0);
+    //SmartDashboard.putNumber("Target Angle", ti.getErrorAngle());
 
     if(wantsAutoSteer && ti != null){
       if(ti.isValid()){ //only allow if valud packet
