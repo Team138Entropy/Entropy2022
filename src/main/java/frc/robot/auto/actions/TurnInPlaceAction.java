@@ -3,6 +3,7 @@ package frc.robot.auto.actions;
 import frc.robot.auto.TrajectoryFollower;
 import edu.wpi.first.wpilibj.trajectory.*;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.Robot;
 import frc.robot.subsystems.Drive;
@@ -12,28 +13,51 @@ import frc.robot.subsystems.Drive;
  * @see Path
  * @see Action
  */
-public class TurnInPlace implements Action {
+// https://frc-pdr.readthedocs.io/en/latest/control/pid_control.html
+public class TurnInPlaceAction implements Action {
     private boolean mStopWhenDone;
     private boolean mComplete;
     private double mDegrees;
-    private Drive mDrive=Drive.getInstance();
+    private Drive mDrive = Drive.getInstance();
+    private PIDController mPIDController;
 
-    public TurnInPlace(double degrees,boolean stopWhenDone) {
+    public TurnInPlaceAction(double degrees,boolean stopWhenDone) {
         mComplete = false;
         mStopWhenDone = stopWhenDone;
         mDegrees = degrees;
+
+        mPIDController = new PIDController(.1, 0, 0);
+        mPIDController.setSetpoint(degrees);
+        mPIDController.setTolerance(1); // degrees tolerance
     }
 
 
     @Override
     public void start() {
-        System.out.println("Target drgrees" + mDegrees);
-        mDrive.getGyro().reset();
+        System.out.println("Target Degrees" + mDegrees);
     }
 
     @Override
     public void update() {
         double gyroAngle = mDrive.getGyro().getAngle();
+        double out = mPIDController.calculate(gyroAngle);
+        double clampedOutput = MathUtil.clamp(out, -1, 1);
+
+        // square potentially?
+        clampedOutput = Math.copySign(clampedOutput * clampedOutput, clampedOutput);
+
+
+        if(mPIDController.atSetpoint()){
+            // Stop Robot
+            mDrive.setPercentOutputDrive(0, 0);
+            mComplete = true;
+
+        }else{
+            // Turning
+            mDrive.setPercentOutputDrive(clampedOutput, -1 * clampedOutput);
+        }
+
+        /*
         final double kP = 0.005;
         
         if (mDegrees > 180) {
@@ -48,9 +72,10 @@ public class TurnInPlace implements Action {
         if(Math.abs(err) > 2){
           mDrive.setDrive(0, speed, true);   
         }else{
-          mDrive.setDrive(0,0,false);
+          mDrive.setPercentOutputDrive(0,0);
           mComplete = true;   
         }
+        */
     }
 
     // if trajectory is done
@@ -61,7 +86,7 @@ public class TurnInPlace implements Action {
 
     @Override
     public void done() {
-        mDrive.setDrive(0,0,false);
-        System.out.println("turn in place complete");
+        mDrive.setPercentOutputDrive(0,0);
+        System.out.println("Action: Turn in Place Complete");
     }
 }

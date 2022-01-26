@@ -390,6 +390,10 @@ public class Drive extends Subsystem {
     setAutoSpeeds(wheelSpeeds);
   }
 
+  public synchronized void setPercentOutputDrive(double left, double right){
+    mLeftMaster.set(ControlMode.PercentOutput, left);
+    mRightMaster.set(ControlMode.PercentOutput, right);
+  } 
 
   /** Updates the field-relative position. */
   public void updateOdometry() {
