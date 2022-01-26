@@ -20,7 +20,7 @@ import frc.robot.auto.modes.XboxControllermode;
 import frc.robot.Constants.Controllers.Operator;
 import frc.robot.Constants;
 import frc.robot.OI.XboxController.Button;
-
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
 
   private boolean inAutoMode = false;
   private boolean inTeleop = false;
+  private PowerDistributionPanel powerPanel = new PowerDistributionPanel(0);
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -95,9 +96,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("In Auto", inAutoMode);
     SmartDashboard.putBoolean("In Teleop", inTeleop);
     SmartDashboard.putNumber("Speed", mOperatorInterface.getDriveThrottle());
-    SmartDashboard.putNumber("voltage", RobotController.getBatteryVoltage());
+    SmartDashboard.putNumber("battery", RobotController.getBatteryVoltage());
     SmartDashboard.putNumber("Left Encoder", mDrive.getLeftEncoderPosition());
     SmartDashboard.putNumber("Right Encoder", mDrive.getRightEncoderPosition());
+    SmartDashboard.putNumber("voltage",powerPanel.getVoltage());
   }
 
   /** Called at the Start of Autonomous **/
