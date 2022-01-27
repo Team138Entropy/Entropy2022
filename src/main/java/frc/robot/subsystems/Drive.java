@@ -5,14 +5,14 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import frc.robot.Constants;
 import frc.robot.Kinematics;
 import frc.robot.Robot;
@@ -21,12 +21,13 @@ import frc.robot.util.Util;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.geometry.Rotation2d;
 import frc.robot.util.geometry.Twist2d;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.util.drivers.CTREUnits;
 import frc.robot.util.drivers.EntropyTalonFX;
 import frc.robot.util.drivers.MotorConfigUtils;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 
@@ -302,6 +303,17 @@ public class Drive extends Subsystem {
     return currentCommand;
   }
 
+  public synchronized void 
+  autoSteer(double throttle, double angle){
+    double radians = (0.0174533) * angle;
+    double heading_error_rad = radians;
+    final double kAutosteerKp = 0.1;
+    boolean towards_goal = true;
+    boolean reverse = false;
+    double curvature = (towards_goal ? 1.0 : 0.0) * heading_error_rad * kAutosteerKp;
+    setOpenLoop(Kinematics.inverseKinematics(new Twist2d(throttle, 0.0, curvature * throttle * (reverse ? -1.0 : 1.0))));
+  }
+
   // periodic update 
   public void periodic() {
     // Update the odometry in the periodic block
@@ -314,6 +326,11 @@ public class Drive extends Subsystem {
   public void checkSubsystem() {
 
 
+  }
+
+  public void updateSmartDashBoard() {
+    SmartDashboard.putNumber("encoder_left", getLeftEncoderPosition());
+    SmartDashboard.putNumber("encoder_right", getRightEncoderPosition());
   }
 
   // Zero Encoder of Each Falcon500
@@ -426,7 +443,6 @@ public class Drive extends Subsystem {
   // Get the left encoder data in meters
   public double getLeftEncoderPosition() {
     // Use SRX class to get encoder because its srx motors
-    System.out.println(CTREUnits.talonPosistionToMeters(mLeftMasterSRX.getSelectedSensorPosition()));
     return CTREUnits.talonPosistionToMeters(mLeftMasterSRX.getSelectedSensorPosition());
   }
 
@@ -436,7 +452,10 @@ public class Drive extends Subsystem {
   // Get the right encoder data in meters
   public double getRightEncoderPosition() {
     // Use SRX class to get encoder because its srx motors
-    System.out.println(CTREUnits.talonPosistionToMeters(mRightMasterSRX.getSelectedSensorPosition()));
     return CTREUnits.talonPosistionToMeters(mRightMasterSRX.getSelectedSensorPosition());
+  }
+
+  public Gyro getGyro(){
+    return m_gyro;
   }
 }

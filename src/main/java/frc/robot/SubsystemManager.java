@@ -99,9 +99,7 @@ public class SubsystemManager implements ILooper {
     }
   }
 
-  /*
-      Run Subsystem check command on all subsystems
-  */
+  // Run Subsystem check command on all subsystems
   public void checkSubsystems() {
     for (int i = 0; i < mSubsystems.size(); i++) {
       try {
@@ -109,6 +107,13 @@ public class SubsystemManager implements ILooper {
       } catch (Exception e) {
        // mSubsystemLogger.verbose("Subsystem Check Exception: " + e.getMessage());
       }
+    }
+  }
+
+  // Calls UpdateSmartdashboard method of each system
+  public void updateSmartdashboards() {
+    for(int i = 0; i < mSubsystems.size(); i++){
+      mSubsystems.get(i).updateSmartDashBoard();
     }
   }
 }

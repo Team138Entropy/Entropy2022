@@ -23,8 +23,8 @@ public class DriveSignal {
   public static final DriveSignal BRAKE = new DriveSignal(0, 0, true);
 
   public void PrintLog() {
-    System.out.println("Left Output: " + mLeftMotor);
-    System.out.println("Right Output: " + mRightMotor);
+   // System.out.println("Left Output: " + mLeftMotor);
+  //System.out.println("Right Output: " + mRightMotor);
   }
 
   public double getLeft() {

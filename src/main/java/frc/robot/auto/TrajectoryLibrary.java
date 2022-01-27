@@ -1,13 +1,13 @@
 package frc.robot.auto;
 
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
-import  edu.wpi.first.wpilibj.util.Units;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import  edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.Filesystem;
 
 import java.io.IOException;
@@ -49,7 +49,6 @@ public class TrajectoryLibrary {
        return Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSONFolder + "/" + TrajectoryName);
      }
 
-
      // Trajectories
      public Trajectory getTrajectoryByName(String fileName){
        Trajectory traj = null;
@@ -60,6 +59,11 @@ public class TrajectoryLibrary {
            System.out.println("Unable to open trajectory: " + fileName);
        }
        return traj;
+     }
+
+     // Creates a reversed Trajectory
+     public Trajectory getReversedTrajectory(Trajectory traj){
+      return null;
      }
 
      public Trajectory getBasicTrajectory(){
@@ -73,6 +77,73 @@ public class TrajectoryLibrary {
       }
       return traj;
      }
+     public Trajectory get_Tarmac1_B2_trajectory(){
+      Trajectory traj = null;
+      String fileName = "Tarmac1_B2.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_B2_B3_trajectory(){
+      Trajectory traj = null;
+      String fileName = "B2_B3.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_B3_Tarmac2_trajectory(){
+      Trajectory traj = null;
+      String fileName = "B3_Tarmac2.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_Tarmac1_B2_Backwords(){
+      Trajectory traj = null;
+      String fileName = "Tarmac1_B2.Backwords.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_B2_Tarmac1_trajectory(){
+      Trajectory traj = null;
+      String fileName = "B2_Tarmac1.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_DEMO(){
+      Trajectory traj = null;
+      String fileName = "DEMO3.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     
      
 }
 

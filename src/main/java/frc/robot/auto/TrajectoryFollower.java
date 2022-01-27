@@ -1,14 +1,14 @@
 package frc.robot.auto;
 
 
-import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import  edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import  edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -68,12 +68,6 @@ public class TrajectoryFollower {
     }
     
     private void init(){
-        // Mark Path as Incomplete
-        mComplete = false;
-
-        // Mark to run
-        mRun = true;
-
         // Create and push Field2d to SmartDashboard.
         mField = new Field2d();
         SmartDashboard.putData("Autonomous Field", mField);
@@ -81,6 +75,12 @@ public class TrajectoryFollower {
 
     // Called Once at the Start of following the Path
     public void Start(){
+        // Mark Trajectory as Incomplete
+        mComplete = false;
+
+        // Allow Trajectory to run
+        mRun = true;
+
         // Initialize the timer.
         mTimer = new Timer();
         mTimer.start();
@@ -106,10 +106,10 @@ public class TrajectoryFollower {
         if (mRun && mTimer.get() < mTrajectory.getTotalTimeSeconds()) {
             // Get the desired pose from the trajectory.
             var desiredPose = mTrajectory.sample(mTimer.get());
-      
+                  
             // Get the reference chassis speeds from the Ramsete controller.
             var refChassisSpeeds = mRamseteController.calculate(mDrive.getPose(), desiredPose);
-      
+            
             // Set the linear and angular speeds.
             mDrive.autoomousDrive(refChassisSpeeds.vxMetersPerSecond, refChassisSpeeds.omegaRadiansPerSecond);
           } else {
