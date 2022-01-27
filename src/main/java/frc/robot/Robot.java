@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("battery", RobotController.getBatteryVoltage());
     SmartDashboard.putNumber("Left Encoder", mDrive.getLeftEncoderPosition());
     SmartDashboard.putNumber("Right Encoder", mDrive.getRightEncoderPosition());
-    SmartDashboard.putNumber("voltage",powerPanel.getVoltage());
+    SmartDashboard.putData("power panel",powerPanel);
   }
 
   /** Called at the Start of Autonomous **/
