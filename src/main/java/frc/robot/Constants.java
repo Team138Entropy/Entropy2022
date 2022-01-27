@@ -4,6 +4,15 @@ import frc.robot.Logger.SupportedLevels;
 import frc.robot.util.geometry.*;
 
 public class Constants {
+  
+  // Potential Targets
+  public enum TargetType {
+    CAMERA_1_RED_CARGO,
+    CAMERA_1_BLUE_CARGO,
+    CAMERA_2_RED_CARGO,
+    CAMERA_2_BLUE_CARGO;
+  }
+  
   public enum Loggers {
     VISION(SupportedLevels.VERBOSE),
     POT(SupportedLevels.DEBUG),
@@ -30,7 +39,7 @@ public class Constants {
     public SupportedLevels minLevel;
 
     Loggers(SupportedLevels minLevel) {
-    this.minLevel = minLevel;
+      this.minLevel = minLevel;
     }
   }
 
@@ -49,11 +58,29 @@ public class Constants {
     }
   }
 
+  public static class CanIDs {
+    // Power dist. panel
+    // public static final int PDPid = 25;
+  }
+
+  public static class Vision {
+    public static final double diagonalView = Math.toRadians(75);
+    public static final double horizontalAspect = 4;
+    public static final double verticalAspect = 3;
+    public static final double diagonalAspect = Math.hypot(horizontalAspect, verticalAspect);
+    public static final double horizontalView =
+      Math.atan(Math.tan(diagonalView / 2) * (horizontalAspect / diagonalView)) * 2;
+    public static final double verticalView =
+      Math.atan(Math.tan(diagonalView / 2) * (verticalAspect / diagonalView)) * 2;
+    
+    public static final Rotation2d kCameraHorizontalPlaneToLens =
+      Rotation2d.fromDegrees(0);
+  }
 
   // Subsystems
   public static class Drive {
     public static boolean enabled = true;
-  
+
     public static int talonSensorTimeoutMs = 250;
   
     public static double maxSpeedWhenClimbing = .3;
@@ -79,9 +106,14 @@ public class Constants {
       public static final double practiceTicksPerFoot = 1228.615;
     }
 
-    // Diameter of wheel & ticksPerRevolution used to convert meters into encoder ticks
-    public static double drivetrainWheelDiameter = 0.1524; // 6 inches in meters
-    public static double ticksPerRevolution = 4096;
+      public static class Auto {
+        public static final double VelocityMetersPerSecond = 1.8288; // m/s, from 6 ft/s
+        public static final double AccelerationMetersPerSecondSq = 1.2192; //m/s^2 from 4 ft/s^2
+      }
+
+      // Diameter of wheel & ticksPerRevolution used to convert meters into encoder ticks
+      public static double drivetrainWheelDiameter = 0.1524; // 6 inches in meters
+      public static double ticksPerRevolution = 4096;
 
 
     public static class AutoPID {
@@ -143,15 +175,23 @@ public class Constants {
 
   public static class Arm {
     public static final double shoulderJogSpeed = .35;
-    public static final int shoulderTicksPerRotation = 8192;
-    public static final int positionHorizontal = 0;
-    public static final int shoulderMinPosition = -60;
-    public static final int shoulderMaxPosition = 220;
+    public static final double shoulderTicksPerRotation = 8192;
+    public static final double shoulderPositionHorizontal = 0;
+    public static final double shoulderMinRotation = -60;
+    public static final double shoulderMaxRotation = 220;
     public static final int shoulderStartPosition = -60;
-    public static final double maxGravityFF = .045;
+    public static final double shoulderMaxGravityFF = .045;
 
     public static final double forearmJogSpeed = .5;
     public static final double forearmExtendSpeed = .8;
+    public static final double forearmExtensionLength = 0;
+    public static final double forearmTicksPerExtension = 0;
+    public static final double forearmMinExtension = 0;
+    public static final double forearmMaxExtension = 0;
+  }
+
+  public static class Grasper {
+    public static final double jogSpeed = .2;
   }
 
   public static class Misc {

@@ -9,12 +9,11 @@ import frc.robot.Constants;
  * Arm subsystem comprised of a rotating shoulder and telescoping forearm.
  */
 public class Arm extends Subsystem {
+  private static Arm mInstance;
 
   // Motors
   private TalonSRX mShoulder;
   private TalonSRX mForearm;
-
-  private static Arm mInstance;
 
   // Other variables
   private boolean isAutomaticallyExtending = false;
@@ -44,6 +43,7 @@ public class Arm extends Subsystem {
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
 
     //TODO: Configure forearm
+    mForearm.configSelectedFeedbackCoefficient(Constants.Arm.forearmExtensionLength / (Constants.Arm.forearmMaxExtension - Constants.Arm.forearmMinExtension));
   }
 
   public static Arm getInstance() {
@@ -58,9 +58,12 @@ public class Arm extends Subsystem {
    */
   public void update(double joystickX, double joystickY) {
     rotateShoulderPosition(getJoystickTarget(joystickX, joystickY));
+
+    // if (getRotation() > Constants.Arm.shoulderMaxRotation || getExtension() < Constants.Arm.shoulderMinRotation) stopShoulder();
+    // if (getExtension() > Constants.Arm.forearmMaxExtension || getExtension() < Constants.Arm.forearmMinExtension) stopForearm();
     
-    wasManuallyExtending = isManuallyExtending;
     if (!isAutomaticallyExtending && !wasManuallyExtending) stopForearm();
+    wasManuallyExtending = isManuallyExtending;
   }
 
   /**
@@ -83,7 +86,7 @@ public class Arm extends Subsystem {
    * @param degrees the amount of degrees to rotate by
    */
   public void rotateShoulderDistance(double degrees) {
-    rotateShoulderPosition(degrees + getShoulderPosition());
+    rotateShoulderPosition(degrees + getRotation());
   }
 
   /**
@@ -91,8 +94,8 @@ public class Arm extends Subsystem {
    * @param degrees the position to rotate to
    */
   public void rotateShoulderPosition(double degrees) {
-    degrees = Math.max(degrees, Constants.Arm.shoulderMinPosition);
-    degrees = Math.min(degrees, Constants.Arm.shoulderMaxPosition);
+    degrees = Math.max(degrees, Constants.Arm.shoulderMinRotation);
+    degrees = Math.min(degrees, Constants.Arm.shoulderMaxRotation);
     double ff = getGravityFeedForward();
     mShoulder.set(ControlMode.MotionMagic, degrees, DemandType.ArbitraryFeedForward, ff);
   }
@@ -102,8 +105,8 @@ public class Arm extends Subsystem {
    * @return gravity feed forward value
    */
   public double getGravityFeedForward() {
-    double currentRads = getShoulderPosition() * Constants.Misc.degreeToRadian;
-    double ff = Constants.Arm.maxGravityFF * Math.cos(currentRads);
+    double currentRads = getRotation() * Constants.Misc.degreeToRadian;
+    double ff = Constants.Arm.shoulderMaxGravityFF * Math.cos(currentRads);
     return ff;
   }
 
@@ -163,11 +166,28 @@ public class Arm extends Subsystem {
     mForearm.set(ControlMode.PercentOutput, power);
   }
 
+  public void extendToPosition(double position) {
+    position = Math.max(position, Constants.Arm.forearmMinExtension);
+    position = Math.min(position, Constants.Arm.forearmMaxExtension);
+    
+    mForearm.set(ControlMode.MotionMagic, position);
+  }
+
+  public void extendDistance(double distance) {
+    extendToPosition(distance + getExtension());
+  }
+
+  /**
+   * Extend the arm to the maximum length.
+   */
   public void extendToMax() {
     extend(Constants.Arm.forearmExtendSpeed);
     isAutomaticallyExtending = true;
   }
 
+  /**
+   * Retract the arm to the minimum length.
+   */
   public void retractToMin() {
     extend(-Constants.Arm.forearmExtendSpeed);
     isAutomaticallyExtending = true;
@@ -201,14 +221,14 @@ public class Arm extends Subsystem {
   /**
    * @return shoulder position in degrees
    */
-  public int getShoulderPosition() {
+  public double getRotation() {
     return mShoulder.getSelectedSensorPosition();
   }
 
   /**
    * @return shoulder velocity in degrees/second
    */
-  public int getShoulderVelocity() {
+  public double getShoulderVelocity() {
     return mShoulder.getSelectedSensorVelocity();
   }
   
@@ -224,6 +244,14 @@ public class Arm extends Subsystem {
    */
   public double getShoulderTarget() {
     return shoulderTarget;
+  }
+
+  public double getExtension() {
+    return mForearm.getSelectedSensorPosition();
+  }
+
+  public double getForearmVelocity() {
+    return mForearm.getSelectedSensorVelocity();
   }
 
   /**

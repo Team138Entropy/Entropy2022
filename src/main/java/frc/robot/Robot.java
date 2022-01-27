@@ -10,10 +10,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
 import frc.robot.auto.AutoModeExecutor;
-import frc.robot.auto.modes.AutoModeBase;
+import frc.robot.auto.modes.*;
 import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.GenericHID;
 
 
 /**
@@ -22,9 +23,9 @@ import frc.robot.auto.modes.TestDriveMode;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends TimedRobot {  
 
-  // Controller Reference
+  // Controllers Reference
   private final OperatorInterface mOperatorInterface = OperatorInterface.getInstance();
 
   // Subsystem Manager
@@ -33,11 +34,34 @@ public class Robot extends TimedRobot {
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
   private final Arm mArm = Arm.getInstance();
+
   // Autonomous Execution Thread
   private AutoModeExecutor mAutoModeExecutor = null;
 
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
+
+  //Power dist. panel
+  //private final PowerDistributionPanel m_pdp = new PowerDistributionPanel(25);
+
+  // Mode
+  public enum RobotMode {
+    CargoScorer,
+    Climber
+  };
+  public RobotMode mCurrentMode = RobotMode.CargoScorer;
+
+  // Get Robot Mode Name to String
+  public String modeToString(RobotMode s){
+    switch(s){
+      case CargoScorer:
+        return "CargoScorer";
+      case Climber:
+        return "Climber";
+      default:
+        return "";
+    }
+  }
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -45,7 +69,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
     // populate autonomous list
     populateAutonomousModes();
   }
@@ -53,10 +76,10 @@ public class Robot extends TimedRobot {
   // Fill Autonomous Modes List
   private void populateAutonomousModes(){
     mAutoModes = new SendableChooser<AutoModeBase>();
-    mAutoModes.addOption("Nothing", new DoNothingMode());
+    mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
     mAutoModes.addOption("Test Drive", new TestDriveMode());
+    SmartDashboard.putData(mAutoModes);
   }
-
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
    * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
@@ -66,24 +89,27 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    
+    // Put PowerDistributionBoard stats onto the smart dashboard
+    // SmartDashboard.putNumber("PDP-Temp", m_pdp.getTemperature());
+    // SmartDashboard.putNumber("PDP-Voltage", m_pdp.getVoltage());
+    // for (int i = 0; i < 15; i++){ // This way we can get all the channels info
+    //   SmartDashboard.putNumber(("PDP-Current-"+i), m_pdp.getCurrent(i));
+    // }
+    // SmartDashboard.updateValues();
 
+    //mSubsystemManager.updateSmartdashboards();
   }
 
 
   /** Called at the Start of Autonomous **/
   @Override
   public void autonomousInit() {
+
     // set auto mode
 
     // Get Selected AutoMode
-    AutoModeBase selectedMode = mAutoModes.getSelected();
-    if(selectedMode == null){
-      System.out.println("Selected Auto Mode is Null");
-    }
-
-
-    TestDriveMode tdm = new TestDriveMode();
-    mAutoModeExecutor.setAutoMode(tdm);
+    mAutoModeExecutor.setAutoMode(mAutoModes.getSelected());
 
     // Start Autonomous Thread
     // This thread will run until disabled
@@ -99,6 +125,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    
     // Disable Auto Thread (if running)
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();
@@ -106,19 +133,18 @@ public class Robot extends TimedRobot {
 
     // Zero Drive Sensors
     mDrive.zeroSensors();
-
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
-    teleopRobotLoop();
+    RobotLoop();
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
+
     // Reset all auto mode state.
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();
@@ -129,17 +155,17 @@ public class Robot extends TimedRobot {
 
   }
 
+  int mRumbleTimer = 0;
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-    // Set Mode for the Auto Mode to use in Thread
-
+    // Activate rumble on op controller every second or so
+    mRumbleTimer++;
   }
 
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
-
 
   }
 
@@ -164,21 +190,27 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("forearmOutput", mArm.getForearmOutput());
     SmartDashboard.putNumber("shoulderTarget", mArm.getShoulderTarget());
     SmartDashboard.putNumber("shoulderVelocity", mArm.getShoulderVelocity());
-    SmartDashboard.putNumber("shoulderPosition", mArm.getShoulderPosition());
+    SmartDashboard.putNumber("shoulderPosition", mArm.getRotation());
     SmartDashboard.putNumber("shoulderOutput", mArm.getShoulderOutput());
   }
 
-  private void teleopRobotLoop(){
-    teleopDriveLoop();
+  private void RobotLoop(){
+    if(mCurrentMode == RobotMode.CargoScorer){
+      // Objective is to Score Cargo
+      // Allow Driver and Operator to control arm and grasper
+    }else if(mCurrentMode == RobotMode.Climber){
+      // Objective is to Climb
+      // Do not allow manual control of arm and grasper
+
+    }
+    DriveLoop();
   }
 
-  private void teleopDriveLoop(){
+  private void DriveLoop(){
     double driveThrottle = mOperatorInterface.getDriveThrottle();
     double driveTurn = mOperatorInterface.getDriveTurn();
 
     //manual drive
     mDrive.setDrive(driveThrottle, driveTurn, false);
   }
-
-
 }
