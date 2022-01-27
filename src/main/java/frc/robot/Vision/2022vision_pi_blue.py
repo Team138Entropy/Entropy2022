@@ -7,6 +7,7 @@ import time
 from sqlite3 import Time
 
 import cv2
+from cv2 import imwrite
 import numpy as np
 from cscore import CameraServer
 
@@ -89,7 +90,7 @@ if __name__ == "__main__":
     #yelVal = [166,255]
 
     #Creating settings for blur filter
-    radius = 18
+    radius = 1
     ksize = (2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
@@ -144,12 +145,15 @@ if __name__ == "__main__":
     params.filterByInertia = False
     params.minInertiaRatio = 0.01
     
-    
     # Create a detector with the parameters
     detector = cv2.SimpleBlobDetector_create(params)
     blank = np.zeros((1, 1))
 
-    print('Yellowball vision setup complete')
+    draw_contours = ''
+    first_run = True
+    res = ''
+
+    print('Blue ball vision setup complete')
 
     while True:
         #Create info for packet
@@ -172,17 +176,6 @@ if __name__ == "__main__":
 
             mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
                                 (blueHue[1], blueSat[1], blueVal[1]))
-
-            inverted_img = cv2.bitwise_not(mask)    
-            # Detect blobs
-            keypoints = detector.detect(inverted_img)
-            
-            blank = np.zeros((1, 1))
-            blobs = cv2.drawKeypoints(mask, keypoints,np.array([]),(0, 0, 255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-            #TODO: Find way to fill in  the drawn keypoints
-            cv2.imwrite('blobs.jpg', blobs)
-            print('Blobs')
-            time.sleep(1)
 
             _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
@@ -253,12 +246,38 @@ if __name__ == "__main__":
                     circularity = 4*math.pi*(cntArea/(perimeter*perimeter))
                     validCnt &= (.5 < circularity < 1.5)
                 
+                
+                
+                if(validCnt and first_run == True):
+                    res = cv2.bitwise_and(input_img, input_img, mask=mask)
+                    cv2.drawContours(res, cnt, 0, (255, 0, 255), -1)    
+                    #time.sleep(1)
+                    first_run = False
+                
+                else:
+                    cv2.drawContours(res, cnt, 0, color=(255, 0, 255), thickness=1)
+                
                 if(validCnt) and y < lowest_y :
                     #print(cntArea, circularity, ratio)
                     cnt_to_process = cnt
+                    #cv2.imwrite('final_contours.jpg', res)
 
             x, y, w, h = cv2.boundingRect(cnt_to_process)
+            first_run = True
+               
+            # Detect blobs
+            inverted_img = cv2.bitwise_not(res)
+            keypoints = detector.detect(res)
+            blank = np.zeros((1, 1))
+            blobs = cv2.drawKeypoints(mask, keypoints,np.array([]),(0, 0, 255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+            #TODO: Find way to fill in  the drawn keypoints
+            #cv2.imwrite('blobs.jpg', blobs)
+            #print('Blobs')
+            #time.sleep(1)
+
             
+            
+
             M = cv2.moments(cnt_to_process)
             cy = int(M["m01"] / M["m00"])
             cx = int(M["m10"] / M["m00"])
