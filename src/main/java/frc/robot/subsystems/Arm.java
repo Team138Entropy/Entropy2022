@@ -18,10 +18,21 @@ public class Arm extends Subsystem {
   // Other variables
   private boolean isAutomaticallyExtending = false;
   private double shoulderTarget = Constants.Arm.shoulderStartPosition;
-  private double forearmTarget = 0;
 
   // The fixed list of targets that we navigate to when using the joystick control
   private int[] targets = {-50, 0, 60, 90, 120, 210};
+
+  public enum ArmTargets {
+    SCORE_FRONT(60),
+    SCORE_BACK(120),
+    INTAKE(-50);
+
+    public double target;
+
+    ArmTargets(double target) {
+      this.target = target;
+    }
+  }
 
   public Arm() {
     mShoulder = new TalonSRX(Constants.Talons.Arm.shoulder);
@@ -54,18 +65,21 @@ public class Arm extends Subsystem {
     return mInstance;
   }
 
+  public void update() {
+    if (!isAutomaticallyExtending) stopForearm();
+  }
+
   /**
    * Updates the arm trajectory and movement, should be called every robot loop.
    */
-  public void update(double joystickX, double joystickY) {
-
-    shoulderTarget = getJoystickTarget(joystickX, joystickY);
+  public void update(double targetPosition) {
     rotateShoulderPosition(shoulderTarget);
+    update();
+  }
 
-    // if (getRotation() > Constants.Arm.shoulderMaxRotation || getExtension() < Constants.Arm.shoulderMinRotation) stopShoulder();
-    // if (getExtension() > Constants.Arm.forearmMaxExtension || getExtension() < Constants.Arm.forearmMinExtension) stopForearm();
-    
-    if (!isAutomaticallyExtending) stopForearm();
+  public void update(double joystickX, double joystickY) {
+    shoulderTarget = getJoystickTarget(joystickX, joystickY);
+    update(shoulderTarget);
   }
 
   /**
@@ -289,10 +303,5 @@ public class Arm extends Subsystem {
   @Override
   public void checkSubsystem() {
     // TODO Auto-generated method stub
-  }
-
-  @Override
-  public void updateSmartDashBoard(){
-
   }
 }
