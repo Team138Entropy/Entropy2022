@@ -46,7 +46,7 @@ class SocketWorker(threading.Thread):
 
 if __name__ == "__main__":
     #Avoid touching camera server settings
-    print('2022 Ball Vision Yellow Starting')
+    print('2022 Ball Vision Blue Starting')
 
     #Load camera config (eg. Exposure, resolution, FPS)
     with open('/boot/frc.json') as f:
@@ -158,7 +158,7 @@ if __name__ == "__main__":
             current_frame += 1
             PacketValue = {}
             PacketValue['cameraid'] = 0
-            PacketValue['ballColor'] = 'yellow'
+            PacketValue['ballColor'] = 'blue'
             
             #start_time = time.time() #Use this to get FPS below
             frame_time, input_img = input_stream.grabFrame(imgForm)
@@ -281,6 +281,8 @@ if __name__ == "__main__":
             last_cnt_area = 0
             cnt_to_process = ''
             lowest_y = 1000
+
+            #print(PacketValue)
         except:
             print('Error, likely that a ball wasnt found')
 

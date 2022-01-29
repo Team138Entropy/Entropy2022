@@ -158,7 +158,7 @@ if __name__ == "__main__":
             current_frame += 1
             PacketValue = {}
             PacketValue['cameraid'] = 0
-            PacketValue['ballColor'] = 'yellow'
+            PacketValue['ballColor'] = 'red'
             
             #start_time = time.time() #Use this to get FPS below
             frame_time, input_img = input_stream.grabFrame(imgForm)
@@ -171,8 +171,8 @@ if __name__ == "__main__":
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             input_img = cv2.blur(input_img, (ksize, ksize))
 
-            mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
-                                (blueHue[1], blueSat[1], blueVal[1]))
+            mask = cv2.inRange(input_img, (redHue[0], redSat[0], redVal[0]),
+                                (redHue[1], redSat[1], redVal[1]))
 
             inverted_img = cv2.bitwise_not(mask)    
             # Detect blobs
