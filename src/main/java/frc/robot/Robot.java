@@ -59,22 +59,23 @@ public class Robot extends TimedRobot {
 
   // Mode
   public enum RobotMode {
-    CargoScorer,
-    Climber
-  };
-  public RobotMode mCurrentMode = RobotMode.CargoScorer;
+    CargoScorer("CargoScorer"),
+    Climber("Climber")
+    ;
+    private final String text;
 
-  // Get Robot Mode Name to String
-  public String modeToString(RobotMode s){
-    switch(s){
-      case CargoScorer:
-        return "CargoScorer";
-      case Climber:
-        return "Climber";
-      default:
-        return "";
+    RobotMode(final String text) {
+      this.text = text; 
     }
-  }
+
+    @Override
+    public String toString() {
+      return text;
+    }
+  };
+
+  // Robot Starts in CargoScorer Mode
+  public RobotMode mCurrentMode = RobotMode.CargoScorer;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -116,6 +117,7 @@ public class Robot extends TimedRobot {
     // SmartDashboard.updateValues();
 
     mSubsystemManager.updateSmartdashboard();
+    SmartDashboard.putString("Robot Mode", mCurrentMode.toString());
   }
 
 
@@ -223,6 +225,13 @@ public class Robot extends TimedRobot {
     } else if(mCurrentMode == RobotMode.Climber){
       // Objective is to Climb
       // Do not allow manual control of arm and grasper
+
+      // grasper should be stopped, no need in climbing mode
+      mGrasper.stop();
+
+      // Allow Operator to stop
+      boolean manualStop = false;
+      mClimber.update(manualStop);
     }
     DriveLoop();
   }
@@ -243,9 +252,6 @@ public class Robot extends TimedRobot {
         break;
       }
     }
-
-    // Log to Mode
-    SmartDashboard.putString("Robot Mode", modeToString(mCurrentMode));
   }
 
   private void DriveLoop(){

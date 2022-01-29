@@ -54,6 +54,9 @@ public class Climber extends Subsystem {
 
     private TalonSRX mClimber;
 
+    // Reference to the Arm
+    private final Arm mArm = Arm.getInstance();
+
     public static synchronized Climber getInstance(){
         if (mInstance == null) {
             mInstance = new Climber();
@@ -65,8 +68,15 @@ public class Climber extends Subsystem {
         mClimber = new TalonSRX(Constants.Talons.Climber.climber);
     }
 
-    // stop button maybe?
-    public synchronized void update(){
+    // Update runs the Climber State Machine
+    // Operator is able to stop the state machine 
+    public synchronized void update(boolean stop){
+        // check for manual override
+        if(stop){
+            // manipulate state
+        }
+
+
         switch(mCurrentStage){
             case Stage1:
                 // Robot is below bar, extending arms to go up
