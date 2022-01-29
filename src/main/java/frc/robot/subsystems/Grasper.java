@@ -11,7 +11,8 @@ public class Grasper extends Subsystem {
     private IntakeStatus intakeStatus;
     private boolean hasBall;
     private double currentThreshold;
-    private double averageCurrent;
+    private double minThresholdExceedCount; // How many consecutive loops the current must exceed the threshold
+    private double thresholdExceedCount; // How many consecutive loops the current has exceeded the threshold for
 
     public enum IntakeStatus {
         INTAKE, // Wheels are intaking
@@ -31,24 +32,28 @@ public class Grasper extends Subsystem {
 
         intakeStatus = IntakeStatus.IDLE;
         currentThreshold = 0;
-        averageCurrent = 0;
+        minThresholdExceedCount = 5;
+        thresholdExceedCount = 0;
 
     }
 
     public void update(double current) {
-        averageCurrent += (current - averageCurrent) / 5;
-
-        if (averageCurrent > currentThreshold) {
+        if (thresholdExceedCount > minThresholdExceedCount && current > currentThreshold) {
             hasBall = true;
+            intakeStatus = IntakeStatus.IDLE;
+        } else if (current > currentThreshold) {
+            thresholdExceedCount++;
         } else {
+            thresholdExceedCount = 0;
             hasBall = false;
+            intakeStatus = IntakeStatus.IDLE;
         }
 
         switch (intakeStatus) {
             case INTAKE:
-                if (hasBall) stop();
+                
             case EJECT:
-                if (!hasBall) stop();
+                
             case IDLE:
                 stop();
             default:

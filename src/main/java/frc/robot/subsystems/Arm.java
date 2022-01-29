@@ -62,7 +62,6 @@ public class Arm extends Subsystem {
     shoulderTarget = getJoystickTarget(joystickX, joystickY);
     rotateShoulderPosition(shoulderTarget);
 
-    stopForearm();
     // if (getRotation() > Constants.Arm.shoulderMaxRotation || getExtension() < Constants.Arm.shoulderMinRotation) stopShoulder();
     // if (getExtension() > Constants.Arm.forearmMaxExtension || getExtension() < Constants.Arm.forearmMinExtension) stopForearm();
     
