@@ -23,12 +23,9 @@ public class ArmRotateAction implements Action {
 
   @Override
   public boolean isFinished() {
-    if (Math.abs(mArm.getRotation() - mTargetAngle) < 3) return true;
-    return false;
+    return Math.abs(mArm.getRotation() - mTargetAngle) < 3;
   }
 
   @Override
-  public void done() {
-    mArm.stopShoulder();
-  }
+  public void done() {}
 }

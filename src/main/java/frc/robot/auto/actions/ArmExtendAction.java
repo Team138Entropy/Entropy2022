@@ -25,12 +25,9 @@ public class ArmExtendAction implements Action {
 
   @Override
   public boolean isFinished() {
-    if (Math.abs(mArm.getExtension() - mTargetExtension) < 2) return true;
-    return false;
+    return Math.abs(mArm.getExtension() - mTargetExtension) < 2;
   }
 
   @Override
-  public void done() {
-      mArm.stopForearm();
-  }
+  public void done() {}
 }
