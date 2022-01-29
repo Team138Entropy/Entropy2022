@@ -111,7 +111,7 @@ public class SubsystemManager implements ILooper {
   }
 
   // Calls UpdateSmartdashboard method of each system
-  public void updateSmartdashboards() {
+  public void updateSmartdashboard() {
     for(int i = 0; i < mSubsystems.size(); i++){
       mSubsystems.get(i).updateSmartDashBoard();
     }

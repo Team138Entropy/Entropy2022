@@ -18,7 +18,6 @@ public abstract class AutoModeBase {
 
     public void run() {
         mActive = true;
-
         try {
             routine();
         } catch (AutoModeEndedException e) {
