@@ -16,13 +16,11 @@ import frc.robot.auto.AutoModeExecutor;
 import frc.robot.auto.modes.*;
 import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-
-import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 
 /**
@@ -54,8 +52,10 @@ public class Robot extends TimedRobot {
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
 
-  //Power dist. panel
-  //private final PowerDistributionPanel m_pdp = new PowerDistributionPanel(25);
+  private boolean inAutoMode = false;
+  private boolean inTeleop = false;
+  private PowerDistributionPanel powerPanel = new PowerDistributionPanel(0);
+  private Accelerometer accelerometer = new BuiltInAccelerometer();
 
   // Mode
   public enum RobotMode {
@@ -116,8 +116,12 @@ public class Robot extends TimedRobot {
     // }
     // SmartDashboard.updateValues();
 
-    mSubsystemManager.updateSmartdashboard();
+    SmartDashboard.putData("power panel",powerPanel);
+    SmartDashboard.putNumber("accel X", accelerometer.getX());
+    SmartDashboard.putNumber("accel Y", accelerometer.getY());
+    SmartDashboard.putNumber("accel Z", accelerometer.getZ());
     SmartDashboard.putString("Robot Mode", mCurrentMode.toString());
+    mSubsystemManager.updateSmartdashboard();
   }
 
 
