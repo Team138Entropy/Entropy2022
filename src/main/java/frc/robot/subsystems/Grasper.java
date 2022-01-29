@@ -13,6 +13,8 @@ public class Grasper extends Subsystem {
     private double currentThreshold;
     private double minThresholdExceedCount; // How many consecutive loops the current must exceed the threshold
     private double thresholdExceedCount; // How many consecutive loops the current has exceeded the threshold for
+    private double pulseCounter;
+    private double pulseCounterTime;
 
     public enum IntakeStatus {
         INTAKE, // Wheels are intaking
@@ -34,13 +36,15 @@ public class Grasper extends Subsystem {
         currentThreshold = 0;
         minThresholdExceedCount = 5;
         thresholdExceedCount = 0;
-
+        pulseCounter = 0;
+        pulseCounterTime = 100;
     }
 
     public void update(double current) {
         if (thresholdExceedCount > minThresholdExceedCount && current > currentThreshold) {
             hasBall = true;
             intakeStatus = IntakeStatus.IDLE;
+            pulseCounter = 0;
         } else if (current > currentThreshold) {
             thresholdExceedCount++;
         } else {
@@ -56,6 +60,14 @@ public class Grasper extends Subsystem {
                 
             case IDLE:
                 stop();
+                if (pulseCounter > pulseCounterTime) {
+                    mTalon.set(Constants.Grasper.jogSpeed);
+                    pulseCounter = 0;
+                }
+        
+                if (pulseCounter == 5) stop();
+                
+                pulseCounter++;
             default:
                 System.out.println("Grasper has no state");
         }
