@@ -304,4 +304,9 @@ public class Arm extends Subsystem {
   public void checkSubsystem() {
     // TODO Auto-generated method stub
   }
+
+  @Override
+  public void updateSmartDashBoard(){
+
+  }
 }
