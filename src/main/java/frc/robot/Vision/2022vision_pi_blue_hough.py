@@ -138,22 +138,28 @@ if __name__ == "__main__":
 
             
             #cimg = cv2.cvtColor(input_img, cv2.COLOR_BGR2GRAY)
-            #cimg = cv2.bitwise_not(mask)               
+                         
             cv2.imwrite('mask.jpg', mask)
-
             cimg = mask
 
+            input_img_gray = cv2.cvtColor(input_img, cv2.COLOR_BGR2GRAY)
+            cimg = cv2.bitwise_not(mask)  
+
+
+            print('Print 1')
             #cimg = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
-            circles = cv2.HoughCircles(cimg,cv2.HOUGH_GRADIENT,1,20, param1=50,param2=20,minRadius=200,maxRadius= 500)
+            circles = cv2.HoughCircles(cimg, cv2.HOUGH_GRADIENT, 2, 100.0, param1=200, param2=15, minRadius = 0, maxRadius = 10000)
             #circles = cv2.HoughCircles(cimg, cv2.HOUGH_GRADIENT, 1.2, 100)
             circles = np.uint16(np.around(circles))
+            print('Print 2')
+
             for i in circles[0,:]:
                 # draw the outer circle
-                cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),2)
+                cv2.circle(input_img,(i[0],i[1]),i[2],(0,255,0),2)
                 # draw the center of the circle
-                cv2.circle(img,(i[0],i[1]),2,(0,0,255),3)
-            
-            cv2.imwrite('Hough.jpg', img)
+                cv2.circle(input_img,(i[0],i[1]),2,(0,0,255),3)
+            print('Print 3')
+            cv2.imwrite('Hough.jpg', input_img)
             print('Writing hough circles...')
             
             '''
