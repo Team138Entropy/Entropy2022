@@ -22,14 +22,14 @@ public class Arm extends Subsystem {
   // The fixed list of targets that we navigate to when using the joystick control
   private int[] targets = {-50, 0, 60, 90, 120, 210};
 
-  public enum ArmTargets {
+  public static enum ArmTargets {
     SCORE_FRONT(60),
     SCORE_BACK(120),
     INTAKE(-50);
 
     public double target;
 
-    ArmTargets(double target) {
+    private ArmTargets(double target) {
       this.target = target;
     }
   }
@@ -73,13 +73,13 @@ public class Arm extends Subsystem {
    * Updates the arm trajectory and movement, should be called every robot loop.
    */
   public void update(double targetPosition) {
+    shoulderTarget = targetPosition;
     rotateShoulderPosition(shoulderTarget);
     update();
   }
 
   public void update(double joystickX, double joystickY) {
-    shoulderTarget = getJoystickTarget(joystickX, joystickY);
-    update(shoulderTarget);
+    update(getJoystickTarget(joystickX, joystickY));
   }
 
   /**
@@ -95,6 +95,7 @@ public class Arm extends Subsystem {
    */
   public void stopShoulder() {
     rotate(0);
+    shoulderTarget = getRotation();
   }
 
   /**
