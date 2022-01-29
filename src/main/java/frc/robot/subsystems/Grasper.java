@@ -73,17 +73,17 @@ public class Grasper extends Subsystem {
         }
     }
 
-    public void intake(){
+    public synchronized void intake(){
         intakeStatus = IntakeStatus.INTAKE;
         mTalon.set(Constants.Grasper.jogSpeed);
     }
 
-    public void eject(){
+    public synchronized void eject(){
         intakeStatus = IntakeStatus.EJECT;
         mTalon.set(-Constants.Grasper.jogSpeed);
     }
 
-    public void stop(){
+    public synchronized void stop(){
         intakeStatus = IntakeStatus.IDLE;
         mTalon.set(0);
     }

@@ -92,19 +92,19 @@ public class Climber extends Subsystem {
 
     // Extends the Climber Slowly
     // for use in test mode only
-    public void TestExtend(){
+    public synchronized void TestExtend(){
         mClimber.set(ControlMode.PercentOutput, Constants.Climber.TestExtendOutput);
     }
 
     // Retracts the Climber Slowly
     // for use in test mode only
-    public void TestRetract(){
+    public synchronized void TestRetract(){
         mClimber.set(ControlMode.PercentOutput, Constants.Climber.TestRetractOutput);
     }
 
     // Stops the Climber
     // for use in test mode only
-    public void TestStop(){
+    public synchronized void TestStop(){
         mClimber.set(ControlMode.PercentOutput, 0);
     }
 
