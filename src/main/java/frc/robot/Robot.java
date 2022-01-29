@@ -226,6 +226,7 @@ public class Robot extends TimedRobot {
       else mArm.update();
       
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
+      mGrasper.update(powerPanel.getCurrent(Constants.Grasper.pwmChannel));
     } else if(mCurrentMode == RobotMode.Climber){
       // Objective is to Climb
       // Do not allow manual control of arm and grasper

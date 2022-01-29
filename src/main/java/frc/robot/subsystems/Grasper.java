@@ -11,7 +11,6 @@ public class Grasper extends Subsystem {
 
   private IntakeStatus intakeStatus;
   private boolean hasBall;
-  private boolean isEjecting;
   private double currentThreshold;
   private double minThresholdExceedCount; // How many consecutive loops the current must exceed the threshold
   private double thresholdExceedCount; // How many consecutive loops the current has exceeded the threshold for
@@ -32,11 +31,10 @@ public class Grasper extends Subsystem {
   }
   
   private Grasper(){
-    mTalon = new PWMTalonSRX(0);
+    mTalon = new PWMTalonSRX(Constants.Grasper.pwmChannel);
 
     intakeStatus = IntakeStatus.IDLE;
     hasBall = false;
-    isEjecting = false;
     currentThreshold = 0;
     minThresholdExceedCount = 5;
     thresholdExceedCount = 0;

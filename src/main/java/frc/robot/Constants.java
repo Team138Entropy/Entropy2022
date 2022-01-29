@@ -197,6 +197,7 @@ public class Constants {
 
   public static class Grasper {
     public static final double jogSpeed = .2;
+    public static final int pwmChannel = 3;
   }
 
   public static class Climber {
