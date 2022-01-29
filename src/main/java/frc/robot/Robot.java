@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI.OperatorInterface;
@@ -20,6 +21,7 @@ import frc.robot.auto.modes.XboxControllermode;
 import frc.robot.Constants.Controllers.Operator;
 import frc.robot.Constants;
 import frc.robot.OI.XboxController.Button;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -52,6 +54,7 @@ public class Robot extends TimedRobot {
   private boolean inAutoMode = false;
   private boolean inTeleop = false;
   private PowerDistributionPanel powerPanel = new PowerDistributionPanel(0);
+  private Accelerometer accelerometer = new BuiltInAccelerometer();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -100,6 +103,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Left Encoder", mDrive.getLeftEncoderPosition());
     SmartDashboard.putNumber("Right Encoder", mDrive.getRightEncoderPosition());
     SmartDashboard.putData("power panel",powerPanel);
+    SmartDashboard.putNumber("accel X", accelerometer.getX());
+    SmartDashboard.putNumber("accel Y", accelerometer.getY());
+    SmartDashboard.putNumber("accel Z", accelerometer.getZ());
   }
 
   /** Called at the Start of Autonomous **/
