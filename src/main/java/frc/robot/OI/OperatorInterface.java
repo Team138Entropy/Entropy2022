@@ -22,6 +22,7 @@ public class OperatorInterface {
 
     // Latched Booleans
     private LatchedBoolean mOperatorSelectButton = new LatchedBoolean();
+    private LatchedBoolean mLeftBumper = new LatchedBoolean();
 
     public static synchronized OperatorInterface getInstance() {
         if (mInstance == null) {
@@ -102,5 +103,13 @@ public class OperatorInterface {
     public boolean getArmRetractManual() {
         return (OperatorController.getDPad() == NykoController.DPad.DOWN || OperatorController.getDPad() 
             == NykoController.DPad.DOWN_RIGHT) || OperatorController.getDPad() == NykoController.DPad.DOWN_LEFT;
+    }
+
+    public boolean getArmIntakeTest() {
+        return mLeftBumper.update(OperatorController.getButton(NykoController.Button.LEFT_BUMPER));
+    }
+
+    public boolean getArmEjectTest() {
+        return OperatorController.getButton(NykoController.Button.LEFT_TRIGGER);
     }
 }
