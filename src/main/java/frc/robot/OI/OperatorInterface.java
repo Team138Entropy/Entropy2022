@@ -13,6 +13,13 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 public class OperatorInterface {
     private static OperatorInterface mInstance;
 
+    LatchedBoolean lb1 = new LatchedBoolean();
+    LatchedBoolean lb2 = new LatchedBoolean();
+    LatchedBoolean lb3 = new LatchedBoolean();
+    LatchedBoolean lb4 = new LatchedBoolean();
+    private LatchedBoolean isRightBumperPressed = new LatchedBoolean();
+    private LatchedBoolean isRightTriggerPressed = new LatchedBoolean();
+
     // Instances of the Driver and Operator Controller
     private XboxController DriverController;
     private XboxController NewOperatorController;
@@ -38,7 +45,11 @@ public class OperatorInterface {
 
     public double getDriveThrottle() {
         return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
-      }
+    }
+
+    public double getArmX() {
+        return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.X);
+    }
     
     public double getDriveTurn() {
         return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);

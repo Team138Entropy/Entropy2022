@@ -15,6 +15,8 @@ import frc.robot.auto.AutoModeExecutor;
 import frc.robot.auto.modes.*;
 import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -37,10 +39,11 @@ public class Robot extends TimedRobot {
   private final VisionManager mVisionManager = VisionManager.getInstance();
 
   // Subsystem Manager
-  private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
+  //private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
   
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
+  private final Arm mArm = Arm.getInstance();
   private final Grasper mGrasper = Grasper.getInstance();
   private final Climber mClimber = Climber.getInstance();
 
@@ -190,9 +193,21 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    if (mOperatorInterface.getArmExtend()) {
+      mArm.extendToMax();
+    } else if (mOperatorInterface.getArmRetract()) {
+      mArm.retractToMin();
+    }
+    
+    if (mOperatorInterface.getArmExtendManual()) {
+      mArm.jogOut();
+    } else if (mOperatorInterface.getArmRetractManual()) {
+      mArm.jogIn();
+    }
 
   }
 
+    SmartDashboard.putNumber("shoulderOutput", mArm.getShoulderOutput());
   private void RobotLoop(){
     // check for change of mode
     checkModeChange();
@@ -254,6 +269,4 @@ public class Robot extends TimedRobot {
       mDrive.setDrive(driveThrottle, driveTurn, false);
     }
   }
-
-
 }

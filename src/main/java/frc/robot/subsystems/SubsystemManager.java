@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems;
 
 import frc.robot.subsystems.Subsystem;
 import frc.robot.util.loops.*;
