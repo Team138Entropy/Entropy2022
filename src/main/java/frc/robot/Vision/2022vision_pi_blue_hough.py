@@ -145,20 +145,23 @@ if __name__ == "__main__":
             input_img_gray = cv2.cvtColor(input_img, cv2.COLOR_BGR2GRAY)
             cimg = cv2.bitwise_not(mask)  
 
-
-            print('Print 1')
             #cimg = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
-            circles = cv2.HoughCircles(cimg, cv2.HOUGH_GRADIENT, 2, 100.0, param1=200, param2=15, minRadius = 0, maxRadius = 10000)
+            
+            #If you need to redo tuning, start param1 at 200 and work down, start param2 at 0 and work up.
+            circles = cv2.HoughCircles(cimg, cv2.HOUGH_GRADIENT, 2, 100.0, param1=200, param2=20, minRadius = 10, maxRadius = 100)
             #circles = cv2.HoughCircles(cimg, cv2.HOUGH_GRADIENT, 1.2, 100)
             circles = np.uint16(np.around(circles))
-            print('Print 2')
+            
 
             for i in circles[0,:]:
                 # draw the outer circle
                 cv2.circle(input_img,(i[0],i[1]),i[2],(0,255,0),2)
                 # draw the center of the circle
                 cv2.circle(input_img,(i[0],i[1]),2,(0,0,255),3)
-            print('Print 3')
+
+                print('x: ', i[0], print('y: '), i[1])
+            
+            
             cv2.imwrite('Hough.jpg', input_img)
             print('Writing hough circles...')
             
@@ -172,5 +175,7 @@ if __name__ == "__main__":
         except Exception as e:
             print('Error: ', e)
 
+        '''
         print('Done, 1 sec sleep')
         time.sleep(1)
+        '''
