@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Arm.ArmTarget;
 import frc.robot.vision.TargetInfo;
 import frc.robot.vision.VisionManager;
 import frc.robot.auto.AutoModeExecutor;
@@ -170,7 +171,6 @@ public class Robot extends TimedRobot {
 
     // create Auto Mode Executor
     mAutoModeExecutor = new AutoModeExecutor();
-
   }
 
   int mRumbleTimer = 0;
@@ -193,9 +193,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    if (mOperatorInterface.getArmExtend()) {
+    if (mOperatorInterface.getArmExtendTest()) {
       mArm.extendToMax();
-    } else if (mOperatorInterface.getArmRetract()) {
+    } else if (mOperatorInterface.getArmRetractTest()) {
       mArm.retractToMin();
     }
     
@@ -206,13 +206,6 @@ public class Robot extends TimedRobot {
     }
 
     mArm.update(mOperatorInterface.getArmX(), mOperatorInterface.getDriveThrottle());
-
-    SmartDashboard.putBoolean("dpadOther", mOperatorInterface.isDPadOther());
-    SmartDashboard.putNumber("forearmOutput", mArm.getForearmOutput());
-    SmartDashboard.putNumber("shoulderTarget", mArm.getShoulderTarget());
-    SmartDashboard.putNumber("shoulderVelocity", mArm.getShoulderVelocity());
-    SmartDashboard.putNumber("shoulderPosition", mArm.getRotation());
-    SmartDashboard.putNumber("shoulderOutput", mArm.getShoulderOutput());
   }
 
   private void RobotLoop(){
@@ -222,10 +215,14 @@ public class Robot extends TimedRobot {
     if(mCurrentMode == RobotMode.CargoScorer){
       // Objective is to Score Cargo
       // Allow Driver and Operator to control arm and grasper
-    }else if(mCurrentMode == RobotMode.Climber){
+      ArmTarget target = mOperatorInterface.getArmPos();
+      if (target != null) mArm.update(mOperatorInterface.getArmPos().target);
+      else mArm.update();
+      
+      if (mOperatorInterface.getArmEject()) mGrasper.eject();
+    } else if(mCurrentMode == RobotMode.Climber){
       // Objective is to Climb
       // Do not allow manual control of arm and grasper
-
     }
     DriveLoop();
   }

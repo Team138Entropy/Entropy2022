@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 /**
@@ -22,14 +24,14 @@ public class Arm extends Subsystem {
   // The fixed list of targets that we navigate to when using the joystick control
   private int[] targets = {-50, 0, 60, 90, 120, 210};
 
-  public static enum ArmTargets {
+  public static enum ArmTarget {
     SCORE_FRONT(60),
     SCORE_BACK(120),
     INTAKE(-50);
 
     public double target;
 
-    private ArmTargets(double target) {
+    private ArmTarget(double target) {
       this.target = target;
     }
   }
@@ -66,6 +68,8 @@ public class Arm extends Subsystem {
   }
 
   public void update() {
+    rotateShoulderPosition(shoulderTarget);
+
     if (!isAutomaticallyExtending) stopForearm();
   }
 
@@ -74,7 +78,7 @@ public class Arm extends Subsystem {
    */
   public void update(double targetPosition) {
     shoulderTarget = targetPosition;
-    rotateShoulderPosition(shoulderTarget);
+
     update();
   }
 
@@ -182,6 +186,14 @@ public class Arm extends Subsystem {
 
     mForearm.set(ControlMode.PercentOutput, power);
   }
+  
+  /**
+   * Stop the forearm motion.
+   */
+  public void stopForearm() {
+    extend(0);
+    isAutomaticallyExtending = false;
+  }
 
   public void extendToPosition(double position) {
     position = Math.max(position, 0);
@@ -221,14 +233,6 @@ public class Arm extends Subsystem {
 
   public void jogIn() {
     extend(-Constants.Arm.forearmJogSpeed);
-    isAutomaticallyExtending = false;
-  }
-  
-  /**
-   * Stop the forearm motion.
-   */
-  public void stopForearm() {
-    extend(0);
     isAutomaticallyExtending = false;
   }
 
@@ -308,6 +312,12 @@ public class Arm extends Subsystem {
 
   @Override
   public void updateSmartDashBoard(){
-
+    SmartDashboard.putNumber("shoulderTarget",getShoulderTarget());
+    SmartDashboard.putNumber("shoulderPosition", getRotation());
+    SmartDashboard.putNumber("shoulderVelocity", getShoulderVelocity());
+    SmartDashboard.putNumber("shoulderOutput", getShoulderOutput());
+    SmartDashboard.putNumber("forearmPosition", getExtension());
+    SmartDashboard.putNumber("forearmVelocity", getForearmVelocity());
+    SmartDashboard.putNumber("forearmOutput", getForearmOutput());
   }
 }
