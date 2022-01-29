@@ -312,7 +312,7 @@ public class Arm extends Subsystem {
 
   @Override
   public void updateSmartDashBoard(){
-    SmartDashboard.putNumber("shoulderTarget",getShoulderTarget());
+    SmartDashboard.putNumber("shoulderTarget", getShoulderTarget());
     SmartDashboard.putNumber("shoulderPosition", getRotation());
     SmartDashboard.putNumber("shoulderVelocity", getShoulderVelocity());
     SmartDashboard.putNumber("shoulderOutput", getShoulderOutput());
