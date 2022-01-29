@@ -91,4 +91,26 @@ public class OperatorInterface {
     public boolean getSwitchModePress(){
         return mOperatorSelectButtonLatchedBootlean.update(NewOperatorController.getButton(Button.START));
     }
+
+    public boolean getArmExtend() {
+        return isRightBumperPressed.update(OperatorController.getButton(NykoController.Button.RIGHT_BUMPER));
+    }
+
+    public boolean getArmRetract() {
+        return isRightTriggerPressed.update(OperatorController.getButton(NykoController.Button.RIGHT_TRIGGER));
+    }
+
+    public boolean getArmExtendManual() {
+        return (OperatorController.getDPad() == NykoController.DPad.UP || OperatorController.getDPad() 
+            == NykoController.DPad.UP_RIGHT) || OperatorController.getDPad() == NykoController.DPad.UP_LEFT;
+    }
+
+    public boolean getArmRetractManual() {
+        return (OperatorController.getDPad() == NykoController.DPad.DOWN || OperatorController.getDPad() 
+            == NykoController.DPad.DOWN_RIGHT) || OperatorController.getDPad() == NykoController.DPad.DOWN_LEFT;
+    }
+
+    public boolean isDPadOther() {
+        return OperatorController.getDPad() == NykoController.DPad.OTHER;
+    }
 }

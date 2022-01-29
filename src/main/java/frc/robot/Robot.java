@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   private final VisionManager mVisionManager = VisionManager.getInstance();
 
   // Subsystem Manager
-  //private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
+  private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
   
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
@@ -205,9 +205,16 @@ public class Robot extends TimedRobot {
       mArm.jogIn();
     }
 
+    mArm.update(mOperatorInterface.getArmX(), mOperatorInterface.getDriveThrottle());
+
+    SmartDashboard.putBoolean("dpadOther", mOperatorInterface.isDPadOther());
+    SmartDashboard.putNumber("forearmOutput", mArm.getForearmOutput());
+    SmartDashboard.putNumber("shoulderTarget", mArm.getShoulderTarget());
+    SmartDashboard.putNumber("shoulderVelocity", mArm.getShoulderVelocity());
+    SmartDashboard.putNumber("shoulderPosition", mArm.getRotation());
+    SmartDashboard.putNumber("shoulderOutput", mArm.getShoulderOutput());
   }
 
-    SmartDashboard.putNumber("shoulderOutput", mArm.getShoulderOutput());
   private void RobotLoop(){
     // check for change of mode
     checkModeChange();

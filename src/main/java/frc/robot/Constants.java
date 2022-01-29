@@ -102,6 +102,7 @@ public class Constants {
       private static final double compTicks = (19711.0 + 19582.0) / 2.0;
       private static final double compDistance = 89.5 / 12.0;
     
+      
       public static double compTicksPerFoot = compTicks / compDistance;
       public static final double practiceTicksPerFoot = 1228.615;
     }
