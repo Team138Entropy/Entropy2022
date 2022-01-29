@@ -211,6 +211,14 @@ public class Robot extends TimedRobot {
       mArm.jogIn();
     }
 
+    if (mOperatorInterface.getArmEjectTest()) {
+      mGrasper.eject();
+    } else if (mOperatorInterface.getArmIntakeTest()) {
+      mGrasper.intake();
+    }
+
+    mGrasper.update(powerPanel.getCurrent(Constants.Grasper.pwmChannel));
+
     mArm.update(mOperatorInterface.getArmX(), mOperatorInterface.getDriveThrottle());
   }
 
@@ -222,9 +230,13 @@ public class Robot extends TimedRobot {
       // Objective is to Score Cargo
       // Allow Driver and Operator to control arm and grasper
       ArmTarget target = mOperatorInterface.getArmPos();
-      if (target != null) mArm.update(mOperatorInterface.getArmPos().target);
-      else mArm.update();
-      
+      if (target != null) {
+        mArm.update(mOperatorInterface.getArmPos().target);
+        if (target == ArmTarget.INTAKE) mGrasper.intake();
+      } else {
+        mArm.update();
+      }
+
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
       mGrasper.update(powerPanel.getCurrent(Constants.Grasper.pwmChannel));
     } else if(mCurrentMode == RobotMode.Climber){
