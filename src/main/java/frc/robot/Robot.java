@@ -184,8 +184,8 @@ public class Robot extends TimedRobot {
       mArm.jogIn();
     }
 
-    mArm.update(mOperatorInterface.getOperatorStickX(), mOperatorInterface.getOperatorStickY());
-    
+    mArm.update(mOperatorInterface.getArmX(), mOperatorInterface.getDriveThrottle());
+
     SmartDashboard.putBoolean("dpadOther", mOperatorInterface.isDPadOther());
     SmartDashboard.putNumber("forearmOutput", mArm.getForearmOutput());
     SmartDashboard.putNumber("shoulderTarget", mArm.getShoulderTarget());

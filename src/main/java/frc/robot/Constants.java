@@ -176,18 +176,15 @@ public class Constants {
   public static class Arm {
     public static final double shoulderJogSpeed = .35;
     public static final double shoulderTicksPerRotation = 8192;
-    public static final double shoulderPositionHorizontal = 0;
-    public static final double shoulderMinRotation = -60;
-    public static final double shoulderMaxRotation = 220;
     public static final int shoulderStartPosition = -60;
+    public static final int shoulderMaxRotation = 220;
     public static final double shoulderMaxGravityFF = .045;
 
     public static final double forearmJogSpeed = .5;
     public static final double forearmExtendSpeed = .8;
-    public static final double forearmExtensionLength = 0;
     public static final double forearmTicksPerExtension = 0;
-    public static final double forearmMinExtension = 0;
-    public static final double forearmMaxExtension = 0;
+    public static final double forearmExtensionCM = 0;
+    public static final int forearmMaxExtension = 0;
   }
 
   public static class Grasper {

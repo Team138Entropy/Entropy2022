@@ -38,7 +38,11 @@ public class OperatorInterface {
 
     public double getDriveThrottle() {
         return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
-      }
+    }
+
+    public double getArmX() {
+        return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.X);
+    }
     
     public double getDriveTurn() {
         return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);

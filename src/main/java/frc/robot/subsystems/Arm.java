@@ -17,9 +17,8 @@ public class Arm extends Subsystem {
 
   // Other variables
   private boolean isAutomaticallyExtending = false;
-  private boolean isManuallyExtending = false;
-  private boolean wasManuallyExtending = false;
   private double shoulderTarget = Constants.Arm.shoulderStartPosition;
+  private double forearmTarget = 0;
 
   // The fixed list of targets that we navigate to when using the joystick control
   private int[] targets = {-50, 0, 60, 90, 120, 210};
@@ -43,7 +42,9 @@ public class Arm extends Subsystem {
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
 
     //TODO: Configure forearm
-    mForearm.configSelectedFeedbackCoefficient(Constants.Arm.forearmExtensionLength / (Constants.Arm.forearmMaxExtension - Constants.Arm.forearmMinExtension));
+    mShoulder.setSelectedSensorPosition(0);
+
+    mForearm.configSelectedFeedbackCoefficient(Constants.Arm.forearmExtensionCM / Constants.Arm.forearmMaxExtension);
   }
 
   public static Arm getInstance() {
@@ -57,13 +58,15 @@ public class Arm extends Subsystem {
    * Updates the arm trajectory and movement, should be called every robot loop.
    */
   public void update(double joystickX, double joystickY) {
-    rotateShoulderPosition(getJoystickTarget(joystickX, joystickY));
 
+    shoulderTarget = getJoystickTarget(joystickX, joystickY);
+    rotateShoulderPosition(shoulderTarget);
+
+    stopForearm();
     // if (getRotation() > Constants.Arm.shoulderMaxRotation || getExtension() < Constants.Arm.shoulderMinRotation) stopShoulder();
     // if (getExtension() > Constants.Arm.forearmMaxExtension || getExtension() < Constants.Arm.forearmMinExtension) stopForearm();
     
-    if (!isAutomaticallyExtending && !wasManuallyExtending) stopForearm();
-    wasManuallyExtending = isManuallyExtending;
+    if (!isAutomaticallyExtending) stopForearm();
   }
 
   /**
@@ -94,7 +97,7 @@ public class Arm extends Subsystem {
    * @param degrees the position to rotate to
    */
   public void rotateShoulderPosition(double degrees) {
-    degrees = Math.max(degrees, Constants.Arm.shoulderMinRotation);
+    degrees = Math.max(degrees, Constants.Arm.shoulderStartPosition);
     degrees = Math.min(degrees, Constants.Arm.shoulderMaxRotation);
     double ff = getGravityFeedForward();
     mShoulder.set(ControlMode.MotionMagic, degrees, DemandType.ArbitraryFeedForward, ff);
@@ -167,7 +170,7 @@ public class Arm extends Subsystem {
   }
 
   public void extendToPosition(double position) {
-    position = Math.max(position, Constants.Arm.forearmMinExtension);
+    position = Math.max(position, 0);
     position = Math.min(position, Constants.Arm.forearmMaxExtension);
     
     mForearm.set(ControlMode.MotionMagic, position);
@@ -200,13 +203,11 @@ public class Arm extends Subsystem {
   public void jogOut() {
     extend(Constants.Arm.forearmJogSpeed);
     isAutomaticallyExtending = false;
-    isManuallyExtending = true;
   }
 
   public void jogIn() {
     extend(-Constants.Arm.forearmJogSpeed);
     isAutomaticallyExtending = false;
-    isManuallyExtending = true;
   }
   
   /**
@@ -215,7 +216,6 @@ public class Arm extends Subsystem {
   public void stopForearm() {
     extend(0);
     isAutomaticallyExtending = false;
-    isManuallyExtending = false;
   }
 
   /**
