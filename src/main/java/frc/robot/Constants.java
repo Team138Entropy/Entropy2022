@@ -56,6 +56,10 @@ public class Constants {
       public static final int shoulder = 5;
       public static final int forearm = 6;
     }
+
+    public static class Climber {
+      public static final int climber = 7;
+    }
   }
 
   public static class CanIDs {
@@ -193,6 +197,11 @@ public class Constants {
 
   public static class Grasper {
     public static final double jogSpeed = .2;
+  }
+
+  public static class Climber {
+    public static final double TestExtendOutput = .4;
+    public static final double TestRetractOutput = .4;
   }
 
   public static class Misc {
