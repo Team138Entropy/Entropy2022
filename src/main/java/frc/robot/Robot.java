@@ -258,12 +258,15 @@ public class Robot extends TimedRobot {
     boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
     SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 
-    TargetInfo ti = mVisionManager.getTarget(Constants.TargetType.CAMERA_1_BLUE_CARGO, 1);
-    //SmartDashboard.putBoolean("Valid Target", (ti != null) ?  ti.isValid() : null);
-    //SmartDashboard.putNumber("Target Angle", (ti != null) ? ti.getErrorAngle() : 0);
-    //SmartDashboard.putNumber("Target Angle", ti.getErrorAngle());
+    // Get Target within the allowed Threshold
+    TargetInfo ti = mVisionManager.getTarget(Constants.TargetType.CAMERA_1_BLUE_CARGO, Constants.Vision.kAllowedSecondsThreshold);
+    boolean validTargetInfo = (ti != null);
+    if(validTargetInfo){
+      SmartDashboard.putBoolean("Valid Target", ti.isValid());
+      SmartDashboard.putNumber("Target Angle", ti.getErrorAngle());
+    }
 
-    if(wantsAutoSteer && ti != null){
+    if(wantsAutoSteer && validTargetInfo){
       if(ti.isValid()){ //only allow if valud packet
         // autonomously steering robot towards cargo
         SmartDashboard.putNumber("Vision Error Angle", ti.getErrorAngle());

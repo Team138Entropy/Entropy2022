@@ -75,6 +75,9 @@ public class Constants {
     
     public static final Rotation2d kCameraHorizontalPlaneToLens =
       Rotation2d.fromDegrees(0);
+
+    // Allowed Seconds Threshold
+    public static final double kAllowedSecondsThreshold = .3; //seconds
   }
 
   // Subsystems
@@ -102,7 +105,7 @@ public class Constants {
       private static final double compTicks = (19711.0 + 19582.0) / 2.0;
       private static final double compDistance = 89.5 / 12.0;
     
-      
+
       public static double compTicksPerFoot = compTicks / compDistance;
       public static final double practiceTicksPerFoot = 1228.615;
     }
