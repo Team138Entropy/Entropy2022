@@ -5,6 +5,7 @@ import frc.robot.OI.NykoController.Axis;
 import frc.robot.OI.NykoController.DPad;
 import frc.robot.OI.XboxController.Button;
 import frc.robot.OI.XboxController.Side;
+import frc.robot.subsystems.Arm.ArmTarget;
 import frc.robot.Robot;
 import frc.robot.Constants.Controllers.Operator;
 import frc.robot.util.LatchedBoolean;
@@ -13,13 +14,6 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 public class OperatorInterface {
     private static OperatorInterface mInstance;
 
-    LatchedBoolean lb1 = new LatchedBoolean();
-    LatchedBoolean lb2 = new LatchedBoolean();
-    LatchedBoolean lb3 = new LatchedBoolean();
-    LatchedBoolean lb4 = new LatchedBoolean();
-    private LatchedBoolean isRightBumperPressed = new LatchedBoolean();
-    private LatchedBoolean isRightTriggerPressed = new LatchedBoolean();
-
     // Instances of the Driver and Operator Controller
     private XboxController DriverController;
     private XboxController NewOperatorController;
@@ -27,7 +21,7 @@ public class OperatorInterface {
     private JoystickController joysticks;
 
     // Latched Booleans
-    private LatchedBoolean mOperatorSelectButtonLatchedBootlean = new LatchedBoolean();
+    private LatchedBoolean mOperatorSelectButton = new LatchedBoolean();
 
     public static synchronized OperatorInterface getInstance() {
         if (mInstance == null) {
@@ -62,25 +56,25 @@ public class OperatorInterface {
     public void setRumble(boolean a){ 
         NewOperatorController.setRumble(a);
     }
-    public boolean getIntakeActive(){
-        return NewOperatorController.getButton(Button.RB);
+
+    /**
+     * Returns a target arm position based on operator input. Returns null if there is no input.
+     * @return
+     */
+    public ArmTarget getArmPos(){
+        if (NewOperatorController.getButton(Button.RB)) {
+            return ArmTarget.SCORE_FRONT;
+        } else if (NewOperatorController.getButton(Button.LB)) {
+            return ArmTarget.SCORE_BACK;
+        } else if (NewOperatorController.getTrigger(Side.RIGHT)) {
+            return ArmTarget.INTAKE;    
+        } else {
+            return null;
+        }
     }
-    public double getArmPos(){
-        if (NewOperatorController.getButton(Button.A)){
-            return -60;
-        }
-        if (NewOperatorController.getButton(Button.B)){
-            return 0;
-        }
-        if (NewOperatorController.getButton(Button.X)){
-            return 60;
-        }
-        if (NewOperatorController.getButton(Button.Y)){
-            return 110;
-        }
-        else {
-            return 0.0;
-        }
+
+    public boolean getArmEject() {
+        return NewOperatorController.getTrigger(Side.LEFT);
     }
 
     /**
@@ -89,15 +83,15 @@ public class OperatorInterface {
      * @return
      */
     public boolean getSwitchModePress(){
-        return mOperatorSelectButtonLatchedBootlean.update(NewOperatorController.getButton(Button.START));
+        return mOperatorSelectButton.update(NewOperatorController.getButton(Button.START));
     }
 
-    public boolean getArmExtend() {
-        return isRightBumperPressed.update(OperatorController.getButton(NykoController.Button.RIGHT_BUMPER));
+    public boolean getArmExtendTest() {
+        return OperatorController.getButton(NykoController.Button.RIGHT_BUMPER);
     }
 
-    public boolean getArmRetract() {
-        return isRightTriggerPressed.update(OperatorController.getButton(NykoController.Button.RIGHT_TRIGGER));
+    public boolean getArmRetractTest() {
+        return OperatorController.getButton(NykoController.Button.RIGHT_TRIGGER);
     }
 
     public boolean getArmExtendManual() {
@@ -108,9 +102,5 @@ public class OperatorInterface {
     public boolean getArmRetractManual() {
         return (OperatorController.getDPad() == NykoController.DPad.DOWN || OperatorController.getDPad() 
             == NykoController.DPad.DOWN_RIGHT) || OperatorController.getDPad() == NykoController.DPad.DOWN_LEFT;
-    }
-
-    public boolean isDPadOther() {
-        return OperatorController.getDPad() == NykoController.DPad.OTHER;
     }
 }
