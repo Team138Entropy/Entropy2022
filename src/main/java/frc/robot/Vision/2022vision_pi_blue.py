@@ -62,6 +62,7 @@ if __name__ == "__main__":
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
     cameraConfig['pixel format'] = 'yuyv'
+    cameraConfig['fps'] = '60'
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
 
     input_stream = cs.getVideo()
