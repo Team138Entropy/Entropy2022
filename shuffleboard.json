@@ -10,25 +10,10 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "6,4": {
-            "size": [
-              4,
-              4
-            ],
-            "content": {
-              "_type": "Gyro",
-              "_source0": "network_table:///LiveWindow/Ungrouped/ADXRS450_Gyro[0]",
-              "_title": "Gyro",
-              "Visuals/Major tick spacing": 45.0,
-              "Visuals/Starting angle": 180.0,
-              "Visuals/Show tick mark ring": true,
-              "Visuals/Counter clockwise": false
-            }
-          },
           "0,2": {
             "size": [
-              4,
-              2
+              5,
+              3
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -36,9 +21,9 @@
               "_title": "Auto Mode"
             }
           },
-          "13,2": {
+          "5,2": {
             "size": [
-              11,
+              14,
               9
             ],
             "content": {
@@ -54,9 +39,9 @@
               "imageHeight": -1
             }
           },
-          "4,4": {
+          "19,9": {
             "size": [
-              2,
+              5,
               2
             ],
             "content": {
@@ -67,58 +52,10 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "10,5": {
+          "19,2": {
             "size": [
-              3,
+              5,
               3
-            ],
-            "content": {
-              "_type": "Number Bar",
-              "_source0": "network_table:///SmartDashboard/Right Encoder",
-              "_title": "Right Encoder",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Num tick marks": 5,
-              "Visuals/Show text": true
-            }
-          },
-          "10,8": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Number Bar",
-              "_source0": "network_table:///SmartDashboard/Left Encoder",
-              "_title": "Left Encoder",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Num tick marks": 5,
-              "Visuals/Show text": true
-            }
-          },
-          "0,8": {
-            "size": [
-              10,
-              3
-            ],
-            "content": {
-              "_type": "Voltage View",
-              "_source0": "network_table:///SmartDashboard/voltage",
-              "_title": "Voltage",
-              "Range/Min": 0.0,
-              "Range/Max": 20.0,
-              "Range/Center": 0.0,
-              "Visuals/Orientation": "HORIZONTAL",
-              "Visuals/Number of tick marks": 5
-            }
-          },
-          "4,2": {
-            "size": [
-              6,
-              2
             ],
             "content": {
               "_type": "Basic FMS Info",
@@ -126,10 +63,10 @@
               "_title": "Match Info"
             }
           },
-          "0,4": {
+          "0,5": {
             "size": [
-              4,
-              2
+              5,
+              3
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -137,10 +74,10 @@
               "_title": "Drive Controller"
             }
           },
-          "0,6": {
+          "0,8": {
             "size": [
-              4,
-              2
+              5,
+              3
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -148,9 +85,9 @@
               "_title": "Operator Controller"
             }
           },
-          "4,6": {
+          "19,7": {
             "size": [
-              2,
+              5,
               2
             ],
             "content": {
@@ -161,18 +98,16 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "10,2": {
+          "19,5": {
             "size": [
-              3,
-              3
+              5,
+              2
             ],
             "content": {
-              "_type": "Simple Dial",
-              "_source0": "network_table:///SmartDashboard/Speed",
-              "_title": "Speed",
-              "Range/Min": 0.0,
-              "Range/Max": 100.0,
-              "Visuals/Show value": true
+              "_type": "Boolean Box",
+              "_title": "Auto steer",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
             }
           }
         }
@@ -238,13 +173,61 @@
           "8,1": {
             "size": [
               5,
-              4
+              5
             ],
             "content": {
               "_type": "PDP",
               "_source0": "network_table:///LiveWindow/Ungrouped/PowerDistributionPanel[0]",
               "_title": "PDP",
               "Visuals/Show voltage and current values": true
+            }
+          },
+          "3,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/accel X",
+              "_title": "SmartDashboard/accel X",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5,
+              "Visuals/Show text": true
+            }
+          },
+          "5,3": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/accel Y",
+              "_title": "SmartDashboard/accel Y",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5,
+              "Visuals/Show text": true
+            }
+          },
+          "5,1": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/accel Z",
+              "_title": "SmartDashboard/accel Z",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5,
+              "Visuals/Show text": true
             }
           }
         }
