@@ -199,27 +199,32 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    // arm extension test controls
+    // TODO: @Daniel? Two controls for this?
     if (mOperatorInterface.getArmExtendTest()) {
       mArm.extendToMax();
     } else if (mOperatorInterface.getArmRetractTest()) {
       mArm.retractToMin();
     }
-    
     if (mOperatorInterface.getArmExtendManual()) {
       mArm.jogOut();
     } else if (mOperatorInterface.getArmRetractManual()) {
       mArm.jogIn();
     }
 
+    // shoulder test controls
+
+    // grapser test controls
     if (mOperatorInterface.getArmEjectTest()) {
       mGrasper.eject();
     } else if (mOperatorInterface.getArmIntakeTest()) {
       mGrasper.intake();
+    }else{
+      mGrasper.stop();
     }
-
     mGrasper.update(powerPanel.getCurrent(Constants.Grasper.pwmChannel));
 
-    mArm.update(mOperatorInterface.getArmX(), mOperatorInterface.getDriveThrottle());
+    // elevator test controls
   }
 
   private void RobotLoop(){
@@ -260,9 +265,15 @@ public class Robot extends TimedRobot {
     if(mOperatorInterface.getSwitchModePress()){
       switch(mCurrentMode){
         case CargoScorer:
+          // going from cargo scorer to climber
+          mGrasper.stop();
+
           mCurrentMode = RobotMode.Climber;
         break;
         case Climber:
+          // going from climber to cargo scorer
+          mGrasper.stop();
+
           mCurrentMode = RobotMode.CargoScorer;
         break;
         default:
