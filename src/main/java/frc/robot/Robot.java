@@ -130,6 +130,9 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     mOperatorInterface.setRumble(false);
 
+    // zero sensors (if not zero'ed prior on this powerup)
+    mSubsystemManager.zeroSensorsIfFresh();
+
     // set auto mode
 
     // Get Selected AutoMode
@@ -150,6 +153,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     mOperatorInterface.setRumble(false);
+        
+    // zero sensors (if not zero'ed prior on this powerup)
+    mSubsystemManager.zeroSensorsIfFresh();
     
     // Disable Auto Thread (if running)
     if (mAutoModeExecutor != null) {
@@ -169,7 +175,6 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-
     // Reset all auto mode state.
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();
@@ -234,6 +239,7 @@ public class Robot extends TimedRobot {
     if(mCurrentMode == RobotMode.CargoScorer){
       // Objective is to Score Cargo
       // Allow Driver and Operator to control arm and grasper
+
       ArmTarget target = mOperatorInterface.getArmPos();
       if (target != null) {
         mArm.update(mOperatorInterface.getArmPos().target);
@@ -241,7 +247,6 @@ public class Robot extends TimedRobot {
       } else {
         mArm.update();
       }
-
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
       mGrasper.update(powerPanel.getCurrent(Constants.Grasper.pwmChannel));
     } else if(mCurrentMode == RobotMode.Climber){
@@ -252,6 +257,7 @@ public class Robot extends TimedRobot {
       mGrasper.stop();
 
       // Allow Operator to stop
+      // first stage might require manual control
       boolean manualStop = false;
       mClimber.update(manualStop);
     }
@@ -259,7 +265,8 @@ public class Robot extends TimedRobot {
   }
 
   // Check for Change of Mode 
-  // Controlled by the Operator Controller
+  // Controlled by the Start Button on the Operator Controller
+  // Also will stop other functions of robot on change
   private void checkModeChange(){
     // Select Button is used to toggle from CargoScorer to Climber
     if(mOperatorInterface.getSwitchModePress()){

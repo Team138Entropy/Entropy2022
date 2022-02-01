@@ -10,6 +10,9 @@ public class SubsystemManager implements ILooper {
 
   private List<Subsystem> mSubsystems;
 
+  // If sensors are zero'ed on this power up
+  private boolean hasZeroedSensors;
+
   // store all defined loops
   private List<Loop> mLoops = new ArrayList<>();
 
@@ -55,7 +58,6 @@ public class SubsystemManager implements ILooper {
   }
 
   private SubsystemManager() {
-    //mSubsystemLogger = new Logger(Constants.Loggers.SUBSYSTEM);
     mSubsystems = new ArrayList<>();
   }
 
@@ -86,16 +88,27 @@ public class SubsystemManager implements ILooper {
     mLoops.add(loop);
   }
 
-  /*
-      Zero all Sensors
-  */
+  /**
+   * Zero Sensors
+   */
   public void zeroSensors() {
     for (int i = 0; i < mSubsystems.size(); i++) {
       try {
         mSubsystems.get(i).zeroSensors();
       } catch (Exception e) {
-       // mSubsystemLogger.verbose("Sensor Zero Exception: " + e.getMessage());
+        System.out.println("Sensor Zero Exception: " + e.getMessage());
       }
+    }
+    hasZeroedSensors = true;
+  }
+
+  /**
+   * Zero Sensors if they have not been zeroed prior
+   * We should only zero sensors once on each powerup
+   */
+  public void zeroSensorsIfFresh(){
+    if(!hasZeroedSensors){
+
     }
   }
 
@@ -105,7 +118,7 @@ public class SubsystemManager implements ILooper {
       try {
         mSubsystems.get(i).checkSubsystem();
       } catch (Exception e) {
-       // mSubsystemLogger.verbose("Subsystem Check Exception: " + e.getMessage());
+        System.out.println("Subsytem Check Exception: " + e.getMessage());
       }
     }
   }
