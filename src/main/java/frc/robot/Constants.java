@@ -129,7 +129,7 @@ public class Constants {
     public static class Controllers {
         public static final boolean ignore = true;
     
-        public static final double joystickDeadband = 0.15;
+        public static final double joystickDeadband = 0.05;
         public static final double triggerDeadband = 0.15;
     
         public static class Driver {
