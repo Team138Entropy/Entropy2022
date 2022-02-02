@@ -1,24 +1,18 @@
 package frc.robot.OI;
 
 import frc.robot.Constants;
-import frc.robot.OI.NykoController.Axis;
-import frc.robot.OI.NykoController.DPad;
+import frc.robot.OI.XboxController.Axis;
 import frc.robot.OI.XboxController.Button;
 import frc.robot.OI.XboxController.Side;
 import frc.robot.subsystems.Arm.ArmTarget;
-import frc.robot.Robot;
-import frc.robot.Constants.Controllers.Operator;
 import frc.robot.util.LatchedBoolean;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class OperatorInterface {
     private static OperatorInterface mInstance;
 
     // Instances of the Driver and Operator Controller
-    private XboxController DriverController;
-    private XboxController NewOperatorController;
-    private NykoController OperatorController;
-    private JoystickController joysticks;
+    private XboxController mDriverController;
+    private XboxController mOperatorController;
 
     // Latched Booleans
     private LatchedBoolean mOperatorSelectButton = new LatchedBoolean();
@@ -32,30 +26,24 @@ public class OperatorInterface {
     }
     
     private OperatorInterface() {
-        DriverController = new XboxController(Constants.Controllers.Driver.port);
-        NewOperatorController = new XboxController(Constants.Controllers.Operator.port);
-        OperatorController = new NykoController(Constants.Controllers.Operator.port);
-        //joysticks = JoystickController.getInstance();
+        mDriverController = new XboxController(Constants.Controllers.Driver.port);
+        mOperatorController = new XboxController(Constants.Controllers.Operator.port);
     }
 
     public double getDriveThrottle() {
-        return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
-    }
-
-    public double getArmX() {
-        return DriverController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.X);
+        return mDriverController.getJoystick(Side.LEFT, Axis.Y);
     }
     
     public double getDriveTurn() {
-        return DriverController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
+        return mDriverController.getJoystick(Side.RIGHT, Axis.X);
     }
 
     public boolean getDriveAutoSteer(){
-        return DriverController.getTrigger(XboxController.Side.RIGHT);
+        return mDriverController.getTrigger(Side.RIGHT);
     }
 
     public void setRumble(boolean a){ 
-        NewOperatorController.setRumble(a);
+        mOperatorController.setRumble(a);
     }
 
     /**
@@ -63,11 +51,11 @@ public class OperatorInterface {
      * @return
      */
     public ArmTarget getArmPos(){
-        if (NewOperatorController.getButton(Button.RB)) {
+        if (mOperatorController.getButton(Button.RB)) {
             return ArmTarget.SCORE_FRONT;
-        } else if (NewOperatorController.getButton(Button.LB)) {
+        } else if (mOperatorController.getButton(Button.LB)) {
             return ArmTarget.SCORE_BACK;
-        } else if (NewOperatorController.getTrigger(Side.RIGHT)) {
+        } else if (mOperatorController.getTrigger(Side.RIGHT)) {
             return ArmTarget.INTAKE;    
         } else {
             return null;
@@ -75,7 +63,11 @@ public class OperatorInterface {
     }
 
     public boolean getArmEject() {
-        return NewOperatorController.getTrigger(Side.LEFT);
+        return mOperatorController.getTrigger(Side.LEFT);
+    }
+
+    public boolean getGrasperIntakeManual() {
+        return mLeftBumper.update(mOperatorController.getButton(Button.B));
     }
 
     /**
@@ -84,32 +76,40 @@ public class OperatorInterface {
      * @return
      */
     public boolean getSwitchModePress(){
-        return mOperatorSelectButton.update(NewOperatorController.getButton(Button.START));
+        return mOperatorSelectButton.update(mOperatorController.getButton(Button.START));
     }
 
-    public boolean getArmExtendTest() {
-        return OperatorController.getButton(NykoController.Button.RIGHT_BUMPER);
+    public boolean getArmExtend() {
+        int input = mOperatorController.getDPad();
+        return input <= 45 && input >= 315;
     }
 
-    public boolean getArmRetractTest() {
-        return OperatorController.getButton(NykoController.Button.RIGHT_TRIGGER);
+    public boolean getArmRetract() {
+        int input = mOperatorController.getDPad();
+        return input <= 225 && input >= 135;
     }
 
     public boolean getArmExtendManual() {
-        return (OperatorController.getDPad() == NykoController.DPad.UP || OperatorController.getDPad() 
-            == NykoController.DPad.UP_RIGHT) || OperatorController.getDPad() == NykoController.DPad.UP_LEFT;
+        return mOperatorController.getJoystick(Side.LEFT, Axis.Y) > .5;
     }
 
     public boolean getArmRetractManual() {
-        return (OperatorController.getDPad() == NykoController.DPad.DOWN || OperatorController.getDPad() 
-            == NykoController.DPad.DOWN_RIGHT) || OperatorController.getDPad() == NykoController.DPad.DOWN_LEFT;
+        return mOperatorController.getJoystick(Side.LEFT, Axis.Y) < -.5;
     }
 
-    public boolean getArmIntakeTest() {
-        return mLeftBumper.update(OperatorController.getButton(NykoController.Button.LEFT_BUMPER));
+    public boolean getArmJogUp() {
+        return mOperatorController.getButton(Button.Y);
     }
 
-    public boolean getArmEjectTest() {
-        return OperatorController.getButton(NykoController.Button.LEFT_TRIGGER);
+    public boolean getArmJogDown() {
+        return mOperatorController.getButton(Button.A);
+    }
+
+    public double getShoulderTargetX() {
+        return mOperatorController.getJoystick(Side.RIGHT, Axis.X);
+    }
+
+    public double getShoulderTargetY() {
+        return mOperatorController.getJoystick(Side.RIGHT, Axis.X);
     }
 }

@@ -18,8 +18,7 @@ public class Arm extends Subsystem {
   private TalonSRX mForearm;
 
   // Other variables
-  private boolean isAutomaticallyExtending = false;
-  private double shoulderTarget = Constants.Arm.shoulderStartPosition;
+  private double mShoulderTarget = Constants.Arm.shoulderStartPosition;
 
   // The fixed list of targets that we navigate to when using the joystick control
   private int[] targets = {-50, 0, 60, 90, 120, 210};
@@ -29,10 +28,10 @@ public class Arm extends Subsystem {
     SCORE_BACK(120),
     INTAKE(-50);
 
-    public double target;
+    public double degrees;
 
-    private ArmTarget(double target) {
-      this.target = target;
+    private ArmTarget(double degrees) {
+      this.degrees = degrees;
     }
   }
 
@@ -67,25 +66,6 @@ public class Arm extends Subsystem {
     return mInstance;
   }
 
-  public void update() {
-    rotateShoulderPosition(shoulderTarget);
-
-    if (!isAutomaticallyExtending) stopForearm();
-  }
-
-  /**
-   * Updates the arm trajectory and movement, should be called every robot loop.
-   */
-  public void update(double targetPosition) {
-    shoulderTarget = targetPosition;
-
-    update();
-  }
-
-  public void update(double joystickX, double joystickY) {
-    update(getJoystickTarget(joystickX, joystickY));
-  }
-
   /**
    * Rotate the shoulder at a percent output.
    * @param output percent power between -1 and 1
@@ -99,22 +79,22 @@ public class Arm extends Subsystem {
    */
   public void stopShoulder() {
     rotate(0);
-    shoulderTarget = getRotation();
+    mShoulderTarget = getRotation();
   }
 
   /**
    * Rotate the shoulder by a certain amount of degrees.
    * @param degrees the amount of degrees to rotate by
    */
-  public void rotateShoulderDistance(double degrees) {
-    rotateShoulderPosition(degrees + getRotation());
+  public void rotateDistance(double degrees) {
+    rotateToPosition(degrees + getRotation());
   }
 
   /**
    * Rotate the shoulder to a position.
    * @param degrees the position to rotate to
    */
-  public void rotateShoulderPosition(double degrees) {
+  public void rotateToPosition(double degrees) {
     degrees = Math.max(degrees, Constants.Arm.shoulderStartPosition);
     degrees = Math.min(degrees, Constants.Arm.shoulderMaxRotation);
     double ff = getGravityFeedForward();
@@ -151,13 +131,13 @@ public class Arm extends Subsystem {
    * @param joystickY the joystick y input, -1 to 1
    * @return the angle to target
    */
-  private double getJoystickTarget(double joystickX, double joystickY) {
+  public double getJoystickTarget(double joystickX, double joystickY) {
     
     // Convert the joystick x and y positions into a 2D vector. Magnitude = sqrt(x^2+y^2).
     // Angle (in radians) = arctangent(y / x)
     double magnitude = Math.sqrt(Math.pow(joystickY, 2) + Math.pow(joystickX, 2));
     double angle = Math.atan(joystickY / joystickX);
-    if (magnitude < .5) return shoulderTarget; // If they aren't moving the joystick, don't change the current target
+    if (magnitude < .5) return mShoulderTarget; // If they aren't moving the joystick, don't change the current target
     
     // Java arctangent method returns a number between -pi/2 to pi/2 (-90 to 90 degrees), so we have to convert to
     // degrees. We have to add 180 degrees if we want the arm to be able to rotate past 90
@@ -166,7 +146,7 @@ public class Arm extends Subsystem {
 
     // The difference between each listed angle, and the actual joystick angle, used to find which listed angle is closest to the joystick
     double difference = 360;
-    double target = shoulderTarget;
+    double target = mShoulderTarget;
     for (int i : targets) {
       if (Math.abs(i - (int) angle) < difference) {
         target = i + (i < 90 ? 3 : -3); // Offset the target by 3 degrees upwards to compensate for gravity/slop
@@ -192,7 +172,6 @@ public class Arm extends Subsystem {
    */
   public void stopForearm() {
     extend(0);
-    isAutomaticallyExtending = false;
   }
 
   public void extendToPosition(double position) {
@@ -207,33 +186,15 @@ public class Arm extends Subsystem {
   }
 
   /**
-   * Extend the arm to the maximum length.
-   */
-  public void extendToMax() {
-    extend(Constants.Arm.forearmExtendSpeed);
-    isAutomaticallyExtending = true;
-  }
-
-  /**
-   * Retract the arm to the minimum length.
-   */
-  public void retractToMin() {
-    extend(-Constants.Arm.forearmExtendSpeed);
-    isAutomaticallyExtending = true;
-  }
-
-  /**
    * Extend the forearm at a fixed output. Will automatically stop once this method stops being called.
    * @param power percent power between -.9 and .9
    */
   public void jogOut() {
     extend(Constants.Arm.forearmJogSpeed);
-    isAutomaticallyExtending = false;
   }
 
   public void jogIn() {
     extend(-Constants.Arm.forearmJogSpeed);
-    isAutomaticallyExtending = false;
   }
 
   /**
@@ -261,7 +222,7 @@ public class Arm extends Subsystem {
    * @return shoulder target position
    */
   public double getShoulderTarget() {
-    return shoulderTarget;
+    return mShoulderTarget;
   }
 
   public double getExtension() {

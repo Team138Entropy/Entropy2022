@@ -196,30 +196,52 @@ public class Robot extends TimedRobot {
 
   }
 
+  private boolean mIsArmJogMode = false;
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
     // arm extension test controls
-    // TODO: @Daniel? Two controls for this?
-    if (mOperatorInterface.getArmExtendTest()) {
-      mArm.extendToMax();
-    } else if (mOperatorInterface.getArmRetractTest()) {
-      mArm.retractToMin();
-    }
     if (mOperatorInterface.getArmExtendManual()) {
       mArm.jogOut();
     } else if (mOperatorInterface.getArmRetractManual()) {
       mArm.jogIn();
+    } else {
+      if (mOperatorInterface.getArmExtend()) {
+        mArm.extendToPosition(Constants.Arm.forearmMaxExtension);
+      } else if (mOperatorInterface.getArmRetract()) {
+        mArm.extendToPosition(0);
+      } else {
+        mArm.stopForearm();
+      }
     }
 
     // shoulder test controls
+    double target = mArm.getJoystickTarget(mOperatorInterface.getShoulderTargetX(), mOperatorInterface.getShoulderTargetY());
+
+    if (target != mArm.getShoulderTarget()) {
+      mIsArmJogMode = false;
+    }
+
+    if (mOperatorInterface.getArmJogUp()) {
+      mArm.jogRotateUp();
+      mIsArmJogMode = true;
+    } else if (mOperatorInterface.getArmJogDown()) {
+      mArm.jogRotateDown();
+      mIsArmJogMode = true;
+    } else {
+      if (mIsArmJogMode) {
+        mArm.rotateDistance(0);
+      } else {
+        mArm.rotateToPosition(target);
+      }
+    }
 
     // grapser test controls
-    if (mOperatorInterface.getArmEjectTest()) {
+    if (mOperatorInterface.getArmEject()) {
       mGrasper.eject();
-    } else if (mOperatorInterface.getArmIntakeTest()) {
+    } else if (mOperatorInterface.getGrasperIntakeManual()) {
       mGrasper.intake();
-    }else{
+    } else {
       mGrasper.stop();
     }
     mGrasper.update(powerPanel.getCurrent(Constants.Grasper.pwmChannel));
@@ -235,16 +257,18 @@ public class Robot extends TimedRobot {
       // Objective is to Score Cargo
       // Allow Driver and Operator to control arm and grasper
       ArmTarget target = mOperatorInterface.getArmPos();
+
       if (target != null) {
-        mArm.update(mOperatorInterface.getArmPos().target);
+        mArm.rotateToPosition(target.degrees);
         if (target == ArmTarget.INTAKE) mGrasper.intake();
       } else {
-        mArm.update();
+        mArm.rotateToPosition(mArm.getShoulderTarget());
       }
 
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
+      
       mGrasper.update(powerPanel.getCurrent(Constants.Grasper.pwmChannel));
-    } else if(mCurrentMode == RobotMode.Climber){
+    } else if(mCurrentMode == RobotMode.Climber) {
       // Objective is to Climb
       // Do not allow manual control of arm and grasper
 
