@@ -299,10 +299,15 @@ public class Robot extends TimedRobot {
     // Get Target within the allowed Threshold
     TargetInfo ti = mVisionManager.getTarget(Constants.TargetType.CAMERA_1_BLUE_CARGO, Constants.Vision.kAllowedSecondsThreshold);
     boolean validTargetInfo = (ti != null);
+    double errorAngle = 0;
+    boolean validTarget = false;
     if(validTargetInfo){
-      SmartDashboard.putBoolean("Valid Target", ti.isValid());
-      SmartDashboard.putNumber("Target Angle", ti.getErrorAngle());
+      // Valid Target Packet
+      errorAngle = ti.getErrorAngle();
+      validTarget = ti.isValid();
     }
+    SmartDashboard.putBoolean("Valid Target", validTarget);
+    SmartDashboard.putNumber("Target Angle", errorAngle);
 
     if(wantsAutoSteer && validTargetInfo){
       if(ti.isValid()){ //only allow if valud packet

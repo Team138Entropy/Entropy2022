@@ -21,7 +21,7 @@ public class UDPReciever {
       try {
         recieveSocket = new DatagramSocket(listen_on_port_in);
         recievePacket = new DatagramPacket(receiveData, receiveData.length);
-        recieveSocket.setSoTimeout(10);
+        recieveSocket.setSoTimeout(20);
       } catch (IOException e) {
         System.out.println("Error: Cannot set up UDP reciever socket: " + e.getMessage());
         recieveSocket = null;
@@ -36,8 +36,8 @@ public class UDPReciever {
           String rx_string = new String(recievePacket.getData(), 0, recievePacket.getLength());
           return rx_string;
         } catch (IOException e) {
-            System.out.println("IOExexception on getPacket");
-            System.out.println(e);
+            //System.out.println("IOExexception on getPacket");
+            //System.out.println(e);
         }
       }
       return "";
