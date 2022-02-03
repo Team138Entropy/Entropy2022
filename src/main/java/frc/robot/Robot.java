@@ -202,9 +202,9 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     // arm extension test controls
     if (mOperatorInterface.getArmExtendManual()) {
-      mArm.jogOut();
+      mArm.jogExtend();
     } else if (mOperatorInterface.getArmRetractManual()) {
-      mArm.jogIn();
+      mArm.jogRetract();
     } else {
       if (mOperatorInterface.getArmExtend()) {
         mArm.extendToPosition(Constants.Arm.forearmMaxExtension);
