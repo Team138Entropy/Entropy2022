@@ -8,8 +8,12 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.Filesystem;
 
+import java.util.List;
+import java.util.Collections;
+import java.util.ArrayList;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -61,10 +65,29 @@ public class TrajectoryLibrary {
        return traj;
      }
 
+     // Inverts States
+     public static List<State> getInvertedStates(List<State> states){
+       List<State> invertedStates = new ArrayList<State>(states);
+       for(int i = 0; i < invertedStates.size(); i++){
+         State currState = invertedStates.get(i);
+         State newState = new State(
+          states.get(i).timeSeconds,
+          currState.velocityMetersPerSecond * -1,
+          currState.accelerationMetersPerSecondSq,
+          currState.poseMeters,
+          currState.curvatureRadPerMeter
+         );
+         invertedStates.set(i, newState);
+       }
+       return invertedStates;
+     }
+
      // Creates a reversed Trajectory
      public Trajectory getReversedTrajectory(Trajectory traj){
-      return null;
+      List<State> invertedStates = getInvertedStates(traj.getStates());
+      return new Trajectory(invertedStates);
      }
+
 
      public Trajectory getBasicTrajectory(){
       Trajectory traj = null;

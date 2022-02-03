@@ -22,6 +22,9 @@ public class VisionManager {
     // Target Data
     private ConcurrentHashMap<Constants.TargetType, TargetInfo> mTargetData;
 
+    // Current Selected Target
+    private Constants.TargetType mSelectedTarget = Constants.TargetType.CAMERA_1_BLUE_CARGO;
+
     private static VisionManager mInstance;
 
     public static synchronized VisionManager getInstance() {
@@ -171,6 +174,11 @@ public class VisionManager {
         }
     }
 
+    // set selected target
+    public void setSelectedTarget(Constants.TargetType ttype){
+      mSelectedTarget = ttype;
+    }
+
     // Get TargetInfo for TargetType
     // The TargetInfo Object may not be valid
     public TargetInfo getTarget(Constants.TargetType ttype){
@@ -193,7 +201,11 @@ public class VisionManager {
       }
       return t;
     }
-    
+
+    // Get Selected Target
+    public TargetInfo getSelectedTarget(double withinSeconds){
+      return getTarget(mSelectedTarget, withinSeconds);
+    }    
 
 
 }

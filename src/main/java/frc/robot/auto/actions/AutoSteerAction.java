@@ -13,7 +13,9 @@ public class AutoSteerAction implements Action {
   private Arm mArm  = Arm.getInstance();
   private Drive mDrive = Drive.getInstance();
   private VisionManager mVisionManager = VisionManager.getInstance();
+  private Grasper mGrasper = Grasper.getInstance();
   private boolean mComplete;
+  private double mThrottleSpeed = .3;
 
 
   public AutoSteerAction(){
@@ -34,10 +36,20 @@ public class AutoSteerAction implements Action {
     }else{
         // no vision packet, must be done? or this is an error
         mComplete = true;
+        return;
     }
 
     // check if ball is in grasper
-      
+    if(mGrasper.hasBall()){
+      mComplete = true;
+      return;
+    }
+
+    // command drive
+
+
+    
+    
   }
 
   @Override
@@ -46,5 +58,8 @@ public class AutoSteerAction implements Action {
   }
 
   @Override
-  public void done() {}
+  public void done() {
+    // stop driving
+    mDrive.setDrive(0, 0, false);
+  }
 }

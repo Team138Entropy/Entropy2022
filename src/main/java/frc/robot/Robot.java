@@ -297,7 +297,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 
     // Get Target within the allowed Threshold
-    TargetInfo ti = mVisionManager.getTarget(Constants.TargetType.CAMERA_1_BLUE_CARGO, Constants.Vision.kAllowedSecondsThreshold);
+    TargetInfo ti = mVisionManager.getSelectedTarget(Constants.Vision.kAllowedSecondsThreshold);
     boolean validTargetInfo = (ti != null);
     double errorAngle = 0;
     boolean validTarget = false;
