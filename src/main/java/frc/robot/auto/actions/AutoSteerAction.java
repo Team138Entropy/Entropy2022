@@ -1,5 +1,7 @@
 package frc.robot.auto.actions;
 
+import java.lang.annotation.Target;
+
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.vision.*;
@@ -8,6 +10,7 @@ import frc.robot.vision.*;
  * Uses Vision System to steer to a ball
  * Runs the auto steer loop until ball is in cargo, or timeed out
  * periodically plot positions to then reverse out?
+ * Optional: Periodically then store the driven trajectory and drive it in reverse? 
  */
 public class AutoSteerAction implements Action {
   private Arm mArm  = Arm.getInstance();
@@ -16,9 +19,17 @@ public class AutoSteerAction implements Action {
   private Grasper mGrasper = Grasper.getInstance();
   private boolean mComplete;
   private double mThrottleSpeed = .3;
+  private boolean mAllowBacktrack;
+
+  private enum Mode {
+    VisionSteering, 
+    Backtracking
+  };
+  private Mode mCurrentMode = Mode.VisionSteering;
 
 
-  public AutoSteerAction(){
+  public AutoSteerAction(boolean allowBacktrack){
+      mAllowBacktrack = allowBacktrack;
       mComplete = false;
   }
 
@@ -29,8 +40,39 @@ public class AutoSteerAction implements Action {
   }
 
   @Override
+  public void update(){
+    switch(mCurrentMode){
+      case VisionSteering:
+        TargetInfo ti = mVisionManager.getSelectedTarget(Constants.Vision.kAllowedSecondsThreshold);
+        double errorAngle = 0;
+
+        // check if ball is in grasper, or we can't see the ball anymore
+        if(mGrasper.hasBall() || ti == null){
+          // Done - either go backtrack or be done
+          if(mAllowBacktrack){
+            mCurrentMode = Mode.Backtracking;
+          }else{
+            // complete
+            mComplete = true;
+            mDrive.setDrive(0, 0, false);
+          }
+        }else{
+          // continue driving
+          mDrive.autoSteer(mThrottleSpeed, errorAngle);
+        }
+        break;
+      case Backtracking:
+        // now following back the path we took to auto steer
+
+        break;
+      default:
+        break;
+    }
+  }
+  /*
+  @Override
   public void update() {
-    TargetInfo ti = mVisionManager.getTarget(Constants.TargetType.CAMERA_1_BLUE_CARGO, Constants.Vision.kAllowedSecondsThreshold);
+    TargetInfo ti = mVisionManager.getSelectedTarget(Constants.Vision.kAllowedSecondsThreshold);
     if(ti != null){
         // steer to the target
     }else{
@@ -46,11 +88,17 @@ public class AutoSteerAction implements Action {
     }
 
     // command drive
+    double errorAngle = 0;
+    mDrive.autoSteer(mThrottleSpeed, errorAngle);
 
 
     
-    
+    // if allow backtrack, we should periodically store robot position
+    if(mAllowBacktrack){
+      
+    }
   }
+  */
 
   @Override
   public boolean isFinished() {
