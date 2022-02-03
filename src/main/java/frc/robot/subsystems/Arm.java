@@ -19,19 +19,22 @@ public class Arm extends Subsystem {
 
   // Other variables
   private double mShoulderTarget = Constants.Arm.shoulderStartPosition;
+  private double mForearmTarget = 0;
 
   // The fixed list of targets that we navigate to when using the joystick control
   private int[] targets = {-50, 0, 60, 90, 120, 210};
 
   public static enum ArmTarget {
-    SCORE_FRONT(60),
-    SCORE_BACK(120),
-    INTAKE(-50);
+    SCORE_FRONT(60, Constants.Arm.forearmMaxExtension),
+    SCORE_BACK(120, Constants.Arm.forearmMaxExtension),
+    INTAKE(-50, 0);
 
     public double degrees;
+    public double distance;
 
-    private ArmTarget(double degrees) {
+    private ArmTarget(double degrees, double extension) {
       this.degrees = degrees;
+      this.distance = extension;
     }
   }
 
@@ -172,6 +175,7 @@ public class Arm extends Subsystem {
    */
   public void stopForearm() {
     extend(0);
+    mForearmTarget = getExtension();
   }
 
   public void extendToPosition(double position) {
@@ -179,6 +183,7 @@ public class Arm extends Subsystem {
     position = Math.min(position, Constants.Arm.forearmMaxExtension);
     
     mForearm.set(ControlMode.MotionMagic, position);
+    mForearmTarget = position;
   }
 
   public void extendDistance(double distance) {
@@ -223,6 +228,10 @@ public class Arm extends Subsystem {
    */
   public double getShoulderTarget() {
     return mShoulderTarget;
+  }
+
+  public double getForearmTarget() {
+    return mForearmTarget;
   }
 
   public double getExtension() {
@@ -277,6 +286,7 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("shoulderPosition", getRotation());
     SmartDashboard.putNumber("shoulderVelocity", getShoulderVelocity());
     SmartDashboard.putNumber("shoulderOutput", getShoulderOutput());
+    SmartDashboard.putNumber("forearmTarget", getForearmTarget());
     SmartDashboard.putNumber("forearmPosition", getExtension());
     SmartDashboard.putNumber("forearmVelocity", getForearmVelocity());
     SmartDashboard.putNumber("forearmOutput", getForearmOutput());

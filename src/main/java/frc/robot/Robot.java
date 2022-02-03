@@ -258,11 +258,17 @@ public class Robot extends TimedRobot {
       // Allow Driver and Operator to control arm and grasper
       ArmTarget target = mOperatorInterface.getArmPos();
 
+      if (mGrasper.getBallsStored() == 2 && target == ArmTarget.INTAKE) {
+        target = ArmTarget.SCORE_FRONT;
+      }
+
       if (target != null) {
         mArm.rotateToPosition(target.degrees);
+        mArm.extendToPosition(target.distance);
         if (target == ArmTarget.INTAKE) mGrasper.intake();
       } else {
         mArm.rotateToPosition(mArm.getShoulderTarget());
+        mArm.extendToPosition(mArm.getForearmTarget());
       }
 
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
