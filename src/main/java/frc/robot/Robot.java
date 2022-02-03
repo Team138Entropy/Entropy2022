@@ -96,6 +96,10 @@ public class Robot extends TimedRobot {
     mAutoModes.addOption("One Ball", new OneBall());
     mAutoModes.addOption("DEMO", new DEMO());
     mAutoModes.addOption("TEST", new TEST());
+    mAutoModes.addOption("T1_B2_T1", new T1_B2_T1());
+    mAutoModes.addOption("T2_B3_B2_T1", new T2_B3_B2_T1());
+    mAutoModes.addOption("T2_B3_T2", new T2_B3_T2());
+    mAutoModes.addOption("T1_B2_T1_B3_T2", new T1_B2_T1_B3_T2());
     SmartDashboard.putData(mAutoModes);
   }
   /**
