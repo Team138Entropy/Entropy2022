@@ -21,27 +21,9 @@
               "_title": "Auto Mode"
             }
           },
-          "5,2": {
+          "5,9": {
             "size": [
-              14,
-              9
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_title": "Camera Stream",
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": true,
-              "Controls/Rotation": "NONE",
-              "compression": -1.0,
-              "fps": -1,
-              "imageWidth": -1,
-              "imageHeight": -1
-            }
-          },
-          "19,9": {
-            "size": [
-              5,
+              19,
               2
             ],
             "content": {
@@ -52,9 +34,9 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "19,2": {
+          "5,2": {
             "size": [
-              5,
+              19,
               3
             ],
             "content": {
@@ -85,9 +67,9 @@
               "_title": "Operator Controller"
             }
           },
-          "19,7": {
+          "5,7": {
             "size": [
-              5,
+              19,
               2
             ],
             "content": {
@@ -98,9 +80,9 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "19,5": {
+          "5,5": {
             "size": [
-              5,
+              19,
               2
             ],
             "content": {
