@@ -7,13 +7,59 @@
       <property name="address" value="http://frcvision.local:1181/stream.mjpg"/>
     </grip:Camera>
     <grip:MultiImageFile>
-      <property name="numImages" value="5"/>
-      <property name="path[0]" value="C:\Users\nickp\Documents\GitHub\Entropy2022\src\main\java\frc\robot\Vision\Vision Samples\Balls1.png.png"/>
-      <property name="path[1]" value="C:\Users\nickp\Documents\GitHub\Entropy2022\src\main\java\frc\robot\Vision\Vision Samples\Balls2.png.png"/>
-      <property name="index" value="4"/>
-      <property name="path[2]" value="C:\Users\nickp\Documents\GitHub\Entropy2022\src\main\java\frc\robot\Vision\Vision Samples\Balls3.png.png"/>
-      <property name="path[3]" value="C:\Users\nickp\Documents\GitHub\Entropy2022\src\main\java\frc\robot\Vision\Vision Samples\Balls4.png.png"/>
-      <property name="path[4]" value="C:\Users\nickp\Documents\GitHub\Entropy2022\src\main\java\frc\robot\Vision\Vision Samples\Balls5.png.png"/>
+      <property name="path[21]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01667.JPG"/>
+      <property name="path[24]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01672.JPG"/>
+      <property name="path[27]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01675.JPG"/>
+      <property name="path[40]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01695.JPG"/>
+      <property name="path[0]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\20211119_095809.jpg"/>
+      <property name="path[43]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01701.JPG"/>
+      <property name="path[11]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01655.JPG"/>
+      <property name="path[3]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\20211119_095910.jpg"/>
+      <property name="path[46]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01708.JPG"/>
+      <property name="path[14]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01658.JPG"/>
+      <property name="path[6]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01648.JPG"/>
+      <property name="path[49]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01713.JPG"/>
+      <property name="path[17]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01662.JPG"/>
+      <property name="path[9]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01653.JPG"/>
+      <property name="path[30]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01682.JPG"/>
+      <property name="path[33]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01685.JPG"/>
+      <property name="path[36]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01689.JPG"/>
+      <property name="path[39]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01694.JPG"/>
+      <property name="path[20]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01666.JPG"/>
+      <property name="path[23]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01670.JPG"/>
+      <property name="path[26]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01674.JPG"/>
+      <property name="path[29]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01681.JPG"/>
+      <property name="path[42]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01697.JPG"/>
+      <property name="path[10]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01654.JPG"/>
+      <property name="path[2]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\20211119_095856.jpg"/>
+      <property name="path[45]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01707.JPG"/>
+      <property name="path[13]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01657.JPG"/>
+      <property name="path[5]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01647.JPG"/>
+      <property name="path[48]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01712.JPG"/>
+      <property name="path[16]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01660.JPG"/>
+      <property name="path[8]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01651.JPG"/>
+      <property name="path[19]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01665.JPG"/>
+      <property name="path[32]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01684.JPG"/>
+      <property name="path[35]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01688.JPG"/>
+      <property name="path[38]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01691.JPG"/>
+      <property name="index" value="2"/>
+      <property name="path[22]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01668.JPG"/>
+      <property name="path[25]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01673.JPG"/>
+      <property name="path[28]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01679.JPG"/>
+      <property name="path[41]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01696.JPG"/>
+      <property name="path[1]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\20211119_095840.jpg"/>
+      <property name="path[44]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01703.JPG"/>
+      <property name="path[4]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\20211119_095925.jpg"/>
+      <property name="path[12]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01656.JPG"/>
+      <property name="path[47]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01709.JPG"/>
+      <property name="path[7]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01650.JPG"/>
+      <property name="path[15]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01659.JPG"/>
+      <property name="path[18]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01663.JPG"/>
+      <property name="numImages" value="51"/>
+      <property name="path[31]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01683.JPG"/>
+      <property name="path[34]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01687.JPG"/>
+      <property name="path[37]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01690.JPG"/>
+      <property name="path[50]" value="C:\Users\nickp\Downloads\WPIPlayingFieldImages\DSC01719.JPG"/>
     </grip:MultiImageFile>
   </sources>
   <steps>
@@ -25,7 +71,7 @@
       <grip:Input step="0" socket="2">
         <value>5.855855855855857</value>
       </grip:Input>
-      <grip:Output step="0" socket="0" previewed="true"/>
+      <grip:Output step="0" socket="0" previewed="false"/>
     </grip:Step>
     <grip:Step name="HSV Threshold">
       <grip:Input step="1" socket="0"/>
@@ -37,7 +83,7 @@
       </grip:Input>
       <grip:Input step="1" socket="2">
         <value>
-          <double>151.34892086330936</double>
+          <double>112.36510791366906</double>
           <double>255.0</double>
         </value>
       </grip:Input>
@@ -54,11 +100,11 @@
       <grip:Input step="2" socket="1">
         <value>false</value>
       </grip:Input>
-      <grip:Output step="2" socket="0" previewed="true"/>
+      <grip:Output step="2" socket="0" previewed="false"/>
     </grip:Step>
     <grip:Step name="Convex Hulls">
       <grip:Input step="3" socket="0"/>
-      <grip:Output step="3" socket="0" previewed="true"/>
+      <grip:Output step="3" socket="0" previewed="false"/>
     </grip:Step>
     <grip:Step name="Filter Contours">
       <grip:Input step="4" socket="0"/>
@@ -103,20 +149,20 @@
   </steps>
   <connections>
     <grip:Connection>
-      <grip:Output source="1" socket="0" previewed="false"/>
-      <grip:Input step="0" socket="0"/>
+      <grip:Output step="0" socket="0" previewed="false"/>
+      <grip:Input step="1" socket="0"/>
     </grip:Connection>
     <grip:Connection>
       <grip:Output step="1" socket="0" previewed="true"/>
       <grip:Input step="2" socket="0"/>
     </grip:Connection>
     <grip:Connection>
-      <grip:Output step="0" socket="0" previewed="true"/>
-      <grip:Input step="1" socket="0"/>
+      <grip:Output step="2" socket="0" previewed="false"/>
+      <grip:Input step="4" socket="0"/>
     </grip:Connection>
     <grip:Connection>
-      <grip:Output step="2" socket="0" previewed="true"/>
-      <grip:Input step="3" socket="0"/>
+      <grip:Output source="2" socket="0" previewed="true"/>
+      <grip:Input step="0" socket="0"/>
     </grip:Connection>
   </connections>
   <settings>
