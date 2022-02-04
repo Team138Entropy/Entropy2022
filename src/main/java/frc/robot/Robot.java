@@ -55,6 +55,10 @@ public class Robot extends TimedRobot {
   private boolean inTeleop = false;
   private PowerDistributionPanel powerPanel = new PowerDistributionPanel(0);
   private Accelerometer accelerometer = new BuiltInAccelerometer();
+
+  private double accelX = accelerometer.getX();
+  private double accelY = accelerometer.getY();
+  private double accelZ = accelerometer.getZ();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -96,16 +100,23 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    if (accelX < 0.10 && accelX > -0.10){accelX=0;}
+    if (accelY < 0.10 && accelY > -0.10){accelY=0;}
+    if (accelZ < 0.10 && accelZ > -0.10){accelZ=0;}
+  
     SmartDashboard.putBoolean("In Auto", inAutoMode);
     SmartDashboard.putBoolean("In Teleop", inTeleop);
     SmartDashboard.putNumber("Speed", mOperatorInterface.getDriveThrottle());
     SmartDashboard.putNumber("battery", RobotController.getBatteryVoltage());
-    SmartDashboard.putNumber("Left Encoder", mDrive.getLeftEncoderPosition());
+    SmartDashboard.putNumber("Left Encoder", mDrive.getLeftEncoderPosition()*-1);
     SmartDashboard.putNumber("Right Encoder", mDrive.getRightEncoderPosition());
     SmartDashboard.putData("power panel",powerPanel);
-    SmartDashboard.putNumber("accel X", accelerometer.getX());
-    SmartDashboard.putNumber("accel Y", accelerometer.getY());
-    SmartDashboard.putNumber("accel Z", accelerometer.getZ());
+    SmartDashboard.putNumber("accel X", accelX);
+    SmartDashboard.putNumber("accel Y", accelY);
+    SmartDashboard.putNumber("accel Z", accelZ);
+    //Ball targeting stuff
+    //SmartDashboard.putBoolean("Value Target", ___);
+    //SmartDashboard.putNumber("Target angle", ___)
   }
 
   /** Called at the Start of Autonomous **/
