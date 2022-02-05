@@ -18,7 +18,6 @@ public class OperatorInterface {
     private XboxController DriverController;
     private XboxController NewOperatorController;
     private NykoController OperatorController;
-    private JoystickController joysticks;
 
     // Latched Booleans
     private LatchedBoolean mOperatorSelectButton = new LatchedBoolean();

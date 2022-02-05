@@ -29,10 +29,6 @@ import frc.robot.util.drivers.MotorConfigUtils;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
-
-
-
 public class Drive extends Subsystem {
   private static Drive mInstance;
 
@@ -303,8 +299,7 @@ public class Drive extends Subsystem {
     return currentCommand;
   }
 
-  public synchronized void 
-  autoSteer(double throttle, double angle){
+  public synchronized void autoSteer(double throttle, double angle){
     double radians = (0.0174533) * angle;
     double heading_error_rad = radians;
     final double kAutosteerKp = 0.1;
@@ -316,8 +311,6 @@ public class Drive extends Subsystem {
 
   // periodic update 
   public void periodic() {
-    // Update the odometry in the periodic block
-    //m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
 
   }
 
