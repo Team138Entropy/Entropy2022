@@ -22,7 +22,7 @@ public class TrajectoryLibrary {
     private static TrajectoryLibrary mInstance;
 
     // Base Path of the Autonomous Paths
-    String trajectoryJSONFolder = "trajectories/output";
+    public final String trajectoryJSONFolder = "trajectories";
 
 
     public static synchronized TrajectoryLibrary getInstance() {
