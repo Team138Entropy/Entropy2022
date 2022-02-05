@@ -65,27 +65,10 @@ public class TrajectoryLibrary {
        return traj;
      }
 
-     // Inverts States
-     public static List<State> getInvertedStates(List<State> states){
-       List<State> invertedStates = new ArrayList<State>(states);
-       for(int i = 0; i < invertedStates.size(); i++){
-         State currState = invertedStates.get(i);
-         State newState = new State(
-          states.get(i).timeSeconds,
-          currState.velocityMetersPerSecond * -1,
-          currState.accelerationMetersPerSecondSq,
-          currState.poseMeters,
-          currState.curvatureRadPerMeter
-         );
-         invertedStates.set(i, newState);
-       }
-       return invertedStates;
-     }
 
      // Creates a reversed Trajectory
      public Trajectory getReversedTrajectory(Trajectory traj){
-      List<State> invertedStates = getInvertedStates(traj.getStates());
-      return new Trajectory(invertedStates);
+      return AutoUtil.getReversedTrajectory(traj);
      }
 
 
