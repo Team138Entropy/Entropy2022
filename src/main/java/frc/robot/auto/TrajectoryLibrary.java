@@ -166,6 +166,83 @@ public class TrajectoryLibrary {
       }
       return traj;
      }
+     public Trajectory get_New_T1_B2(){
+      Trajectory traj = null;
+      String fileName = "New-T1_B2.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_New_B2_T1(){
+      Trajectory traj = null;
+      String fileName = "New-B2_T1.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_New_B3_B2(){
+      Trajectory traj = null;
+      String fileName = "New-B3_B2.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_New_T2_B3(){
+      Trajectory traj = null;
+      String fileName = "Tarmac2.DEMO.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_New_T1_B3(){
+      Trajectory traj = null;
+      String fileName = "New-T1_B3path.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_New_T2_Terminal(){
+      Trajectory traj = null;
+      String fileName = "New-T2_terminal.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_New_T4_Terminal(){
+      Trajectory traj = null;
+      String fileName = "New-T4_terminal.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
      
      
 }
