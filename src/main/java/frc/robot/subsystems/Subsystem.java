@@ -10,7 +10,7 @@ the constructor will automatically add to the subsystem manager
 public abstract class Subsystem {
 
   public Subsystem() {
-    //SubsystemManager.getInstance().registerSubsystem(this);
+    SubsystemManager.getInstance().registerSubsystem(this);
   }
 
   public abstract void zeroSensors();
