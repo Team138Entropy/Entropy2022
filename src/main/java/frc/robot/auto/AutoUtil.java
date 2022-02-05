@@ -1,7 +1,7 @@
 package frc.robot.auto;
 
-import edu.wpi.first.wpilibj.trajectory.*;
-import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
+import edu.wpi.first.math.trajectory.*;
+import edu.wpi.first.math.trajectory.Trajectory.State;
 
 import java.util.List;
 import java.util.ArrayList;

@@ -18,9 +18,9 @@ import frc.robot.auto.modes.DoNothingMode;
 import frc.robot.auto.modes.TestDriveMode;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.PowerDistribution;
 
 
 /**
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
 
   private boolean inAutoMode = false;
   private boolean inTeleop = false;
-  private PowerDistributionPanel powerPanel = new PowerDistributionPanel(0);
+  private PowerDistribution powerPanel = new PowerDistribution(0, PowerDistribution.ModuleType.kCTRE);
   private Accelerometer accelerometer = new BuiltInAccelerometer();
 
   // Mode

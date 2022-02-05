@@ -1,7 +1,7 @@
 package frc.robot.auto.actions;
 
 import frc.robot.auto.TrajectoryFollower;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.Trajectory;
 
 /**
  * Drives the Trajectory using the Trajectory Follower

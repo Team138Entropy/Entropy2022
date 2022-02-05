@@ -1,9 +1,9 @@
 package frc.robot.auto.actions;
 
 import frc.robot.auto.TrajectoryFollower;
-import edu.wpi.first.wpilibj.trajectory.*;
-import edu.wpi.first.wpiutil.math.MathUtil;
-import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.math.trajectory.*;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.Robot;
 import frc.robot.subsystems.Drive;
