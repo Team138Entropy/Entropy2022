@@ -19,8 +19,8 @@ public class T2_B3_T2 extends AutoModeBase {
 
     public T2_B3_T2(){
         // add multiple actions to drive trajectorys, these will run one after another
-      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T2_B3()));
-      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_New_T2_B3())));
+      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_Old_T2_B3()));
+      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_Old_T2_B3())));
     }
 
     @Override

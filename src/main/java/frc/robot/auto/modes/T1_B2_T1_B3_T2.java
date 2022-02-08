@@ -22,7 +22,7 @@ public class T1_B2_T1_B3_T2 extends AutoModeBase {
       driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T1_B2()));
       driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_New_T1_B2())));
       driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T1_B3()));
-      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_New_T2_B3())));
+      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_Old_T2_B3())));
     }
 
     @Override
