@@ -112,4 +112,12 @@ public class OperatorInterface {
     public double getShoulderTargetY() {
         return mOperatorController.getJoystick(Side.RIGHT, Axis.X);
     }
+
+    public boolean getClimberTestExtend(){
+        return mOperatorController.getButton(Button.B);
+    }
+
+    public boolean getClimberTestRetract(){
+        return mOperatorController.getButton(Button.A);
+    }
 }
