@@ -111,4 +111,12 @@ public class OperatorInterface {
     public boolean getArmEjectTest() {
         return OperatorController.getButton(NykoController.Button.LEFT_TRIGGER);
     }
+
+    public boolean getClimberTestExtend(){
+        return false;
+    }
+    
+    public boolean getClimberTestRetract(){
+        return false;
+    }
 }

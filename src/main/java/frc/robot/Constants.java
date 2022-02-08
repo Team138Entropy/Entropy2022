@@ -81,7 +81,7 @@ public class Constants {
       Rotation2d.fromDegrees(0);
 
     // Allowed Seconds Threshold
-    public static final double kAllowedSecondsThreshold = .3; //seconds
+    public static final double kAllowedSecondsThreshold = .25; //seconds
   }
 
   // Subsystems

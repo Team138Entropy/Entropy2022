@@ -236,6 +236,16 @@ public class Robot extends TimedRobot {
     mGrasper.update(powerPanel.getCurrent(Constants.Grasper.pwmChannel));
 
     // elevator test controls
+    if(mOperatorInterface.getClimberTestExtend()){
+      //extend the climber
+      mClimber.TestExtend();
+    }else if(mOperatorInterface.getClimberTestRetract()){
+      // retract the climber
+      mClimber.TestRetract();
+    }else{
+      // stop the climber
+      mClimber.TestStop();
+    }
   }
 
   private void RobotLoop(){
@@ -268,31 +278,6 @@ public class Robot extends TimedRobot {
       mClimber.update(manualStop);
     }
     DriveLoop();
-  }
-
-  // Check for Change of Mode 
-  // Controlled by the Start Button on the Operator Controller
-  // Also will stop other functions of robot on change
-  private void checkModeChange(){
-    // Select Button is used to toggle from CargoScorer to Climber
-    if(mOperatorInterface.getSwitchModePress()){
-      switch(mCurrentMode){
-        case CargoScorer:
-          // going from cargo scorer to climber
-          mGrasper.stop();
-
-          mCurrentMode = RobotMode.Climber;
-        break;
-        case Climber:
-          // going from climber to cargo scorer
-          mGrasper.stop();
-
-          mCurrentMode = RobotMode.CargoScorer;
-        break;
-        default:
-        break;
-      }
-    }
   }
 
   private void DriveLoop(){
@@ -328,4 +313,31 @@ public class Robot extends TimedRobot {
       mDrive.setDrive(driveThrottle, driveTurn, false);
     }
   }
+
+  // Check for Change of Mode 
+  // Controlled by the Start Button on the Operator Controller
+  // Also will stop other functions of robot on change
+  private void checkModeChange(){
+    // Select Button is used to toggle from CargoScorer to Climber
+    if(mOperatorInterface.getSwitchModePress()){
+      switch(mCurrentMode){
+        case CargoScorer:
+          // going from cargo scorer to climber
+          mGrasper.stop();
+
+          mCurrentMode = RobotMode.Climber;
+        break;
+        case Climber:
+          // going from climber to cargo scorer
+          mGrasper.stop();
+
+          mCurrentMode = RobotMode.CargoScorer;
+        break;
+        default:
+        break;
+      }
+    }
+  }
+
+
 }
