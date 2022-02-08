@@ -18,7 +18,7 @@ public class ArmRotateAction implements Action {
 
   @Override
   public void update() {
-    mArm.update(mTargetAngle);
+    mArm.rotateToPosition(mTargetAngle);
   }
 
   @Override

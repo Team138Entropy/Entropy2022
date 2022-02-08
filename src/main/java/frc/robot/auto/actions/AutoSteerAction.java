@@ -47,7 +47,7 @@ public class AutoSteerAction implements Action {
         double errorAngle = 0;
 
         // check if ball is in grasper, or we can't see the ball anymore
-        if(mGrasper.hasBall() || ti == null){
+        if(mGrasper.getBallsStored() > 0 || ti == null){
           // Done - either go backtrack or be done
           if(mAllowBacktrack){
             mCurrentMode = Mode.Backtracking;

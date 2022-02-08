@@ -14,13 +14,11 @@ public class ArmExtendAction implements Action {
   }
 
   @Override
-  public void start() {
-    mArm.extendToPosition(mTargetExtension);
-  }
+  public void start() {}
 
   @Override
   public void update() {
-    mArm.update();
+    mArm.extendToPosition(mTargetExtension);
   }
 
   @Override
