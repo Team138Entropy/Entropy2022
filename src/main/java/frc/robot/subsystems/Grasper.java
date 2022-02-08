@@ -111,5 +111,6 @@ public class Grasper extends Subsystem {
   public void updateSmartDashBoard(){
     SmartDashboard.putBoolean("hasBall", hasBall());
     SmartDashboard.putString("intakeStatus", getIntakeStatus().toString());
+    SmartDashboard.putNumber("Grasper Percent Output", mTalon.get());
   }
 }
