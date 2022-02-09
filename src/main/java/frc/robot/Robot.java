@@ -213,14 +213,14 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     // arm extension test controls
     if (mOperatorInterface.getArmExtendManual()) {
-      mArm.jogExtend();
+      mArm.extend();
     } else if (mOperatorInterface.getArmRetractManual()) {
-      mArm.jogRetract();
+      mArm.retract();
     } else {
       if (mOperatorInterface.getArmExtend()) {
-        mArm.extendToPosition(Constants.Arm.forearmMaxExtension);
+        mArm.extend();
       } else if (mOperatorInterface.getArmRetract()) {
-        mArm.extendToPosition(0);
+        mArm.retract();
       } else {
         mArm.stopForearm();
       }
@@ -229,7 +229,7 @@ public class Robot extends TimedRobot {
     // shoulder test controls
     double target = mArm.getJoystickTarget(mOperatorInterface.getShoulderTargetX(), mOperatorInterface.getShoulderTargetY());
 
-    if (target != mArm.getShoulderTarget()) {
+    if (target != mArm.getRotationTarget()) {
       mIsArmJogMode = false;
     }
 
@@ -255,7 +255,7 @@ public class Robot extends TimedRobot {
     } else {
       mGrasper.stop();
     }
-    mGrasper.update(powerPanel.getCurrent(Constants.Grasper.pwmChannel));
+    mGrasper.update(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));
 
     // elevator test controls
     if(mOperatorInterface.getClimberTestExtend()){
@@ -286,15 +286,14 @@ public class Robot extends TimedRobot {
 
       if (target != null) {
         mArm.rotateToPosition(target.degrees);
-        mArm.extendToPosition(target.distance);
+        mArm.extend();
         if (target == ArmTarget.INTAKE) mGrasper.intake();
       } else {
-        mArm.rotateToPosition(mArm.getShoulderTarget());
-        mArm.extendToPosition(mArm.getForearmTarget());
+        mArm.rotateToPosition(mArm.getRotationTarget());
       }
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
       
-      mGrasper.update(powerPanel.getCurrent(Constants.Grasper.pwmChannel));
+      mGrasper.update(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));
     } else if(mCurrentMode == RobotMode.Climber) {
       // Objective is to Climb
       // Do not allow manual control of arm and grasper

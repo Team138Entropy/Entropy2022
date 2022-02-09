@@ -7,10 +7,10 @@ import frc.robot.subsystems.Arm;
  */
 public class ArmExtendAction implements Action {
   private Arm mArm  = Arm.getInstance();
-  private final double mTargetExtension;
+  private final boolean mIsExtended;
 
-  public ArmExtendAction(double targetExtension){
-    mTargetExtension = targetExtension;
+  public ArmExtendAction(boolean isExtended) {
+    mIsExtended = isExtended;
   }
 
   @Override
@@ -18,12 +18,14 @@ public class ArmExtendAction implements Action {
 
   @Override
   public void update() {
-    mArm.extendToPosition(mTargetExtension);
+    if (mIsExtended) mArm.extend();
+    else mArm.retract();
   }
 
   @Override
   public boolean isFinished() {
-    return Math.abs(mArm.getExtension() - mTargetExtension) < 2;
+    if (mIsExtended) return mArm.isExtended();
+    else return mArm.isRetracted();
   }
 
   @Override

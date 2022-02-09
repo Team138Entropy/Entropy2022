@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
@@ -19,7 +18,6 @@ public class Arm extends Subsystem {
 
   // Other variables
   private double mShoulderTarget = Constants.Arm.shoulderStartPosition;
-  private double mForearmTarget = 0;
 
   // The fixed list of targets that we navigate to when using the joystick control
   private int[] targets = {-50, 0, 60, 90, 120, 210};
@@ -28,16 +26,16 @@ public class Arm extends Subsystem {
    * All useful arm target positions during a match. 
    */
   public static enum ArmTarget {
-    SCORE_FRONT(60, Constants.Arm.forearmMaxExtension),
-    SCORE_BACK(120, Constants.Arm.forearmMaxExtension),
-    INTAKE(-50, 0);
+    SCORE_FRONT(60, false),
+    SCORE_BACK(120, false),
+    INTAKE(-50, false);
 
     public double degrees;
-    public double distance;
+    public boolean isExtended;
 
-    private ArmTarget(double degrees, double extension) {
+    private ArmTarget(double degrees, boolean isExtended) {
       this.degrees = degrees;
-      this.distance = extension;
+      this.isExtended = isExtended;
     }
   }
 
@@ -58,8 +56,6 @@ public class Arm extends Subsystem {
     
     // TODO Check if we should be using the overloaded method with 3 arguments
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
-
-    mForearm.setSelectedSensorPosition(0);
 
     // Configure Sensor Feedback
     // PID constants
@@ -184,41 +180,20 @@ public class Arm extends Subsystem {
    */
   public void stopForearm() {
     extend(0);
-    mForearmTarget = getExtension();
-  }
-
-  /**
-   * Extend the forearm to a position.
-   * @param position the position to extend to, in centimeters
-   */
-  public void extendToPosition(double position) {
-    position = Math.max(position, 0);
-    position = Math.min(position, Constants.Arm.forearmMaxExtension);
-    
-    mForearm.set(ControlMode.MotionMagic, position);
-    mForearmTarget = position;
-  }
-
-  /**
-   * Extend the forearm by a certain distance.
-   * @param distance the distance to extend by, in centimeters
-   */
-  public void extendDistance(double distance) {
-    extendToPosition(distance + getExtension());
   }
 
   /**
    * Extend the forearm at a fixed speed.
    */
-  public void jogExtend() {
-    extend(Constants.Arm.forearmJogSpeed);
+  public void extend() {
+    extend(Constants.Arm.forearmExtendSpeed);
   }
 
   /**
    * Retract the forearm at a fixed speed.
    */
-  public void jogRetract() {
-    extend(-Constants.Arm.forearmJogSpeed);
+  public void retract() {
+    extend(-Constants.Arm.forearmExtendSpeed);
   }
 
   /**
@@ -231,7 +206,7 @@ public class Arm extends Subsystem {
   /**
    * @return shoulder velocity in degrees/second
    */
-  public double getShoulderVelocity() {
+  public double getRotationVelocity() {
     return mShoulder.getSelectedSensorVelocity() * 10;
   }
   
@@ -245,7 +220,7 @@ public class Arm extends Subsystem {
   /**
    * @return shoulder target position
    */
-  public double getShoulderTarget() {
+  public double getRotationTarget() {
     return mShoulderTarget;
   }
 
@@ -259,7 +234,7 @@ public class Arm extends Subsystem {
   /**
    * @return forearm velocity in cm/s
    */
-  public double getForearmVelocity() {
+  public double getExtensionVelocity() {
     return mForearm.getSelectedSensorVelocity() * 10;
   }
 
@@ -269,25 +244,18 @@ public class Arm extends Subsystem {
   public double getForearmOutput() {
     return mForearm.getMotorOutputPercent();
   }
-
-  /**
-   * @return forearm target position
-   */
-  public double getForearmTarget() {
-    return mForearmTarget;
-  }
   
   /**
    * @return whether the forearm is fully extended
    */
-  public boolean isForearmExtended() {
+  public boolean isExtended() {
     return mForearm.getSensorCollection().isFwdLimitSwitchClosed();
   }
 
   /**
    * @return whether the forearm is fully retracted
    */
-  public boolean isForearmRetracted() {
+  public boolean isRetracted() {
     return mForearm.getSensorCollection().isRevLimitSwitchClosed();
   }
 
@@ -303,13 +271,12 @@ public class Arm extends Subsystem {
 
   @Override
   public void updateSmartDashBoard(){
-    SmartDashboard.putNumber("shoulderTarget", getShoulderTarget());
+    SmartDashboard.putNumber("shoulderTarget", getRotationTarget());
     SmartDashboard.putNumber("shoulderPosition", getRotation());
-    SmartDashboard.putNumber("shoulderVelocity", getShoulderVelocity());
+    SmartDashboard.putNumber("shoulderVelocity", getRotationVelocity());
     SmartDashboard.putNumber("shoulderOutput", getShoulderOutput());
-    SmartDashboard.putNumber("forearmTarget", getForearmTarget());
     SmartDashboard.putNumber("forearmPosition", getExtension());
-    SmartDashboard.putNumber("forearmVelocity", getForearmVelocity());
+    SmartDashboard.putNumber("forearmVelocity", getExtensionVelocity());
     SmartDashboard.putNumber("forearmOutput", getForearmOutput());
   }
 }
