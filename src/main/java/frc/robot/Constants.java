@@ -184,7 +184,7 @@ public class Constants {
   public static class Arm {
     public static final double shoulderJogSpeed = .35;
     public static final double shoulderTicksPerRotation = 8192;
-    public static final int shoulderStartPosition = -60;
+    public static final int shoulderStartPosition = 90;
     public static final int shoulderMaxRotation = 220;
     public static final double shoulderMaxGravityFF = .045;
 
