@@ -92,10 +92,6 @@ public class Robot extends TimedRobot {
     mAutoModes = new SendableChooser<AutoModeBase>();
     mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
     mAutoModes.addOption("Test Drive", new TestDriveMode());
-    mAutoModes.addOption("Tarmac1_B2_B3_Tarmac2", new Tarmac1_B2_B3_Tarmac2());
-    mAutoModes.addOption("One Ball", new OneBall());
-    mAutoModes.addOption("DEMO", new DEMO());
-    mAutoModes.addOption("TEST", new TEST());
     mAutoModes.addOption("T1_B2_T1", new T1_B2_T1());
     mAutoModes.addOption("T2_B3_B2_T1", new T2_B3_B2_T1());
     mAutoModes.addOption("T2_B3_T2", new T2_B3_T2());

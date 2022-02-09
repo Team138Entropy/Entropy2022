@@ -16,31 +16,9 @@ public class TestDriveMode extends AutoModeBase {
     DriveTrajectoryAction dta;
 
     public TestDriveMode(){
-    
-        /*
-        // unused code 
-        double metersPerSecond = 1.8288;
-        double acceleratoionMetersPerSecondSquared = .5;
-        
-        TrajectoryConfig config =
-        new TrajectoryConfig(metersPerSecond,
-        acceleratoionMetersPerSecondSquared);
-
-
-        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-            List.of(
-                new Pose2d(0, 0, new Rotation2d(0)),
-                new Pose2d(1, 0, new Rotation2d(0))
-            ),
-            // End 3 meters straight ahead of where we started, facing forward
-            // Pass config
-            config
-        );
-        */
-
         dta = new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getBasicTrajectory());
     }
-
+    
     @Override
     protected void routine() throws AutoModeEndedException {
         runAction(dta);

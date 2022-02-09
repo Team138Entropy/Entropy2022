@@ -19,15 +19,16 @@ public class T2_B3_B2_T1 extends AutoModeBase {
 
     public T2_B3_B2_T1(){
         // add multiple actions to drive trajectorys, these will run one after another
-      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_Old_T2_B3()));
-      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_B3_B2()));
-      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_B2_T1()));
+      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_A_T2_B3()));
+      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_A_B3_B2()));
+      driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_A_B2_T1()));
     }
 
     @Override
     protected void routine() throws AutoModeEndedException {
          // Traverse list and run each action
       for(DriveTrajectoryAction currentAction:  driveActionList )  {
+        System.out.println("new action");
         runAction(currentAction);
      }
     }

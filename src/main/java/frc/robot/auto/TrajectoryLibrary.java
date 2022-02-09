@@ -83,72 +83,6 @@ public class TrajectoryLibrary {
       }
       return traj;
      }
-     public Trajectory get_Tarmac1_B2_trajectory(){
-      Trajectory traj = null;
-      String fileName = "Tarmac1_B2.wpilib.json";
-      try {
-        Path trajectoryPath = getTrajectoryPath(fileName);
-        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-      } catch (IOException ex) {
-          System.out.println("Unable to open trajectory: " + fileName);
-      }
-      return traj;
-     }
-     public Trajectory get_B2_B3_trajectory(){
-      Trajectory traj = null;
-      String fileName = "B2_B3.wpilib.json";
-      try {
-        Path trajectoryPath = getTrajectoryPath(fileName);
-        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-      } catch (IOException ex) {
-          System.out.println("Unable to open trajectory: " + fileName);
-      }
-      return traj;
-     }
-     public Trajectory get_B3_Tarmac2_trajectory(){
-      Trajectory traj = null;
-      String fileName = "B3_Tarmac2.wpilib.json";
-      try {
-        Path trajectoryPath = getTrajectoryPath(fileName);
-        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-      } catch (IOException ex) {
-          System.out.println("Unable to open trajectory: " + fileName);
-      }
-      return traj;
-     }
-     public Trajectory get_Tarmac1_B2_Backwords(){
-      Trajectory traj = null;
-      String fileName = "Tarmac1_B2.Backwords.wpilib.json";
-      try {
-        Path trajectoryPath = getTrajectoryPath(fileName);
-        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-      } catch (IOException ex) {
-          System.out.println("Unable to open trajectory: " + fileName);
-      }
-      return traj;
-     }
-     public Trajectory get_B2_Tarmac1_trajectory(){
-      Trajectory traj = null;
-      String fileName = "B2_Tarmac1.wpilib.json";
-      try {
-        Path trajectoryPath = getTrajectoryPath(fileName);
-        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-      } catch (IOException ex) {
-          System.out.println("Unable to open trajectory: " + fileName);
-      }
-      return traj;
-     }
-     public Trajectory get_DEMO(){
-      Trajectory traj = null;
-      String fileName = "DEMO3.wpilib.json";
-      try {
-        Path trajectoryPath = getTrajectoryPath(fileName);
-        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-      } catch (IOException ex) {
-          System.out.println("Unable to open trajectory: " + fileName);
-      }
-      return traj;
-     }
      public Trajectory get_New_T1_B2(){
       Trajectory traj = null;
       String fileName = "New-T1_B2.wpilib.json";
@@ -229,6 +163,39 @@ public class TrajectoryLibrary {
      public Trajectory get_New_B3_T2(){
       Trajectory traj = null;
       String fileName = "B3_T2.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_A_B2_T1(){
+      Trajectory traj = null;
+      String fileName = "A-B2_T1.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_A_B3_B2(){
+      Trajectory traj = null;
+      String fileName = "A-B3_B2.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
+     public Trajectory get_A_T2_B3(){
+      Trajectory traj = null;
+      String fileName = "A-T2_B3.wpilib.json";
       try {
         Path trajectoryPath = getTrajectoryPath(fileName);
         traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);

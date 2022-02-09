@@ -69,7 +69,8 @@ public class Grasper extends Subsystem {
         
         pulseCounter++;
       default:
-        System.out.println("Grasper has no state!");
+      //I disabled this because it was annoying me -George
+        //System.out.println("Grasper has no state!");
     }
   }
 
