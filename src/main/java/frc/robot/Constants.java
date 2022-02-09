@@ -188,7 +188,6 @@ public class Constants {
     public static final int shoulderMaxRotation = 220;
     public static final double shoulderMaxGravityFF = .045;
 
-    public static final double forearmJogSpeed = .5;
     public static final double forearmExtendSpeed = .8;
     public static final double forearmTicksPerExtension = 0;
     public static final double forearmExtensionCM = 0;
@@ -197,7 +196,8 @@ public class Constants {
 
   public static class Grasper {
     public static final double jogSpeed = .2;
-    public static final int pwmChannel = 3;
+    public static final int pwmChannel = 0;
+    public static final int powerDistributionNumber = 3;
   }
 
   public static class Climber {
