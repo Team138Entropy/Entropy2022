@@ -67,7 +67,7 @@ public class OperatorInterface {
     }
 
     public boolean getGrasperIntakeManual() {
-        return mLeftBumper.update(mOperatorController.getButton(Button.B));
+        return mLeftBumper.update(mOperatorController.getButton(Button.X));
     }
 
     /**
@@ -98,11 +98,11 @@ public class OperatorInterface {
     }
 
     public boolean getArmJogUp() {
-        return mOperatorController.getButton(Button.Y);
+        return mDriverController.getButton(Button.Y);
     }
 
     public boolean getArmJogDown() {
-        return mOperatorController.getButton(Button.A);
+        return mDriverController.getButton(Button.A);
     }
 
     public double getShoulderTargetX() {

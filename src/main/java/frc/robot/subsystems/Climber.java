@@ -109,7 +109,7 @@ public class Climber extends Subsystem {
     // Retracts the Climber Slowly
     // for use in test mode only
     public synchronized void TestRetract(){
-        mClimber.set(ControlMode.PercentOutput, Constants.Climber.TestRetractOutput);
+        mClimber.set(ControlMode.PercentOutput, -Constants.Climber.TestRetractOutput);
     }
 
     // Stops the Climber
