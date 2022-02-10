@@ -61,7 +61,7 @@ public class OperatorInterface {
         } else if (mOperatorController.getTrigger(Side.RIGHT)) {
             mCurrentArmTarget = ArmTarget.INTAKE;    
         }
-        return mCurrentArmTarget;
+        return mCurrentArmTarget; // Returns the last used arm target if no button is pressed
     }
 
     public boolean getArmEject() {

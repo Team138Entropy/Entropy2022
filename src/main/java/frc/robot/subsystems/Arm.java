@@ -12,6 +12,11 @@ import frc.robot.Constants;
 public class Arm extends Subsystem {
   private static Arm mInstance;
 
+  // Some constants
+  private final double kShoulderJogSpeed = .35;
+  private final double kShoulderMaxGravityFF = .045;
+  private final double kForearmExtendSpeed = .8;
+
   // Motors
   private TalonSRX mShoulder;
   private TalonSRX mForearm;
@@ -20,7 +25,7 @@ public class Arm extends Subsystem {
   private double mShoulderTarget = Constants.Arm.shoulderStartPosition;
 
   // The fixed list of targets that we navigate to when using the joystick control
-  private int[] targets = {-50, 0, 60, 90, 120, 210};
+  private int[] mTargets;
 
   /** 
    * All useful arm target positions during a match. 
@@ -42,29 +47,20 @@ public class Arm extends Subsystem {
   public Arm() {
     mShoulder = new TalonSRX(Constants.Talons.Arm.shoulder);
     mForearm = new TalonSRX(Constants.Talons.Arm.forearm);
+    mTargets = new int[] {-50, 0, 60, 90, 120, 210};
 
     // Sensor is flipped, TODO Tell mechanical to stop eating crayons and fix it
     mShoulder.setSelectedSensorPosition(-Constants.Arm.shoulderStartPosition);
     mShoulder.setSensorPhase(true);
     
-    // Configure Sensor Feedback
     // PID constants
+    // Old constants are 1, 33, .01, 330
     mShoulder.config_kF(0, 1, 10);
     mShoulder.config_kP(0, 0, 10);
 		mShoulder.config_kI(0, 0, 10);
     mShoulder.config_kD(0, 0, 10);
     
-    // TODO Check if we should be using the overloaded method with 3 arguments
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
-
-    // Configure Sensor Feedback
-    // PID constants
-    mForearm.config_kF(0, 1, 10);
-    mForearm.config_kP(0, 0, 10);
-		mForearm.config_kI(0, 0, 10);
-    mForearm.config_kD(0, 0, 10);
-
-    mForearm.configSelectedFeedbackCoefficient(Constants.Arm.forearmExtensionCM / Constants.Arm.forearmMaxExtension);
   }
 
   public static Arm getInstance() {
@@ -115,7 +111,7 @@ public class Arm extends Subsystem {
    */
   public double getGravityFeedForward() {
     double currentRads = getRotation() * Constants.Misc.degreeToRadian;
-    double ff = Constants.Arm.shoulderMaxGravityFF * Math.cos(currentRads);
+    double ff = kShoulderMaxGravityFF * Math.cos(currentRads);
     return ff;
   }
 
@@ -123,14 +119,14 @@ public class Arm extends Subsystem {
    * Jog the shoulder up at a constant speed.
    */
   public void jogRotateUp() {
-    rotate(Constants.Arm.shoulderJogSpeed);
+    rotate(kShoulderJogSpeed);
   }
 
   /**
    * Jog the shoulder down at a constant speed.
    */
   public void jogRotateDown() {
-    rotate(-Constants.Arm.shoulderJogSpeed);
+    rotate(-kShoulderJogSpeed);
   }
 
   /**
@@ -155,7 +151,7 @@ public class Arm extends Subsystem {
     // The difference between each listed angle, and the actual joystick angle, used to find which listed angle is closest to the joystick
     double difference = 360;
     double target = mShoulderTarget;
-    for (int i : targets) {
+    for (int i : mTargets) {
       if (Math.abs(i - (int) angle) < difference) {
         target = i + (i < 90 ? 3 : -3); // Offset the target by 3 degrees upwards to compensate for gravity/slop
         difference = Math.abs(i - (int) angle); // Set the new difference
@@ -186,14 +182,14 @@ public class Arm extends Subsystem {
    * Extend the forearm at a fixed speed.
    */
   public void extend() {
-    extend(Constants.Arm.forearmExtendSpeed);
+    extend(kForearmExtendSpeed);
   }
 
   /**
    * Retract the forearm at a fixed speed.
    */
   public void retract() {
-    extend(-Constants.Arm.forearmExtendSpeed);
+    extend(-kForearmExtendSpeed);
   }
 
   /**
@@ -222,20 +218,6 @@ public class Arm extends Subsystem {
    */
   public double getRotationTarget() {
     return mShoulderTarget;
-  }
-
-  /**
-   * @return forearm extension in centimeters
-   */
-  public double getExtension() {
-    return mForearm.getSelectedSensorPosition();
-  }
-
-  /**
-   * @return forearm velocity in cm/s
-   */
-  public double getExtensionVelocity() {
-    return mForearm.getSelectedSensorVelocity() * 10;
   }
 
   /**
@@ -275,8 +257,6 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("shoulderPosition", getRotation());
     SmartDashboard.putNumber("shoulderVelocity", getRotationVelocity());
     SmartDashboard.putNumber("shoulderOutput", getShoulderOutput());
-    SmartDashboard.putNumber("forearmPosition", getExtension());
-    SmartDashboard.putNumber("forearmVelocity", getExtensionVelocity());
     SmartDashboard.putNumber("forearmOutput", getForearmOutput());
   }
 }

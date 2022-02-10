@@ -287,9 +287,9 @@ public class Robot extends TimedRobot {
       ArmTarget target = mOperatorInterface.getArmPos();
 
       // TODO Rework this logic
-      if (mGrasper.getBallsStored() < 2 && target == ArmTarget.INTAKE) {
+      if (mGrasper.getBallsStored() < Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         mGrasper.intake();
-      } else if (mGrasper.getBallsStored() == 2 && target == ArmTarget.INTAKE) {
+      } else if (mGrasper.getBallsStored() == Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         target = ArmTarget.SCORE_FRONT;
       }
 
