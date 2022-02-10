@@ -44,7 +44,7 @@ public class Arm extends Subsystem {
     mForearm = new TalonSRX(Constants.Talons.Arm.forearm);
 
     // Sensor is flipped, TODO Tell mechanical to stop eating crayons and fix it
-    mShoulder.setSelectedSensorPosition(-Constants.Arm.shoulderStartPosition);
+    mShoulder.setSelectedSensorPosition(Constants.Arm.shoulderStartPosition);
     mShoulder.setSensorPhase(true);
     
     // Configure Sensor Feedback
@@ -54,17 +54,7 @@ public class Arm extends Subsystem {
 		mShoulder.config_kI(0, 0, 10);
     mShoulder.config_kD(0, 0, 10);
     
-    // TODO Check if we should be using the overloaded method with 3 arguments
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
-
-    // Configure Sensor Feedback
-    // PID constants
-    mForearm.config_kF(0, 1, 10);
-    mForearm.config_kP(0, 0, 10);
-		mForearm.config_kI(0, 0, 10);
-    mForearm.config_kD(0, 0, 10);
-
-    mForearm.configSelectedFeedbackCoefficient(Constants.Arm.forearmExtensionCM / Constants.Arm.forearmMaxExtension);
   }
 
   public static Arm getInstance() {
