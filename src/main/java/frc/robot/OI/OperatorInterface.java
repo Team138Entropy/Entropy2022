@@ -18,6 +18,9 @@ public class OperatorInterface {
     private LatchedBoolean mOperatorSelectButton = new LatchedBoolean();
     private LatchedBoolean mLeftBumper = new LatchedBoolean();
 
+    // Other variables
+    private ArmTarget mCurrentArmTarget = ArmTarget.INTAKE;
+
     public static synchronized OperatorInterface getInstance() {
         if (mInstance == null) {
             mInstance = new OperatorInterface();
@@ -52,14 +55,13 @@ public class OperatorInterface {
      */
     public ArmTarget getArmPos(){
         if (mOperatorController.getButton(Button.RB)) {
-            return ArmTarget.SCORE_FRONT;
+            mCurrentArmTarget = ArmTarget.SCORE_FRONT;
         } else if (mOperatorController.getButton(Button.LB)) {
-            return ArmTarget.SCORE_BACK;
+            mCurrentArmTarget = ArmTarget.SCORE_BACK;
         } else if (mOperatorController.getTrigger(Side.RIGHT)) {
-            return ArmTarget.INTAKE;    
-        } else {
-            return null;
+            mCurrentArmTarget = ArmTarget.INTAKE;    
         }
+        return mCurrentArmTarget; // Returns the last used arm target if no button is pressed
     }
 
     public boolean getArmEject() {

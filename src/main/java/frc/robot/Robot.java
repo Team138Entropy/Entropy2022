@@ -207,22 +207,28 @@ public class Robot extends TimedRobot {
 
   }
 
-  private boolean mIsArmJogMode = false;
+  private boolean mIsShoulderJogging = false;
+  private boolean mIsForearmJogging = false;
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
     // arm extension test controls
     if (mOperatorInterface.getArmExtendManual()) {
       mArm.extend();
+      mIsForearmJogging = true;
     } else if (mOperatorInterface.getArmRetractManual()) {
       mArm.retract();
+      mIsForearmJogging = true;
     } else {
       if (mOperatorInterface.getArmExtend()) {
         mArm.extend();
+        mIsForearmJogging = false;
       } else if (mOperatorInterface.getArmRetract()) {
         mArm.retract();
-      } else {
+        mIsForearmJogging = false;
+      } else if (mIsForearmJogging) {
         mArm.stopForearm();
+        mIsForearmJogging = false;
       }
     }
 
@@ -230,17 +236,17 @@ public class Robot extends TimedRobot {
     double target = mArm.getJoystickTarget(mOperatorInterface.getShoulderTargetX(), mOperatorInterface.getShoulderTargetY());
 
     if (target != mArm.getRotationTarget()) {
-      mIsArmJogMode = false;
+      mIsShoulderJogging = false;
     }
 
     if (mOperatorInterface.getArmJogUp()) {
       mArm.jogRotateUp();
-      mIsArmJogMode = true;
+      mIsShoulderJogging = true;
     } else if (mOperatorInterface.getArmJogDown()) {
       mArm.jogRotateDown();
-      mIsArmJogMode = true;
+      mIsShoulderJogging = true;
     } else {
-      if (mIsArmJogMode) {
+      if (mIsShoulderJogging) {
         mArm.rotateDistance(0);
       } else {
         mArm.rotateToPosition(target);
@@ -280,17 +286,18 @@ public class Robot extends TimedRobot {
 
       ArmTarget target = mOperatorInterface.getArmPos();
 
-      if (mGrasper.getBallsStored() == 2 && target == ArmTarget.INTAKE) {
+      // TODO Rework this logic
+      if (mGrasper.getBallsStored() < Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
+        mGrasper.intake();
+      } else if (mGrasper.getBallsStored() == Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         target = ArmTarget.SCORE_FRONT;
       }
 
-      if (target != null) {
-        mArm.rotateToPosition(target.degrees);
-        mArm.extend();
-        if (target == ArmTarget.INTAKE) mGrasper.intake();
-      } else {
-        mArm.rotateToPosition(mArm.getRotationTarget());
-      }
+      
+      mArm.rotateToPosition(target.degrees);
+      if (target.isExtended) mArm.extend();
+      else mArm.retract();
+      
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
       
       mGrasper.update(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));

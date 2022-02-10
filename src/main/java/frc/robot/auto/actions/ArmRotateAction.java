@@ -6,7 +6,7 @@ import frc.robot.subsystems.Arm;
  * Moves the Arm to a desired degrees
  */
 public class ArmRotateAction implements Action {
-  private Arm mArm  = Arm.getInstance();
+  private final Arm mArm  = Arm.getInstance();
   private final double mTargetAngle;
 
   public ArmRotateAction(double targetAngle){

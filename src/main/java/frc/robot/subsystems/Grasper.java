@@ -4,18 +4,23 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMTalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
+/**
+ * Claw like appendage that can acquire and store balls, and climb.
+ */
 public class Grasper extends Subsystem {
   private static Grasper mInstance;
   
-  private static PWMTalonSRX mTalon;
+  private final double kJogSpeed = .2;
 
-  private IntakeStatus intakeStatus;
-  private int ballsStored;
-  private double currentThreshold;
-  private double minThresholdExceedCount; // How many consecutive loops the current must exceed the threshold
-  private double thresholdExceedCount; // How many consecutive loops the current has exceeded the threshold for
-  private double pulseCounter;
-  private double pulseCounterTime;
+  private PWMTalonSRX mTalon;
+  
+  private IntakeStatus mIntakeStatus;
+  private int mBallsStored;
+  private double mCurrentThreshold; // The threshold the current must exceed to register
+  private double mThresholdExceedCount; // How many consecutive loops the current has exceeded the threshold for
+  private double mMinThresholdExceedCount; // How many consecutive loops the current must exceed the threshold
+  private double mPulseCounter; // Counts how long its been since the last "pulse" (running the motor)
+  private double mPulseCounterTime; // How long to wait between pulses, measured in robot loops
 
   public enum IntakeStatus {
     INTAKE, // Wheels are intaking
@@ -33,80 +38,88 @@ public class Grasper extends Subsystem {
   private Grasper(){
     mTalon = new PWMTalonSRX(Constants.Grasper.pwmChannel);
 
-    intakeStatus = IntakeStatus.IDLE;
-    ballsStored = 0;
-    currentThreshold = 0;
-    minThresholdExceedCount = 5;
-    thresholdExceedCount = 0;
-    pulseCounter = 0;
-    pulseCounterTime = 40;
+    mIntakeStatus = IntakeStatus.IDLE;
+    mBallsStored = 0;
+    mCurrentThreshold = 0;
+    mMinThresholdExceedCount = 5;
+    mThresholdExceedCount = 0;
+    mPulseCounter = 0;
+    mPulseCounterTime = 40;
   }
 
   public void update(double current) {
-    switch (intakeStatus) {
+    switch (mIntakeStatus) {
       case INTAKE:
-        if (current > currentThreshold) {
-          thresholdExceedCount++;
-        } else {
-          thresholdExceedCount = 0;
+        if (mBallsStored >= Constants.Grasper.maxBallsStored) {
+          mIntakeStatus = IntakeStatus.IDLE;
         }
 
-        if (thresholdExceedCount > minThresholdExceedCount) {
-          ballsStored++;
-          currentThreshold = 0;
-          minThresholdExceedCount = 5;
-          intakeStatus = IntakeStatus.IDLE;
-          pulseCounter = 0;
+        // If the current exceeds the normal level then we have a ball
+        if (current > mCurrentThreshold) {
+          mThresholdExceedCount++;
+        } else {
+          mThresholdExceedCount = 0;
+        }
+
+        // If the current exceeds a set value for a set time and stop intaking
+        if (mThresholdExceedCount > mMinThresholdExceedCount) {
+          mBallsStored++;
+          mCurrentThreshold = 0;
+          mMinThresholdExceedCount = 5;
+          mIntakeStatus = IntakeStatus.IDLE;
+          mPulseCounter = 0;
         }
       case EJECT:
-        if (ballsStored == 0) {
-          intakeStatus = IntakeStatus.IDLE;
-          pulseCounter = 0;
+        if (mBallsStored == 0) {
+          mIntakeStatus = IntakeStatus.IDLE;
+          mPulseCounter = 0;
         }
-        ballsStored = 0;
-        currentThreshold = 0;
-        minThresholdExceedCount = 5;
+        mBallsStored = 0;
+        mCurrentThreshold = 0;
+        mMinThresholdExceedCount = 5;
       case IDLE:
         stop();
 
-        pulseCounter++;
-        if (pulseCounter > pulseCounterTime) {
-          mTalon.set(Constants.Grasper.jogSpeed);
-          pulseCounter = 0;
+        // The motor will periodically run to make sure that the ball is secure and hasn't came loose
+        mPulseCounter++;
+        if (mPulseCounter > mPulseCounterTime) {
+          mTalon.set(kJogSpeed);
+          mPulseCounter = 0;
         }
 
-        if (pulseCounter == 5) stop();
+        // Stop after 5 loops
+        if (mPulseCounter == 5) stop();
       default:
         System.out.println("Grasper has no state!");
     }
   }
 
   public void intake(){
-    mTalon.set(Constants.Grasper.jogSpeed);
-    intakeStatus = IntakeStatus.INTAKE;
+    mTalon.set(kJogSpeed);
+    mIntakeStatus = IntakeStatus.INTAKE;
   }
 
   public void eject(){
-    mTalon.set(-Constants.Grasper.jogSpeed);
-    intakeStatus = IntakeStatus.EJECT;
-    ballsStored = 1;
+    mTalon.set(-kJogSpeed);
+    mIntakeStatus = IntakeStatus.EJECT;
+    mBallsStored = 1;
   }
 
   public void stop(){
     mTalon.set(0);
-    intakeStatus = IntakeStatus.IDLE;
+    mIntakeStatus = IntakeStatus.IDLE;
   }
 
   public IntakeStatus getStatus(){
-    return intakeStatus;
+    return mIntakeStatus;
   }
 
   public int getBallsStored() {
-    return ballsStored;
+    return mBallsStored;
   }
 
   public IntakeStatus getIntakeStatus() {
-    return intakeStatus;
+    return mIntakeStatus;
   }
 
   @Override
