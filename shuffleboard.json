@@ -12,7 +12,7 @@
         "tiles": {
           "0,2": {
             "size": [
-              5,
+              8,
               3
             ],
             "content": {
@@ -23,7 +23,7 @@
           },
           "0,5": {
             "size": [
-              5,
+              8,
               3
             ],
             "content": {
@@ -34,7 +34,7 @@
           },
           "0,8": {
             "size": [
-              5,
+              8,
               3
             ],
             "content": {
@@ -43,9 +43,9 @@
               "_title": "Operator Controller"
             }
           },
-          "5,8": {
+          "8,8": {
             "size": [
-              7,
+              16,
               3
             ],
             "content": {
@@ -55,9 +55,9 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "5,5": {
+          "8,5": {
             "size": [
-              7,
+              16,
               3
             ],
             "content": {
@@ -67,9 +67,9 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "5,2": {
+          "8,2": {
             "size": [
-              7,
+              16,
               3
             ],
             "content": {
@@ -99,7 +99,7 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Left Encoder",
+              "_source0": "network_table:///SmartDashboard/encoder_left",
               "_title": "Left encoder"
             }
           },
@@ -110,7 +110,7 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Right Encoder",
+              "_source0": "network_table:///SmartDashboard/encoder_right",
               "_title": "Right encoder"
             }
           },
@@ -132,7 +132,7 @@
           "9,1": {
             "size": [
               4,
-              5
+              4
             ],
             "content": {
               "_type": "PDP",
@@ -141,7 +141,7 @@
               "Visuals/Show voltage and current values": true
             }
           },
-          "0,4": {
+          "3,2": {
             "size": [
               3,
               1
@@ -156,69 +156,14 @@
               "Visuals/Show text": true
             }
           },
-          "0,3": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Number Bar",
-              "_title": "Arm (In \u0026 Out)",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Num tick marks": 5,
-              "Visuals/Show text": true
-            }
-          },
-          "3,1": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Gyro",
-              "_title": "Shoulder",
-              "Visuals/Major tick spacing": 45.0,
-              "Visuals/Starting angle": 180.0,
-              "Visuals/Show tick mark ring": true,
-              "Visuals/Counter clockwise": false
-            }
-          },
-          "3,4": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/In Auto",
-              "_title": "/SmartDashboard/In Auto",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "6,4": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/In Teleop",
-              "_title": "/SmartDashboard/In Teleop",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "0,5": {
+          "0,4": {
             "size": [
               3,
               1
             ],
             "content": {
               "_type": "Voltage View",
-              "_source0": "network_table:///SmartDashboard/battery",
+              "_source0": "network_table:///SmartDashboard/power panel/Voltage",
               "_title": "battery",
               "Range/Min": 0.0,
               "Range/Max": 15.0,
@@ -227,9 +172,9 @@
               "Visuals/Number of tick marks": 5
             }
           },
-          "3,5": {
+          "0,5": {
             "size": [
-              6,
+              9,
               1
             ],
             "content": {
@@ -240,6 +185,95 @@
               "Visuals/Show value": true,
               "Visuals/Precision": 2,
               "Visuals/Show tick marks": false
+            }
+          },
+          "3,1": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/shoulderPosition",
+              "_title": "SmartDashboard/shoulderPosition",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5,
+              "Visuals/Show text": true
+            }
+          },
+          "0,3": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/ballsStored",
+              "_title": "ballsStored",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5,
+              "Visuals/Show text": true
+            }
+          },
+          "3,3": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Climber Stage",
+              "_title": "/SmartDashboard/Climber Stage"
+            }
+          },
+          "3,4": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Robot Mode",
+              "_title": "/SmartDashboard/Robot Mode"
+            }
+          },
+          "6,4": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/SendableChooser[0]",
+              "_title": "/SmartDashboard/SendableChooser[0]"
+            }
+          },
+          "9,5": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_title": "Auto steer",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "11,5": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_title": "Ball found",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
             }
           }
         }
