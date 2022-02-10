@@ -195,8 +195,8 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     // Activate rumble on op controller every second or so
-    if (mRumbleTimer > 100){ mOperatorInterface.setRumble(true); }
-    if (mRumbleTimer > 200){ mOperatorInterface.setRumble(false); mRumbleTimer = 0; }
+    if (mRumbleTimer > 275){ mOperatorInterface.setRumble(true); }
+    if (mRumbleTimer > 300){ mOperatorInterface.setRumble(false); mRumbleTimer = 0; }
     mRumbleTimer++;
   }
 
