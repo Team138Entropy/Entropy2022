@@ -259,7 +259,7 @@ public class Robot extends TimedRobot {
     } else if (mOperatorInterface.getGrasperIntakeManual()) {
       mGrasper.intake();
     } else {
-      mGrasper.stop();
+      //mGrasper.stop();
     }
     mGrasper.update(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));
 
