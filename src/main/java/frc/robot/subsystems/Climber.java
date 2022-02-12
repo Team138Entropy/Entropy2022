@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 /**
  * Climber is intended to be mostly autonomous
@@ -66,6 +67,7 @@ public class Climber extends Subsystem {
     
     private Climber(){
         mClimber = new TalonSRX(Constants.Talons.Climber.climber);
+        mClimber.setNeutralMode(NeutralMode.Brake);
     }
 
     // Update runs the Climber State Machine

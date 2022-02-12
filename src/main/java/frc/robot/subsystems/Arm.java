@@ -14,7 +14,7 @@ public class Arm extends Subsystem {
 
   // Some constants
   private final double kShoulderJogSpeed = .35;
-  private final double kShoulderMaxGravityFF = .045;
+  private final double kShoulderMaxGravityFF = .075;
   private final double kForearmExtendSpeed = .8;
 
   // Motors
@@ -56,11 +56,13 @@ public class Arm extends Subsystem {
     // PID constants
     // Old constants are 1, 33, .01, 330
     mShoulder.config_kF(0, 1, 10);
-    mShoulder.config_kP(0, 10, 10);
+    mShoulder.config_kP(0, 35, 10);
 		mShoulder.config_kI(0, 0, 10);
     mShoulder.config_kD(0, 0, 10);
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
+    mShoulder.configMotionAcceleration(5);
+    mShoulder.configMotionCruiseVelocity(10, 10);
   }
 
   public static Arm getInstance() {
@@ -77,7 +79,6 @@ public class Arm extends Subsystem {
   public void rotate(double speed) {
     mShoulder.set(ControlMode.PercentOutput, speed);
     
-    System.out.println("ROTATING!" + speed);
   }
   
   /**
@@ -86,7 +87,6 @@ public class Arm extends Subsystem {
   public void stopShoulder() {
     rotate(0);
     mShoulderTarget = getRotation();
-    System.out.println("STOPPING!");
   }
 
   /**
@@ -98,8 +98,7 @@ public class Arm extends Subsystem {
     degrees = Math.min(degrees, Constants.Arm.shoulderMaxRotation);
     double ff = getGravityFeedForward();
     mShoulderTarget = degrees;
-    System.out.println("Go to pos " + degrees);
-    mShoulder.set(ControlMode.MotionMagic, degrees, DemandType.ArbitraryFeedForward, 0);
+    mShoulder.set(ControlMode.MotionMagic, degrees, DemandType.ArbitraryFeedForward, ff);
   }
 
   /**
@@ -109,7 +108,6 @@ public class Arm extends Subsystem {
   public void rotateDistance(double degrees) {
     mShoulderTarget += degrees;
     rotateToPosition(degrees + getRotation());
-    System.out.println("Rotating dictance " + degrees);
   }
 
   /**
@@ -128,7 +126,6 @@ public class Arm extends Subsystem {
   public void jogRotateUp() {
     rotate(kShoulderJogSpeed);
     
-    System.out.println("JOGGING!");
   }
 
   /**
@@ -137,7 +134,6 @@ public class Arm extends Subsystem {
   public void jogRotateDown() {
     rotate(-kShoulderJogSpeed);
     
-    System.out.println("JOGGING!");
   }
 
   /**
@@ -157,7 +153,6 @@ public class Arm extends Subsystem {
     // Java arctangent method returns a number between -pi/2 to pi/2 (-90 to 90 degrees), so we have to convert to
     // degrees. We have to add 180 degrees if we want the arm to be able to rotate past 90
     angle *= -1 / Constants.Misc.degreeToRadian;
-    System.out.println("joystick angle " + angle);
     if (joystickX > 0) angle += 180;
 
     // The difference between each listed angle, and the actual joystick angle, used to find which listed angle is closest to the joystick
@@ -270,5 +265,6 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("shoulderVelocity", getRotationVelocity());
     SmartDashboard.putNumber("shoulderOutput", getShoulderOutput());
     SmartDashboard.putNumber("forearmOutput", getForearmOutput());
+    SmartDashboard.putNumber("shoulder talon output", mShoulder.getMotorOutputPercent());
   }
 }

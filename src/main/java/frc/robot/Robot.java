@@ -235,29 +235,24 @@ public class Robot extends TimedRobot {
     // shoulder test controls
     // double target = mArm.getJoystickTarget(mOperatorInterface.getShoulderTargetX(), mOperatorInterface.getShoulderTargetY());
     double target = mArm.getRotationTarget();
-    target = target + (mOperatorInterface.getArmRotateUp() ? 10 : 0);
-    target = target - (mOperatorInterface.getArmRotateDown() ? 10 : 0);
+    target = target + (mOperatorInterface.getArmRotateUp() ? 90 : 0);
+    target = target - (mOperatorInterface.getArmRotateDown() ? 90 : 0);
 
     if (target != mArm.getRotationTarget()) {
       mIsShoulderJogging = false;
-      System.out.println("Shoulder isn't jogging");
     }
 
     if (mOperatorInterface.getArmJogUp()) {
       mArm.jogRotateUp();
       mIsShoulderJogging = true;
-      System.out.println("Jogging up");
     } else if (mOperatorInterface.getArmJogDown()) {
       mArm.jogRotateDown();
       mIsShoulderJogging = true;
-      System.out.println("Jogging down");
     } else {
       if (mIsShoulderJogging) {
         mArm.rotateDistance(0);
-        System.out.println("Go to current position");
       } else {
         mArm.rotateToPosition(target);
-        System.out.println("Go to target" + target);
       }
     }
 

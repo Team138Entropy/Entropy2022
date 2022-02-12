@@ -183,7 +183,7 @@ public class Constants {
 
   public static class Arm {
     public static final double shoulderTicksPerRotation = 8192;
-    public static final int shoulderStartPosition = 90;
+    public static final int shoulderStartPosition = -30;
     public static final int shoulderMinRotation = -60;
     public static final int shoulderMaxRotation = 220;
   }
@@ -195,8 +195,8 @@ public class Constants {
   }
 
   public static class Climber {
-    public static final double TestExtendOutput = .4;
-    public static final double TestRetractOutput = .4;
+    public static final double TestExtendOutput = .75;
+    public static final double TestRetractOutput = .75;
   }
 
   public static class Misc {
