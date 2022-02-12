@@ -17,6 +17,8 @@ public class OperatorInterface {
     // Latched Booleans
     private LatchedBoolean mOperatorSelectButton = new LatchedBoolean();
     private LatchedBoolean mLeftBumper = new LatchedBoolean();
+    private LatchedBoolean mArmRotateUp = new LatchedBoolean();
+    private LatchedBoolean mArmRotateDown = new LatchedBoolean();
 
     // Other variables
     private ArmTarget mCurrentArmTarget = ArmTarget.INTAKE;
@@ -115,11 +117,19 @@ public class OperatorInterface {
         return mOperatorController.getJoystick(Side.RIGHT, Axis.X);
     }
 
-    public boolean getClimberTestExtend(){
+    public boolean getClimberTestExtend() {
         return mOperatorController.getButton(Button.B);
     }
 
-    public boolean getClimberTestRetract(){
+    public boolean getClimberTestRetract() {
         return mOperatorController.getButton(Button.A);
+    }
+
+    public boolean getArmRotateUp() {
+        return mArmRotateUp.update(mDriverController.getButton(Button.X));
+    }
+
+    public boolean getArmRotateDown() {
+        return mArmRotateDown.update(mDriverController.getButton(Button.B));
     }
 }

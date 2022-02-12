@@ -50,13 +50,13 @@ public class Arm extends Subsystem {
     mTargets = new int[] {-50, 0, 60, 90, 120, 210};
 
     // Sensor is flipped, TODO Tell mechanical to stop eating crayons and fix it
-    mShoulder.setSelectedSensorPosition(Constants.Arm.shoulderStartPosition);
-    mShoulder.setSensorPhase(false);
+    mShoulder.setSelectedSensorPosition(-Constants.Arm.shoulderStartPosition);
+    mShoulder.setSensorPhase(true);
     
     // PID constants
     // Old constants are 1, 33, .01, 330
     mShoulder.config_kF(0, 1, 10);
-    mShoulder.config_kP(0, 0, 10);
+    mShoulder.config_kP(0, 10, 10);
 		mShoulder.config_kI(0, 0, 10);
     mShoulder.config_kD(0, 0, 10);
     
@@ -157,6 +157,7 @@ public class Arm extends Subsystem {
     // Java arctangent method returns a number between -pi/2 to pi/2 (-90 to 90 degrees), so we have to convert to
     // degrees. We have to add 180 degrees if we want the arm to be able to rotate past 90
     angle *= -1 / Constants.Misc.degreeToRadian;
+    System.out.println("joystick angle " + angle);
     if (joystickX > 0) angle += 180;
 
     // The difference between each listed angle, and the actual joystick angle, used to find which listed angle is closest to the joystick
