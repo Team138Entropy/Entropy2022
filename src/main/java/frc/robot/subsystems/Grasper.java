@@ -41,19 +41,16 @@ public class Grasper extends Subsystem {
     mIntakeStatus = IntakeStatus.IDLE;
     mThresholdExceedCount = 0;
     mBallsStored = 0;
-    mCurrentThreshold = 6;
-    mMinThresholdExceedCount = 30;
+    mCurrentThreshold = 10;
+    mMinThresholdExceedCount = 5;
     mThresholdExceedCount = 0;
     mPulseCounter = 0;
-    mPulseCounterTime = 40;
+    mPulseCounterTime = 60;
   }
 
   public void update(double current) {
-    System.out.println(current);
     switch (mIntakeStatus) {
       case INTAKE:
-        System.out.println("exceeding count" + mThresholdExceedCount);
-        System.out.println("Intaking");
         if (mBallsStored >= Constants.Grasper.maxBallsStored) {
           stop();
           mIntakeStatus = IntakeStatus.IDLE;
@@ -62,50 +59,42 @@ public class Grasper extends Subsystem {
         // If the current exceeds the normal level then we have a ball
         if (current > mCurrentThreshold) {
           mThresholdExceedCount++;
-          System.out.println("Exceeding");
         } else {
           mThresholdExceedCount = 0;
-          System.out.println("Reset to zero");
         }
 
         // If the current exceeds a set value for a set time and stop intaking
-       System.out.println(mThresholdExceedCount + " > " +  mMinThresholdExceedCount);
         if (mThresholdExceedCount > mMinThresholdExceedCount) {
-          System.out.println("Finished intaking");
           stop();
           mBallsStored++;
-          mCurrentThreshold = 0;
           mIntakeStatus = IntakeStatus.IDLE;
           mPulseCounter = 0;
         }
         break;
       case EJECT:
-        System.out.println("Ejecting");
         if (mBallsStored == 0) {
-          System.out.println("Finished");
           stop();
           mIntakeStatus = IntakeStatus.IDLE;
           mPulseCounter = 0;
         }
         mBallsStored = 0;
-        mCurrentThreshold = 0;
         break;
       case IDLE:
-        System.out.println("Idle");
 
         // The motor will periodically run to make sure that the ball is secure and hasn't came loose
-        mPulseCounter++;
-        // if (mPulseCounter > mPulseCounterTime) {
-        //   System.out.println("Pulsing");
-        //   mTalon.set(kJogSpeed);
-        //   mPulseCounter = 0;
+        // if (mBallsStored > 0) {
+        //   mPulseCounter++;
+        //   if (mPulseCounter > mPulseCounterTime) {
+        //     mTalon.set(kJogSpeed);
+        //     mPulseCounter = 0;
+        //   }
         // }
 
         // Stop after 5 loops
         if (mPulseCounter == 5) stop();
         break;
       default:
-        System.out.println("Grasper has no state!");
+        System.out.println("Grasper has no status!");
     }
   }
 

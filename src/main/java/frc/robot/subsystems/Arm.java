@@ -51,7 +51,7 @@ public class Arm extends Subsystem {
 
     // Sensor is flipped, TODO Tell mechanical to stop eating crayons and fix it
     mShoulder.setSelectedSensorPosition(Constants.Arm.shoulderStartPosition);
-    mShoulder.setSensorPhase(true);
+    mShoulder.setSensorPhase(false);
     
     // PID constants
     // Old constants are 1, 33, .01, 330
@@ -76,6 +76,8 @@ public class Arm extends Subsystem {
    */
   public void rotate(double speed) {
     mShoulder.set(ControlMode.PercentOutput, speed);
+    
+    System.out.println("ROTATING!" + speed);
   }
   
   /**
@@ -84,6 +86,7 @@ public class Arm extends Subsystem {
   public void stopShoulder() {
     rotate(0);
     mShoulderTarget = getRotation();
+    System.out.println("STOPPING!");
   }
 
   /**
@@ -91,10 +94,12 @@ public class Arm extends Subsystem {
    * @param degrees the position to rotate to, in degrees
    */
   public void rotateToPosition(double degrees) {
-    degrees = Math.max(degrees, Constants.Arm.shoulderStartPosition);
+    degrees = Math.max(degrees, Constants.Arm.shoulderMinRotation);
     degrees = Math.min(degrees, Constants.Arm.shoulderMaxRotation);
     double ff = getGravityFeedForward();
-    mShoulder.set(ControlMode.MotionMagic, degrees, DemandType.ArbitraryFeedForward, ff);
+    mShoulderTarget = degrees;
+    System.out.println("Go to pos " + degrees);
+    mShoulder.set(ControlMode.MotionMagic, degrees, DemandType.ArbitraryFeedForward, 0);
   }
 
   /**
@@ -102,7 +107,9 @@ public class Arm extends Subsystem {
    * @param degrees the number of degrees to rotate by
    */
   public void rotateDistance(double degrees) {
+    mShoulderTarget += degrees;
     rotateToPosition(degrees + getRotation());
+    System.out.println("Rotating dictance " + degrees);
   }
 
   /**
@@ -120,6 +127,8 @@ public class Arm extends Subsystem {
    */
   public void jogRotateUp() {
     rotate(kShoulderJogSpeed);
+    
+    System.out.println("JOGGING!");
   }
 
   /**
@@ -127,6 +136,8 @@ public class Arm extends Subsystem {
    */
   public void jogRotateDown() {
     rotate(-kShoulderJogSpeed);
+    
+    System.out.println("JOGGING!");
   }
 
   /**

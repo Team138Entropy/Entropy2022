@@ -235,23 +235,28 @@ public class Robot extends TimedRobot {
     // shoulder test controls
     double target = mArm.getJoystickTarget(mOperatorInterface.getShoulderTargetX(), mOperatorInterface.getShoulderTargetY());
 
-    if (target != mArm.getRotationTarget()) {
-      mIsShoulderJogging = false;
-    }
+    // if (target != mArm.getRotationTarget()) {
+    //   mIsShoulderJogging = false;
+    //   System.out.println("Shoulder isn't jogging");
+    // }
 
-    if (mOperatorInterface.getArmJogUp()) {
-      mArm.jogRotateUp();
-      mIsShoulderJogging = true;
-    } else if (mOperatorInterface.getArmJogDown()) {
-      mArm.jogRotateDown();
-      mIsShoulderJogging = true;
-    } else {
-      if (mIsShoulderJogging) {
-        mArm.rotateDistance(0);
-      } else {
-        mArm.rotateToPosition(target);
-      }
-    }
+    // if (mOperatorInterface.getArmJogUp()) {
+    //   mArm.jogRotateUp();
+    //   mIsShoulderJogging = true;
+    //   System.out.println("Jogging up");
+    // } else if (mOperatorInterface.getArmJogDown()) {
+    //   mArm.jogRotateDown();
+    //   mIsShoulderJogging = true;
+    //   System.out.println("Jogging down");
+    // } else {
+    //   if (mIsShoulderJogging) {
+    //     mArm.rotateDistance(0);
+    //     System.out.println("Go to current position");
+    //   } else {
+    //     mArm.rotateToPosition(target);
+    //     System.out.println("Go to target" + target);
+    //   }
+    // }
 
     // grapser test controls
     if (mOperatorInterface.getArmEject()) {

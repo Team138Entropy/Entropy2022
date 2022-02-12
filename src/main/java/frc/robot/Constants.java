@@ -184,6 +184,7 @@ public class Constants {
   public static class Arm {
     public static final double shoulderTicksPerRotation = 8192;
     public static final int shoulderStartPosition = 90;
+    public static final int shoulderMinRotation = -60;
     public static final int shoulderMaxRotation = 220;
   }
 
