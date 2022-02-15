@@ -61,8 +61,9 @@ if __name__ == "__main__":
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
     cameraConfig['pixel format'] = 'yuyv'
-    cameraConfig['fps'] = '60'
+    cameraConfig['FPS'] = '60'
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
+    print('Set to 60 now')
 
     input_stream = cs.getVideo()
     output_stream = cs.putVideo('Processed', res_width, res_height)
@@ -80,9 +81,9 @@ if __name__ == "__main__":
     '''
 
     #Blue ball
-    blueHue = [86, 116]
-    blueSat = [155, 255]
-    blueVal = [0, 255]  
+    blueHue = [85, 109]
+    blueSat = [161, 255]
+    blueVal = [37, 255]  
 
     #Yellow Ball params
     #yelHue = [18,49]
@@ -145,6 +146,8 @@ if __name__ == "__main__":
     params.filterByInertia = False
     params.minInertiaRatio = 0.01
     
+    curTime = time.time()
+    oldTime = ''
     
     # Create a detector with the parameters
     detector = cv2.SimpleBlobDetector_create(params)
@@ -156,6 +159,11 @@ if __name__ == "__main__":
         #Create info for packet
         try:
             current_frame += 1
+            if current_frame % 60 == 0:
+                oldTime = curTime
+                curTime = time.time()
+                print(curTime - oldTime)
+                
             PacketValue = {}
             PacketValue['cameraid'] = 0
             PacketValue['ballColor'] = 'blue'

@@ -95,19 +95,20 @@ if __name__ == "__main__":
     ksize = (2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
-    hull_area_low = 250
-    hull_area_high = 7000
-    minimum_perimeter = 75
-    width_minimum = 30
+    #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
+    cnt_area_low = 4000
+    #cnt_area_high = 7500
+    minimum_perimeter = 70
+    width_minimum = 50
     width_maximum = 300
     height_minimum = 30
     height_maximum = 300
-    solid_Low = 95
+    solid_Low = 94
     solid_High = 100
-    min_vertices = 25
-    max_vertices = 70
+    min_vertices = 20
+    max_vertices = 100
     rat_low = 0
-    rat_high = 5
+    rat_high = 3
     cy = ''
     cx = ''
     solid = 0
@@ -186,82 +187,83 @@ if __name__ == "__main__":
             con = []
             for cnt in cntsSorted:
                 # Get moments of contour; mainly for centroid
-                M = cv2.moments(cnt)
-                # Get convex hull (bounding polygon on contour)
-                hull = cv2.convexHull(cnt)
-                # Calculate Contour area
                 cntArea = cv2.contourArea(cnt)
-                # calculate area of convex hull
-                hullArea = cv2.contourArea(hull)
+                if (cntArea > cnt_area_low):# and (cntArea < cnt_area_high)
+                    # Get moments of contour; mainly for centroid
+                    M = cv2.moments(cnt)
+                    # Get convex hull (bounding polygon on contour)
+                    hull = cv2.convexHull(cnt)
                     
-                # Approximate shape
-                approximateShape = cv2.approxPolyDP(hull, 0.01 * cv2.arcLength(hull, True), True)
+                    # calculate area of convex hull
+                    hullArea = cv2.contourArea(hull)
+                        
+                    # Approximate shape
+                    approximateShape = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
 
-                x, y, w, h = cv2.boundingRect(hull)
-                ratio = float(w) / h
+                    x, y, w, h = cv2.boundingRect(cnt)
+                    ratio = float(w) / h
 
-                perimeter = cv2.arcLength(cnt, True)
-                
+                    perimeter = cv2.arcLength(cnt, True)
+                    
 
-                # finding center point of shape
-                M = cv2.moments(hull)
-                if M['m00'] != 0.0:
-                    x = int(M['m10']/M['m00'])
-                    y = int(M['m01']/M['m00'])
+                    # finding center point of shape
+                    M = cv2.moments(cnt)
+                    if M['m00'] != 0.0:
+                        x = int(M['m10']/M['m00'])
+                        y = int(M['m01']/M['m00'])
 
-                #Frequently attempts to divide by zero, so a check that they aren't is necessary
-                if cntArea != 0 and hullArea != 0:
-                    solid = 100 * cntArea / hullArea
+                    #Frequently attempts to divide by zero, so a check that they aren't is necessary
+                    '''
+                    if cntArea != 0 and cntArea != 0:
+                        solid = 100 * cntArea / hullArea
+                    '''
 
-                #Check for roundness
+                    #Filtering out the contours based on tuned values we are looking for
+                    validCnt = True 
+                    validCnt &= (perimeter > minimum_perimeter)
+                    validCnt &= (w >= width_minimum) and (w <= width_maximum)
+                    validCnt &= (h >= height_minimum) and (h <= height_maximum)
+                    '''
+                    if solid != 0:
+                        validCnt &= (solid > solid_Low) and (solid <= solid_High)
+                    '''
+                    validCnt &= (len(approximateShape) >= 8)
+                    validCnt &= (ratio >= rat_low) and (ratio < rat_high)
 
-                #Filtering out the contours based on tuned values we are looking for
-                validCnt = True 
-                validCnt &= (hullArea > hull_area_low)# and (hullArea < hull_area_high)
-                validCnt &= (perimeter > minimum_perimeter)
-                validCnt &= (w >= width_minimum) and (w <= width_maximum)
-                validCnt &= (h >= height_minimum) and (h <= height_maximum)
-                if solid != 0:
-                    validCnt &= (solid > solid_Low) and (solid <= solid_High)
-                validCnt &= (len(approximateShape) >= 8)
-                validCnt &= (ratio >= rat_low) and (ratio < rat_high)
+                    '''
+                    print('Hullarea: ' , hullArea)
+                    print('Perimeter:', perimeter)
+                    print('Width:', w)
+                    print('Height:', h)
+                    print('Solid:', solid)
+                    print('Approximate Shape:', approximateShape)
+                    print('Ratio:', ratio)
+                    '''
+                
+                    #validCnt &= (y > cutOffHeight)
 
-                '''
-                print('Hullarea: ' , hullArea)
-                print('Perimeter:', perimeter)
-                print('Width:', w)
-                print('Height:', h)
-                print('Solid:', solid)
-                print('Approximate Shape:', approximateShape)
-                print('Ratio:', ratio)
-                '''
-                
-                #validCnt &= (y > cutOffHeight)
-
-                validCnt &= (cv2.arcLength(cnt, True) < 10000)
-                
-                circularity = 0
-                if(perimeter == 0):
-                    validCnt = False 
-                else:
-                    circularity = 4*math.pi*(cntArea/(perimeter*perimeter))
-                    validCnt &= (.5 < circularity < 1.5)
-                
-                
-                
-                if(validCnt and first_run == True):
-                    res = cv2.bitwise_and(input_img, input_img, mask=mask)
-                    cv2.drawContours(res, cnt, 0, (255, 0, 255), -1)    
-                    #time.sleep(1)
-                    first_run = False
-                
-                else:
-                    cv2.drawContours(res, cnt, 0, color=(255, 0, 255), thickness=1)
-                
-                if(validCnt) and y < lowest_y :
-                    #print(cntArea, circularity, ratio)
-                    cnt_to_process = cnt
-                    #cv2.imwrite('final_contours.jpg', res)
+                    validCnt &= (cv2.arcLength(cnt, True) < 10000)
+                    
+                    circularity = 0
+                    if(perimeter == 0):
+                        validCnt = False 
+                    else:
+                        circularity = 4*math.pi*(cntArea/(perimeter*perimeter))
+                        validCnt &= (.5 < circularity < 1.5)
+                    
+                    if(validCnt and first_run == True):
+                        res = cv2.bitwise_and(input_img, input_img, mask=mask)
+                        cv2.drawContours(res, cnt, 0, (255, 0, 255), -1)    
+                        #time.sleep(1)
+                        first_run = False
+                    
+                    else:
+                        cv2.drawContours(res, cnt, 0, color=(255, 0, 255), thickness=1)
+                    
+                    if(validCnt) and y < lowest_y :
+                        #print(cntArea, circularity, ratio)
+                        cnt_to_process = cnt
+                        #cv2.imwrite('final_contours.jpg', res)
 
             x, y, w, h = cv2.boundingRect(cnt_to_process)
             first_run = True
