@@ -195,8 +195,8 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     // Activate rumble on op controller every second or so
-    if (mRumbleTimer > 275){ mOperatorInterface.setRumble(true); }
-    if (mRumbleTimer > 300){ mOperatorInterface.setRumble(false); mRumbleTimer = 0; }
+    if (mRumbleTimer > 2000){ mOperatorInterface.setRumble(true); }
+    if (mRumbleTimer > 2025){ mOperatorInterface.setRumble(false); mRumbleTimer = 0; }
     mRumbleTimer++;
   }
 
@@ -249,11 +249,14 @@ public class Robot extends TimedRobot {
       mArm.jogRotateDown();
       mIsShoulderJogging = true;
     } else {
+      /*
       if (mIsShoulderJogging) {
         mArm.rotateDistance(0);
       } else {
         mArm.rotateToPosition(target);
       }
+      */
+      mArm.jogStop();
     }
 
     // grapser test controls
@@ -277,6 +280,9 @@ public class Robot extends TimedRobot {
       // stop the climber
       mClimber.TestStop();
     }
+
+    // drive!
+    DriveLoop();
   }
 
   private void RobotLoop(){

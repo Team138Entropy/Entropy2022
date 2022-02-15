@@ -136,6 +136,10 @@ public class Arm extends Subsystem {
     
   }
 
+  public void jogStop(){
+    rotate(0);
+  }
+
   /**
    * Calculate the target angle for the shoulder based on joystick input.
    * @param joystickX the joystick x input, -1 to 1

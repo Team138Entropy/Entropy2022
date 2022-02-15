@@ -71,7 +71,7 @@ public class OperatorInterface {
     }
 
     public boolean getGrasperIntakeManual() {
-        return mLeftBumper.update(mOperatorController.getButton(Button.X));
+        return mLeftBumper.update(mOperatorController.getTrigger(Side.RIGHT));
     }
 
     /**
@@ -94,19 +94,19 @@ public class OperatorInterface {
     }
 
     public boolean getArmExtendManual() {
-        return mOperatorController.getJoystick(Side.LEFT, Axis.Y) > .5;
+        return mOperatorController.getButton(Button.B);
     }
 
     public boolean getArmRetractManual() {
-        return mOperatorController.getJoystick(Side.LEFT, Axis.Y) < -.5;
+        return mOperatorController.getButton(Button.X);
     }
 
     public boolean getArmJogUp() {
-        return mDriverController.getButton(Button.Y);
+        return mOperatorController.getButton(Button.Y);
     }
 
     public boolean getArmJogDown() {
-        return mDriverController.getButton(Button.A);
+        return mOperatorController.getButton(Button.A);
     }
 
     public double getShoulderTargetX() {
@@ -118,18 +118,20 @@ public class OperatorInterface {
     }
 
     public boolean getClimberTestExtend() {
-        return mOperatorController.getButton(Button.B);
+        return mOperatorController.getButton(Button.RB);
     }
 
     public boolean getClimberTestRetract() {
-        return mOperatorController.getButton(Button.A);
+        return mOperatorController.getButton(Button.LB);
     }
 
     public boolean getArmRotateUp() {
-        return mArmRotateUp.update(mDriverController.getButton(Button.X));
+        //return mArmRotateUp.update(mDriverController.getButton(Button.X));
+        return false;
     }
 
     public boolean getArmRotateDown() {
-        return mArmRotateDown.update(mDriverController.getButton(Button.B));
+        //return mArmRotateDown.update(mDriverController.getButton(Button.B));
+        return false;
     }
 }
