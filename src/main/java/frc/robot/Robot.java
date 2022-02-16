@@ -336,6 +336,9 @@ public class Robot extends TimedRobot {
     double driveThrottle = mOperatorInterface.getDriveThrottle();
     double driveTurn = mOperatorInterface.getDriveTurn();
 
+    // precision steer (slow down throttle if left trigger is held)
+    if(mOperatorInterface.getDrivePrecisionSteer()) driveThrottle *= .5;
+
     boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
     SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 
@@ -360,6 +363,9 @@ public class Robot extends TimedRobot {
       }else{
         System.out.println("Invalid Packet!");
       }
+    }else if(wantsAutoSteer){
+      // wants auto steer, but invalid target info
+      // TODO: vibrate controller so driver knows
     }else{
       //manual drive
       mDrive.setDrive(driveThrottle, driveTurn, false);
