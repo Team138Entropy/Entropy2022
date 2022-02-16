@@ -21,7 +21,7 @@ public class OperatorInterface {
     private LatchedBoolean mArmRotateDown = new LatchedBoolean();
 
     // Other variables
-    private ArmTarget mCurrentArmTarget = ArmTarget.INTAKE;
+    private ArmTarget mCurrentArmTarget = ArmTarget.HOME;
 
     public static synchronized OperatorInterface getInstance() {
         if (mInstance == null) {

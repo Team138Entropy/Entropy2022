@@ -33,7 +33,8 @@ public class Arm extends Subsystem {
   public static enum ArmTarget {
     SCORE_FRONT(60, false),
     SCORE_BACK(120, false),
-    INTAKE(-25, false);
+    INTAKE(-25, false),
+    HOME(90, false);
 
     public double degrees;
     public boolean isExtended;
