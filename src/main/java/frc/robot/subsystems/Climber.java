@@ -68,6 +68,11 @@ public class Climber extends Subsystem {
     private Climber(){
         mClimber = new TalonSRX(Constants.Talons.Climber.climber);
         mClimber.setNeutralMode(NeutralMode.Brake);
+
+        // TODO: Configure Climbers Cruise Acceleration and Cruise Velocity
+        //       these will look similar to the arm
+
+        // Make a Rotate to Position which is given an encoder position
     }
 
     // Update runs the Climber State Machine
@@ -135,7 +140,7 @@ public class Climber extends Subsystem {
     }
 
     public void updateSmartDashBoard() {
-        SmartDashboard.putString("Climber Stage", mCurrentStage.toString());
-        SmartDashboard.putNumber("Climber Position", getClimberPosition());
+        SmartDashboard.putString("Climber Stage", mCurrentStage.toString()); // Climber Stage
+        SmartDashboard.putNumber("Climber Position", getClimberPosition()); // Climber Encoder Position
     }
 }

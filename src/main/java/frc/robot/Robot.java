@@ -288,6 +288,8 @@ public class Robot extends TimedRobot {
       mClimber.TestStop();
     }
 
+    // TODO: one of button that'll send climber to top extension
+
     // drive!
     DriveLoop();
   }
