@@ -23,7 +23,7 @@ public class ArmRotateAction implements Action {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(mArm.getRotation() - mTargetAngle) < 3;
+    return Math.abs(mArm.getRotation() - mTargetAngle) < 5;
   }
 
   @Override
