@@ -179,6 +179,7 @@ public class Constants {
     private static final double WheelCircumference = 2 * Misc.pi * WheelRadius; //inches
     private static final double WheelCircumferenceMeters = WheelCircumference * Misc.inchesToMeters; //meters
     private static final double RotationsPerMeter = 1.0/WheelCircumferenceMeters; // meters (rotations per meter)
+    public static final double tippingLimitXaxis = .25;
   }
 
   public static class Arm {

@@ -104,6 +104,14 @@ public class Robot extends TimedRobot {
     mAutoModes.addOption("T4_Terminal", new T4_terminal());
     SmartDashboard.putData(mAutoModes);
   }
+
+  private boolean robotTippingCheck(){
+    boolean isTipping = false;
+    if (Math.abs(accelerometer.getX()) > Constants.RobotDimensions.tippingLimitXaxis) {
+      isTipping = true;
+    }
+    return isTipping;
+  }
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
    * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
@@ -113,20 +121,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    
-    // Put PowerDistributionBoard stats onto the smart dashboard
-    // SmartDashboard.putNumber("PDP-Temp", m_pdp.getTemperature());
-    // SmartDashboard.putNumber("PDP-Voltage", m_pdp.getVoltage());
-    // for (int i = 0; i < 15; i++){ // This way we can get all the channels info
-    //   SmartDashboard.putNumber(("PDP-Current-"+i), m_pdp.getCurrent(i));
-    // }
-    // SmartDashboard.updateValues();
-
+    updateRobotSmartDashboard();
+  }
+  
+  //Updates SmartDashboard ;3
+  private void updateRobotSmartDashboard() {
     SmartDashboard.putData("power panel",powerPanel);
     SmartDashboard.putNumber("accel X", accelerometer.getX());
     SmartDashboard.putNumber("accel Y", accelerometer.getY());
     SmartDashboard.putNumber("accel Z", accelerometer.getZ());
     SmartDashboard.putString("Robot Mode", mCurrentMode.toString());
+    SmartDashboard.putBoolean("isTipping", robotTippingCheck());
+    SmartDashboard.putNumber("drive throttle", mOperatorInterface.getDriveThrottle());
+    SmartDashboard.putNumber("drive turn", mOperatorInterface.getDriveTurn());
     mSubsystemManager.updateSmartdashboard();
   }
 

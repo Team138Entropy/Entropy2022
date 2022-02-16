@@ -249,7 +249,7 @@ public class Drive extends Subsystem {
   // if this is not the first loop,  we will consider the previous loop
   // returns a drive signal
   public DriveSignal getCheesyBrianDrive(double throttle, double wheel, boolean quickTurn) {
-    double DeltaVelocityLimit = 0.015;
+    double DeltaVelocityLimit = 0.04;
     wheel = wheel * -1; //invert wheel
     if (Util.epsilonEquals(throttle, 0.0, 0.05)) {
         throttle = 0.0;
