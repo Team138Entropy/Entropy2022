@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -73,6 +74,9 @@ public class Climber extends Subsystem {
         //       these will look similar to the arm
 
         // Make a Rotate to Position which is given an encoder position
+        mClimber.setSelectedSensorPosition(0);
+        mClimber.configMotionAcceleration(20000);
+        mClimber.configMotionCruiseVelocity(20000, 10);
     }
 
     // Update runs the Climber State Machine
@@ -105,6 +109,10 @@ public class Climber extends Subsystem {
                 System.out.println("Error: Unreconizied Climber Stage!");
                 break;
         }
+    }
+
+    public synchronized void setPosition(int pos){
+        mClimber.set(ControlMode.MotionMagic, pos, DemandType.ArbitraryFeedForward, 0.1);
     }
 
     // Extends the Climber Slowly
@@ -140,6 +148,7 @@ public class Climber extends Subsystem {
     }
 
     public void updateSmartDashBoard() {
+        SmartDashboard.putNumber("Climber velocity", mClimber.getSelectedSensorVelocity());
         SmartDashboard.putString("Climber Stage", mCurrentStage.toString()); // Climber Stage
         SmartDashboard.putNumber("Climber Position", getClimberPosition()); // Climber Encoder Position
     }

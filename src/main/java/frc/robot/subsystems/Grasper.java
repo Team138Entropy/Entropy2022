@@ -96,6 +96,7 @@ public class Grasper extends Subsystem {
       default:
         System.out.println("Grasper has no status!");
     }
+    SmartDashboard.putNumber("Graspercurrent", current);
   }
 
   public void intake(){

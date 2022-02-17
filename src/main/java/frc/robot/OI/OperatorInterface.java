@@ -19,6 +19,7 @@ public class OperatorInterface {
     private LatchedBoolean mLeftBumper = new LatchedBoolean();
     private LatchedBoolean mArmRotateUp = new LatchedBoolean();
     private LatchedBoolean mArmRotateDown = new LatchedBoolean();
+    private LatchedBoolean mClimberTestPress = new LatchedBoolean();
 
     // Arm Target
     public ArmTarget mCurrentArmTarget = ArmTarget.HOME;
@@ -33,6 +34,14 @@ public class OperatorInterface {
     private OperatorInterface() {
         mDriverController = new XboxController(Constants.Controllers.Driver.port);
         mOperatorController = new XboxController(Constants.Controllers.Operator.port);
+    }
+
+    public boolean getClimberTest(){
+        return mClimberTestPress.update(mDriverController.getButton(Button.B));
+    }
+
+    public boolean getClimberTest2(){
+        return mClimberTestPress.update(mDriverController.getButton(Button.Y));
     }
 
     public double getDriveThrottle() {

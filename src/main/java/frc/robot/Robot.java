@@ -168,7 +168,8 @@ public class Robot extends TimedRobot {
     mOperatorInterface.setRumble(false);
         
     // zero sensors (if not zero'ed prior on this powerup)
-    mSubsystemManager.zeroSensorsIfFresh();
+    //mSubsystemManager.zeroSensorsIfFresh();
+    mArm.zeroSensors();
     
     // Disable Auto Thread (if running)
     if (mAutoModeExecutor != null) {
@@ -219,6 +220,17 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+
+    if (mOperatorInterface.getClimberTest()){
+      System.out.println("go!");
+
+      mClimber.setPosition(200);
+    }
+    if (mOperatorInterface.getClimberTest2()){
+      System.out.println("go!");
+      mClimber.setPosition(33760);
+    }
+
     // arm extension test controls
     if (mOperatorInterface.getArmExtendManual()) {
       mArm.extend();
@@ -276,6 +288,7 @@ public class Robot extends TimedRobot {
     }
     mGrasper.update(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));
 
+    /*
     // elevator test controls
     if(mOperatorInterface.getClimberTestExtend()){
       //extend the climber
@@ -287,6 +300,7 @@ public class Robot extends TimedRobot {
       // stop the climber
       mClimber.TestStop();
     }
+    */
 
     // TODO: one of button that'll send climber to top extension
 
