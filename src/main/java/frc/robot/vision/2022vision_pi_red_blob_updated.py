@@ -74,16 +74,16 @@ if __name__ == "__main__":
     imgForm = np.zeros(shape=(res_height, res_width, 3), dtype=np.uint8)
 
     #Red Ball
-    '''
-    redHue = [0, 12]
-    redSat = [109, 255]
-    redVal = [58, 255]  
-    '''
+    redHue = [0, 17]
+    redSat = [161, 255]
+    redVal = [37, 255]  
 
     #Blue ball
+    '''
     blueHue = [85, 112]
     blueSat = [161, 255]
     blueVal = [37, 255]  
+    '''
 
     #Yellow Ball params
     #yelHue = [18,49]
@@ -94,6 +94,7 @@ if __name__ == "__main__":
     radius = 5.5
     ksize = (2 * round(radius) + 1)
 
+    '''
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
     cnt_area_low = 4000
@@ -115,6 +116,7 @@ if __name__ == "__main__":
     last_cnt_area = 0
     conCount = 0
     cnt_to_process = 0
+    '''
 
     #Used to pick the lowest detected contour in the image which is most likely the closest ball
     lowest_y = 1000
@@ -129,8 +131,8 @@ if __name__ == "__main__":
     PacketValue = {}
     
     dark_blobs = False
-    min_area = 10
-    circularity = [.70, 1]
+    min_area = 1.0
+    circularity = [.7284172661870504, 1.0]
 
     params = cv2.SimpleBlobDetector_Params()
     params.filterByColor = 1
@@ -144,13 +146,16 @@ if __name__ == "__main__":
     params.maxCircularity = circularity[1]
     params.filterByConvexity = False
     params.filterByInertia = False
-    # Create a detector with the parameters
     detector = cv2.SimpleBlobDetector_create(params)
+
     blank = np.zeros((1, 1))
 
     draw_contours = ''
     first_run = True
     res = ''
+    keypoints = ''
+    blob_x = ''
+    blob_y = ''
 
     print('Blue ball blob vision setup complete')
 
@@ -173,28 +178,43 @@ if __name__ == "__main__":
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             input_img = cv2.blur(input_img, (ksize, ksize))
 
-            mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
-                                (blueHue[1], blueSat[1], blueVal[1]))
+            mask = cv2.inRange(input_img, (redHue[0], redSat[0], redVal[0]),
+                                (redHue[1], redSat[1], redVal[1]))
+            cv2.imwrite('Mask.jpeg', mask)
 
             #inverted_img = cv2.bitwise_not(mask)
             
-            keypoints = detector.detect(mask)
+            try:
+                keypoints = detector.detect(mask)
+            except Exception as e:
+                print('Detector exception: ', e)
+            try:
+                cv2.imwrite('Keypoints.jpeg', keypoints)
+            except Exception as e:
+                print('Keypoints exception: ', e)
+
             if keypoints:
-                print(keypoints)
-                x = keypoints[0].pt[0]
-                y = keypoints[0].pt[1]
-                print('X: %s, Y: %s' % (x, y))
-                blank = np.zeros((1, 1))
+                print('Has keypoints')
+                try:
+                    blob_x = keypoints[0].pt[0]
+                    blob_y = keypoints[0].pt[1]
+                except Exception as e:
+                    print('Couldnt get x + y of keypoints: ', e)
+                print('X: %s, Y: %s' % (blob_x, blob_y))
                 blobs = cv2.drawKeypoints(mask, keypoints,np.array([]),(0, 0, 255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
                 cv2.imwrite('Blobs.jpeg', blobs)
                 print('sleeping')
                 time.sleep(2)
-            
 
+            keypoints = ''
+            blob_x = ''
+            blob_y = ''
+            
+            '''
             _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
             # Sort contours by area size (biggest to smallest)
             cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
-
+            '''
         except Exception as e:
             print('Exception', e)
