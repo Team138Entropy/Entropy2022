@@ -33,7 +33,7 @@ public class Arm extends Subsystem {
   public static enum ArmTarget {
     SCORE_FRONT(60, false),
     SCORE_BACK(120, false),
-    INTAKE(-25, false),
+    INTAKE(200, false),
     HOME(90, false);
 
     public double degrees;
@@ -48,10 +48,11 @@ public class Arm extends Subsystem {
   public Arm() {
     mShoulder = new TalonSRX(Constants.Talons.Arm.shoulder);
     mForearm = new TalonSRX(Constants.Talons.Arm.forearm);
+    mForearm.setInverted(true);
     mTargets = new int[] {-50, 0, 60, 90, 120, 210};
 
     // Sensor is flipped, TODO Tell mechanical to stop eating crayons and fix it
-    mShoulder.setSelectedSensorPosition(Constants.Arm.shoulderStartPosition);
+    mShoulder.setSelectedSensorPosition(-Constants.Arm.shoulderStartPosition);
     mShoulder.setSensorPhase(true);
     
     // PID constants
