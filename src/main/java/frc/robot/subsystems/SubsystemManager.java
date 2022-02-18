@@ -108,7 +108,7 @@ public class SubsystemManager implements ILooper {
    */
   public void zeroSensorsIfFresh(){
     if(!hasZeroedSensors){
-
+      zeroSensors();
     }
   }
 

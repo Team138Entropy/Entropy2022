@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -47,13 +48,10 @@ public class Arm extends Subsystem {
 
   public Arm() {
     mShoulder = new TalonSRX(Constants.Talons.Arm.shoulder);
+    mShoulder.setNeutralMode(NeutralMode.Brake);
     mForearm = new TalonSRX(Constants.Talons.Arm.forearm);
     mForearm.setInverted(true);
     mTargets = new int[] {-50, 0, 60, 90, 120, 210};
-
-    // Sensor is flipped, TODO Tell mechanical to stop eating crayons and fix it
-    mShoulder.setSelectedSensorPosition(-Constants.Arm.shoulderStartPosition);
-    mShoulder.setSensorPhase(true);
     
     // PID constants
     // Old constants are 1, 33, .01, 330
@@ -64,7 +62,7 @@ public class Arm extends Subsystem {
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
     mShoulder.configMotionAcceleration(5);
-    mShoulder.configMotionCruiseVelocity(10, 10);
+    mShoulder.configMotionCruiseVelocity(15, 10); // originally accel 5 veloc 10
   }
 
   public static Arm getInstance() {
@@ -254,10 +252,17 @@ public class Arm extends Subsystem {
     return mForearm.getSensorCollection().isRevLimitSwitchClosed();
   }
 
+  // Returns if the Shoulder Position is correct given a threshold
+  public boolean isAtPosition(int angle){
+    return getRotation() >= angle + 4 || getRotation() <= angle - 4;
+  }
+
   @Override
   public void zeroSensors() {
-    // TODO Implement this
-  }
+    // Sensor is flipped
+    mShoulder.setSelectedSensorPosition(-Constants.Arm.shoulderStartPosition);
+    mShoulder.setSensorPhase(true);
+   }
 
   @Override
   public void checkSubsystem() {

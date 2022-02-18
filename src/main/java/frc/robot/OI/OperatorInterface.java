@@ -16,10 +16,12 @@ public class OperatorInterface {
 
     // Latched Booleans
     private LatchedBoolean mOperatorSelectButton = new LatchedBoolean();
+    private LatchedBoolean mOperatorStartButton = new LatchedBoolean();
     private LatchedBoolean mLeftBumper = new LatchedBoolean();
     private LatchedBoolean mArmRotateUp = new LatchedBoolean();
     private LatchedBoolean mArmRotateDown = new LatchedBoolean();
     private LatchedBoolean mClimberTestPress = new LatchedBoolean();
+    private LatchedBoolean mOperatorClimbApprovePress = new LatchedBoolean();
 
     // Arm Target
     public ArmTarget mCurrentArmTarget = ArmTarget.HOME;
@@ -60,8 +62,12 @@ public class OperatorInterface {
         return mDriverController.getTrigger(Side.LEFT);
     }
 
-    public void setRumble(boolean a){ 
+    public void setOperatorRumble(boolean a){ 
         mOperatorController.setRumble(a);
+    }
+
+    public void setDriverRumble(boolean a){ 
+        mDriverController.setRumble(a);
     }
 
     /**
@@ -93,7 +99,11 @@ public class OperatorInterface {
      * @return
      */
     public boolean getSwitchModePress(){
-        return mOperatorSelectButton.update(mOperatorController.getButton(Button.START));
+        return mOperatorStartButton.update(mOperatorController.getButton(Button.START));
+    }
+
+    public boolean getSelectButtonPress(){
+        return mOperatorSelectButton.update(mOperatorController.getButton(Button.BACK));
     }
 
     public boolean getArmExtend() {
@@ -122,6 +132,14 @@ public class OperatorInterface {
         return mOperatorController.getButton(Button.A);
     }
 
+    public boolean getArmRotateUp() {
+        return mArmRotateUp.update(mDriverController.getButton(Button.Y));
+    }
+
+    public boolean getArmRotateDown() {
+        return mArmRotateDown.update(mDriverController.getButton(Button.A));
+    }
+
     public double getShoulderTargetX() {
         return mOperatorController.getJoystick(Side.RIGHT, Axis.X);
     }
@@ -138,13 +156,14 @@ public class OperatorInterface {
         return mOperatorController.getButton(Button.LB);
     }
 
-    public boolean getArmRotateUp() {
-        //return mArmRotateUp.update(mDriverController.getButton(Button.X));
-        return false;
+    public boolean getTestZeroPress(){
+        return mOperatorController.getButton(Button.L_JOYSTICK);
     }
 
-    public boolean getArmRotateDown() {
-        //return mArmRotateDown.update(mDriverController.getButton(Button.B));
-        return false;
+    // Operator Presses to Approve Next Climbing Stage
+    public boolean getOperatorClimbStageApprovePress() {
+        return mOperatorClimbApprovePress.update(mOperatorController.getButton(Button.A));
     }
+
+
 }

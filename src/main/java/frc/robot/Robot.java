@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Arm.ArmTarget;
+import frc.robot.subsystems.Climber.ClimberTarget;
 import frc.robot.vision.TargetInfo;
 import frc.robot.vision.VisionManager;
 import frc.robot.auto.AutoModeExecutor;
@@ -51,6 +52,10 @@ public class Robot extends TimedRobot {
 
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
+
+  // Booleans for Test Modes
+  private boolean mTest_ArmJogging = true;
+  private boolean mTest_ClimberJogging = true;
 
   private boolean inAutoMode = false;
   private boolean inTeleop = false;
@@ -141,7 +146,7 @@ public class Robot extends TimedRobot {
   /** Called at the Start of Autonomous **/
   @Override
   public void autonomousInit() {
-    mOperatorInterface.setRumble(false);
+    mOperatorInterface.setOperatorRumble(false);
 
     // zero sensors (if not zero'ed prior on this powerup)
     mSubsystemManager.zeroSensorsIfFresh();
@@ -165,11 +170,10 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    mOperatorInterface.setRumble(false);
+    mOperatorInterface.setOperatorRumble(false);
         
     // zero sensors (if not zero'ed prior on this powerup)
-    //mSubsystemManager.zeroSensorsIfFresh();
-    mArm.zeroSensors();
+    mSubsystemManager.zeroSensorsIfFresh();
     
     // Disable Auto Thread (if running)
     if (mAutoModeExecutor != null) {
@@ -203,16 +207,19 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     // Activate rumble on op controller every second or so
-    if (mRumbleTimer > 2000){ mOperatorInterface.setRumble(true); }
-    if (mRumbleTimer > 2025){ mOperatorInterface.setRumble(false); mRumbleTimer = 0; }
+    if (mRumbleTimer > 2000){ mOperatorInterface.setOperatorRumble(true); }
+    if (mRumbleTimer > 2025){ mOperatorInterface.setOperatorRumble(false); mRumbleTimer = 0; }
     mRumbleTimer++;
   }
 
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
-    mOperatorInterface.setRumble(false);
+    mOperatorInterface.setOperatorRumble(false);
 
+    // Default to Jogging Modes
+    mTest_ArmJogging = true;
+    mTest_ClimberJogging = true;
   }
 
   private boolean mIsShoulderJogging = false;
@@ -220,15 +227,71 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-
-    if (mOperatorInterface.getClimberTest()){
-      System.out.println("go!");
-
-      mClimber.setPosition(200);
+    // Zero Sensors (left joystick press)
+    if(mOperatorInterface.getTestZeroPress()){
+      System.out.println("Zero Pressed!");
+      mSubsystemManager.zeroSensors();
     }
-    if (mOperatorInterface.getClimberTest2()){
-      System.out.println("go!");
-      mClimber.setPosition(33760);
+    
+    // Climber and Jogging Mode Changes
+    // Start and Select of the Operator Controller
+    if(mOperatorInterface.getSelectButtonPress()){
+      mTest_ArmJogging = !mTest_ArmJogging;
+    }
+    if(mOperatorInterface.getSwitchModePress()){
+      mTest_ClimberJogging = !mTest_ClimberJogging;
+    }
+
+    // Arm is in Jogging Mode or Position Mode
+    if(mTest_ArmJogging){
+      // Arm Jogging
+      SmartDashboard.putString("Arm Test Mode", "Jogging");
+      if (mOperatorInterface.getArmJogUp()) {
+        mArm.jogRotateUp();
+        mIsShoulderJogging = true;
+      } else if (mOperatorInterface.getArmJogDown()) {
+        mArm.jogRotateDown();
+        mIsShoulderJogging = true;
+      } else {
+        mArm.jogStop();
+      }
+    }else{
+      // Arm Position
+      SmartDashboard.putString("Arm Test Mode", "Position");
+      double target = mArm.getRotationTarget();
+      target = target + (mOperatorInterface.getArmRotateUp() ? 5 : 0);
+      target = target - (mOperatorInterface.getArmRotateDown() ? 5 : 0);
+      mArm.rotateToPosition(target);
+    }
+
+    // Climber is in Jogging Mode or Position Mode
+    if(mTest_ClimberJogging){
+      // Climb Jogging 
+      SmartDashboard.putString("Climber Test Mode", "Jogging");
+        
+      // climber test controls
+      if(mOperatorInterface.getClimberTestExtend()){
+        //extend the climber
+        mClimber.TestExtend();
+      }else if(mOperatorInterface.getClimberTestRetract()){
+        // retract the climber
+        mClimber.TestRetract();
+      }else{
+        // stop the climber
+        mClimber.TestStop();
+      }
+    }else{
+      // Climb Position
+      SmartDashboard.putString("Climber Test Mode", "Position");
+      
+      if (mOperatorInterface.getClimberTest()){
+        System.out.println("Climber: Go to 200");
+        mClimber.setPosition(Climber.ClimberTarget.LOW.ticks);
+      }
+      if (mOperatorInterface.getClimberTest2()){
+        System.out.println("Climber: Go to 33760");
+        mClimber.setPosition(Climber.ClimberTarget.ABOVE_BAR.ticks);
+      }
     }
 
     // arm extension test controls
@@ -251,32 +314,7 @@ public class Robot extends TimedRobot {
       }
     }
 
-    // shoulder test controls
-    // double target = mArm.getJoystickTarget(mOperatorInterface.getShoulderTargetX(), mOperatorInterface.getShoulderTargetY());
-    double target = mArm.getRotationTarget();
-    target = target + (mOperatorInterface.getArmRotateUp() ? 90 : 0);
-    target = target - (mOperatorInterface.getArmRotateDown() ? 90 : 0);
 
-    if (target != mArm.getRotationTarget()) {
-      mIsShoulderJogging = false;
-    }
-
-    if (mOperatorInterface.getArmJogUp()) {
-      mArm.jogRotateUp();
-      mIsShoulderJogging = true;
-    } else if (mOperatorInterface.getArmJogDown()) {
-      mArm.jogRotateDown();
-      mIsShoulderJogging = true;
-    } else {
-      /*
-      if (mIsShoulderJogging) {
-        mArm.rotateDistance(0);
-      } else {
-        mArm.rotateToPosition(target);
-      }
-      */
-      mArm.jogStop();
-    }
 
     // grapser test controls
     if (mOperatorInterface.getArmEject()) {
@@ -288,23 +326,7 @@ public class Robot extends TimedRobot {
     }
     mGrasper.update(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));
 
-    /*
-    // elevator test controls
-    if(mOperatorInterface.getClimberTestExtend()){
-      //extend the climber
-      mClimber.TestExtend();
-    }else if(mOperatorInterface.getClimberTestRetract()){
-      // retract the climber
-      mClimber.TestRetract();
-    }else{
-      // stop the climber
-      mClimber.TestStop();
-    }
-    */
-
-    // TODO: one of button that'll send climber to top extension
-
-    // drive!
+    // Run Drive Code!
     DriveLoop();
   }
 
@@ -341,7 +363,9 @@ public class Robot extends TimedRobot {
       // Allow Operator to stop
       // first stage might require manual control
       boolean manualStop = false;
-      mClimber.update(manualStop);
+
+      // Update the Climber, manual stop and climber press
+      mClimber.update(manualStop, mOperatorInterface.getOperatorClimbStageApprovePress());
     }
     DriveLoop();
   }
@@ -397,6 +421,10 @@ public class Robot extends TimedRobot {
           // going from cargo scorer to climber
           mGrasper.stop();
 
+          // reset climber 
+          mClimber.reset();
+
+          // update current mode
           mCurrentMode = RobotMode.Climber;
         break;
         case Climber:

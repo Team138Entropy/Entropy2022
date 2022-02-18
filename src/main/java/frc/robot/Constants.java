@@ -196,8 +196,8 @@ public class Constants {
   }
 
   public static class Climber {
-    public static final double TestExtendOutput = .75;
-    public static final double TestRetractOutput = .75;
+    public static final double TestExtendOutput = 1;
+    public static final double TestRetractOutput = 1;
   }
 
   public static class Misc {

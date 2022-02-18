@@ -1,63 +1,46 @@
 package frc.robot.subsystems;
 
+import java.util.concurrent.Callable;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.OI.OperatorInterface;
+import frc.robot.util.StageExecutor;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 /**
- * Climber is intended to be mostly autonomous
- * Stage 1 - 
- *        Climber is raising to climbing position
- *        Arm is in low position
- *        Complete when arm is at full extension
- * Stage 2 -
- *        Climber is pulling up to top bar
- *        Arm is in low position
- *        Complete when climber is at top
- * Stage 3 - 
- *      Climber is holding position
- *      Arm is rotating to top bar
- *      TBD: How to determind if arm is on top bar
- *      arm might need to intake and and then extend
+
  */
 public class Climber extends Subsystem {
-    private static Climber mInstance;
 
-    public enum ClimberStage {
-        Stage1("Stage1_RaiseArms"),
-        Stage2("Stage2_PullUp"),
-        Stage3("Stage3_PositionArm"),
-        Stage4("Stage4_PullArm"),
-        Idle("Idle")
+    /** 
+   * All useful climber target positions during a match. 
+   */
+    public static enum ClimberTarget {
+        LOW(200),
+        ABOVE_BAR(33760)
         ;
+        public int ticks;
 
-        private final String text;
-    
-        /**
-         * @param text
-         */
-        ClimberStage(final String text) {
-            this.text = text;
-        }
-    
-        /* (non-Javadoc)
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return text;
+        private ClimberTarget(int ticks) {
+            this.ticks = ticks;
         }
     }
-    private ClimberStage mCurrentStage = ClimberStage.Stage1;
+    private static Climber mInstance;
 
-    private TalonSRX mClimber;
+    private final TalonSRX mClimber;
+
+    // Reference to the Operator Interface
+    private final OperatorInterface mOperatorInterface = OperatorInterface.getInstance();
 
     // Reference to the Arm
     private final Arm mArm = Arm.getInstance();
+
+    // Climber Action Execution
+    private final StageExecutor mClimberExecutor = new StageExecutor();
 
     public static synchronized Climber getInstance(){
         if (mInstance == null) {
@@ -70,45 +53,94 @@ public class Climber extends Subsystem {
         mClimber = new TalonSRX(Constants.Talons.Climber.climber);
         mClimber.setNeutralMode(NeutralMode.Brake);
 
-        // TODO: Configure Climbers Cruise Acceleration and Cruise Velocity
-        //       these will look similar to the arm
-
         // Make a Rotate to Position which is given an encoder position
-        mClimber.setSelectedSensorPosition(0);
         mClimber.configMotionAcceleration(20000);
         mClimber.configMotionCruiseVelocity(20000, 10);
+
+        mClimber.config_kF(0, 0, 10);
+        mClimber.config_kP(0, 0, 10);
+        mClimber.config_kI(0, 0, 10);
+        mClimber.config_kD(0, 0, 10);
+
+        // Initialize the Climber Executor
+        mClimberExecutor.setVerboseMode();
+        initClimberExecutor();
+    }
+
+    // Load the Climber Stage Functions into Climber Executor
+    private void initClimberExecutor(){
+        // Prepare Climber - Verify Arm and Climber Position
+        mClimberExecutor.registerStage("Prepare Climber", 
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    System.out.println("PREPARE CLIMBER WORK!");
+                    // set arm to its starting position for climbing
+                    mArm.rotateToPosition(180);
+
+                    // set climber position to 0
+                    setPosition(0);
+                    return false;
+                }
+            },
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    System.out.println("IS DONE FUNCTION!?");
+                    // arm is in position and climber is in position
+                    return true;
+                }
+            },
+            true
+        );
+
+        // Lift Climber Arms - Requires Operator Blessing
+        mClimberExecutor.registerStage("Lift Climber Arms", 
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    // set climber position to climb position
+                    setPosition(22000);
+                    return false;
+                }
+            },
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    return isAtPosition(22000);
+                }
+            }, 
+            true
+        );
+        
+        // Pull Climber Arms Down - Requires Operator Blessing
+        mClimberExecutor.registerStage("Pull Climber Arms Down", 
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    // set climber position to climb position
+                    setPosition(0);
+                    return false;
+                }
+            },
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    return isAtPosition(0);
+                }
+            }, 
+            true
+        );
+
+        
+    }
+
+    public synchronized void reset(){
+        mClimberExecutor.reset();
     }
 
     // Update runs the Climber State Machine
     // Operator is able to stop the state machine 
-    public synchronized void update(boolean stop){
-        // check for manual override
-        if(stop){
-            // manipulate state
-        }
+    public synchronized void update(boolean stop, boolean accept){
+        mClimberExecutor.update(accept);
 
-
-        switch(mCurrentStage){
-            case Stage1:
-                // Robot is below bar, extending arms to go up
-                
-            break;
-            case Stage2: 
-
-            break;
-            case Stage3: 
-
-            break;
-            case Stage4: 
-
-            break;
-            case Idle:
-                // Do Nothing
-            break;
-            default:
-                System.out.println("Error: Unreconizied Climber Stage!");
-                break;
-        }
+        // Rumble Controller
+        mOperatorInterface.setOperatorRumble(mClimberExecutor.needUserInputToStart());
+        SmartDashboard.putBoolean("Climber Needs Manual Input", mClimberExecutor.needUserInputToStart());
     }
 
     public synchronized void setPosition(int pos){
@@ -147,9 +179,15 @@ public class Climber extends Subsystem {
         return mClimber.getSelectedSensorPosition();
     }
 
+    public boolean isAtPosition(int encoderPosition){
+        return false;
+    }
+
     public void updateSmartDashBoard() {
-        SmartDashboard.putNumber("Climber velocity", mClimber.getSelectedSensorVelocity());
-        SmartDashboard.putString("Climber Stage", mCurrentStage.toString()); // Climber Stage
+        SmartDashboard.putNumber("Climber Stage", mClimberExecutor.getCurrentStage()); // Climber Stage Number
+        SmartDashboard.putString("Climber Stage Name", mClimberExecutor.getCurrentStageName()); // Climber Stage Name
+        SmartDashboard.putBoolean("Climb Complete", mClimberExecutor.isComplete()); // Climb executor is complete
         SmartDashboard.putNumber("Climber Position", getClimberPosition()); // Climber Encoder Position
+        SmartDashboard.putNumber("Climber Velocity", mClimber.getSelectedSensorVelocity());
     }
 }
