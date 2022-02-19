@@ -1,6 +1,7 @@
 import math
 import time
 import glob
+import re
 from sqlite3 import Time
 
 import cv2
@@ -8,8 +9,7 @@ import numpy as np
 
 vision_directory = 'src/main/java/frc/robot/vision/'
 
-def processSimple(image):
-    input_img = image
+def processSimple(input_img):
 
     #Red Ball
     '''
@@ -206,7 +206,7 @@ def processSimple(image):
         last_contour_x = cx
         last_contour_y = cy
 
-        return cnt_to_process
+        return cnt_to_process, 'X center: ' + str(cx) + ' Y center: ' + str(cy)
 
     except Exception as e:
         print('Exception ', e)
@@ -264,9 +264,6 @@ def processBlob(input_img):
     current_frame = 0
     frame_memory = 0
     contour_found_once = False
-
-    #Create info for packet
-    PacketValue = {}
     
     dark_blobs = False
     min_area = 10
@@ -296,10 +293,6 @@ def processBlob(input_img):
 
     #Create info for packet
     try:
-        current_frame += 1
-        PacketValue = {}
-        PacketValue['cameraid'] = 0
-        PacketValue['ballColor'] = 'blue'
         
         #start_time = time.time() #Use this to get FPS below
 
@@ -328,6 +321,8 @@ def processBlob(input_img):
 
         # Sort contours by area size (biggest to smallest)
         cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
+
+        return blobs, 'X center: ' + str(x) + ' Y center: ' + str(y)
 
     except Exception as e:
         print('Exception', e)
@@ -360,10 +355,6 @@ def processHough(input_img):
     print('Blue ball vision setup complete')
 
     try:
-        current_frame += 1
-        PacketValue = {}
-        PacketValue['cameraid'] = 0
-        PacketValue['ballColor'] = 'yellow'
         
         #start_time = time.time() #Use this to get FPS below
 
@@ -404,7 +395,7 @@ def processHough(input_img):
             # draw the center of the circle
             cv2.circle(input_img,(i[0],i[1]),2,(0,0,255),3)
 
-            print('x: ', i[0], 'y: ', i[1], '\n')
+            print('x: ', i[0], 'y: ', i[1])
         
         
         cv2.imwrite('Hough.jpg', input_img)
@@ -416,6 +407,8 @@ def processHough(input_img):
         mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
                             (blueHue[1], blueSat[1], blueVal[1]))
         '''
+
+        return input_img
             
     except Exception as e:
         print('Error: ', e)
@@ -424,16 +417,26 @@ print('Local testing starting')
 
 sample_directory = 'Vision Samples/'
 output_directory = 'testing_output/'
-file = '*.png'
+file = '*'
 for name in glob.glob(vision_directory + sample_directory + file):
     file = cv2.imread(name)
 
     #Process via simple mode
-    newImage = cv2.drawContours(file, [processSimple(file)], -1, (255, 255, 255), 10)
-    cv2.imwrite(vision_directory + output_directory + 'simple/' + name + 'processed' + '.png', newImage)
 
-    #cv2.imwrite('src/main/java/frc/robot/vision/testing_output/simple/' + time.strftime('%Y-%m-%dT%H-%M-%S', time.localtime()) + '-' + str(round(time.time() % 1 * 1000)) + '.jpg', newImage)
+    filename = vision_directory + output_directory + 'simple/' + name[name.find('\\'):name.find('.')] + '-processed' + '.jpg'
+    contour, text = processSimple(file)
+    image_simple = cv2.drawContours(file, [contour], -1, (255, 255, 255), 10)
+    cv2.putText(image_simple, text, (10, 25), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 255), 2)
     
-    #processBlob(file)
-    
-    #processHough(file)
+    cv2.imwrite(filename, image_simple)
+
+    # Write with time stamp instead
+    # time.strftime('%Y-%m-%dT%H-%M-%S', time.localtime()) + '-' + str(round(time.time() % 1 * 1000)) + '.jpg'
+
+    filename = vision_directory + output_directory + 'blob/' + name[name.find('\\'):name.find('.')] + '-processed' + '.jpg'
+    image_blob, text = processBlob(file)
+    cv2.imwrite(filename, image_blob)
+
+    filename = vision_directory + output_directory + 'hough/' + name[name.find('\\'):name.find('.')] + '-processed' + '.jpg'
+    image_hough = processHough(file)
+    cv2.imwrite(filename, image_hough)
