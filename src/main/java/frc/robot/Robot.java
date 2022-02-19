@@ -241,7 +241,7 @@ public class Robot extends TimedRobot {
     if(mOperatorInterface.getSwitchModePress()){
       mTest_ClimberJogging = !mTest_ClimberJogging;
     }
-
+    
     // Arm is in Jogging Mode or Position Mode
     if(mTest_ArmJogging){
       // Arm Jogging
@@ -263,6 +263,7 @@ public class Robot extends TimedRobot {
       target = target - (mOperatorInterface.getArmRotateDown() ? 5 : 0);
       mArm.rotateToPosition(target);
     }
+    
 
     // Climber is in Jogging Mode or Position Mode
     if(mTest_ClimberJogging){
@@ -271,9 +272,11 @@ public class Robot extends TimedRobot {
         
       // climber test controls
       if(mOperatorInterface.getClimberTestExtend()){
+        System.out.println("climber extend");
         //extend the climber
         mClimber.TestExtend();
       }else if(mOperatorInterface.getClimberTestRetract()){
+        System.out.println("climber retract");
         // retract the climber
         mClimber.TestRetract();
       }else{
@@ -285,12 +288,14 @@ public class Robot extends TimedRobot {
       SmartDashboard.putString("Climber Test Mode", "Position");
       
       if (mOperatorInterface.getClimberTest()){
-        System.out.println("Climber: Go to 200");
+        System.out.println("Climber: Go to " + Climber.ClimberTarget.LOW.ticks);
         mClimber.setPosition(Climber.ClimberTarget.LOW.ticks);
       }
       if (mOperatorInterface.getClimberTest2()){
-        System.out.println("Climber: Go to 33760");
+        System.out.println("Climber: Go to " + Climber.ClimberTarget.ABOVE_BAR.ticks);
         mClimber.setPosition(Climber.ClimberTarget.ABOVE_BAR.ticks);
+
+
       }
     }
 
@@ -343,9 +348,10 @@ public class Robot extends TimedRobot {
       if (mGrasper.getBallsStored() < Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         mGrasper.intake();
       } else if (mGrasper.getBallsStored() == Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
-        target = ArmTarget.SCORE_FRONT;
+        //target = ArmTarget.SCORE_FRONT;
       }
       
+      System.out.println("Target Position: " + target.degrees);
       mArm.rotateToPosition(target.degrees);
       if (target.isExtended) mArm.extend();
       else mArm.retract();
@@ -375,7 +381,7 @@ public class Robot extends TimedRobot {
     double driveTurn = mOperatorInterface.getDriveTurn();
 
     // precision steer (slow down throttle if left trigger is held)
-    if(mOperatorInterface.getDrivePrecisionSteer()) driveThrottle *= .5;
+   if(mOperatorInterface.getDrivePrecisionSteer()) driveThrottle *= .5;
 
     boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
     SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);

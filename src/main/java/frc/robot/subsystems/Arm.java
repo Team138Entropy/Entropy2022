@@ -34,7 +34,7 @@ public class Arm extends Subsystem {
   public static enum ArmTarget {
     SCORE_FRONT(60, false),
     SCORE_BACK(120, false),
-    INTAKE(205, false),
+    INTAKE(-10, false),
     HOME(90, false);
 
     public double degrees;
@@ -52,6 +52,9 @@ public class Arm extends Subsystem {
     mForearm = new TalonSRX(Constants.Talons.Arm.forearm);
     mForearm.setInverted(true);
     mTargets = new int[] {-50, 0, 60, 90, 120, 210};
+
+    mShoulder.setSensorPhase(true);
+    mShoulder.setInverted(true);
     
     // PID constants
     // Old constants are 1, 33, .01, 330
@@ -62,7 +65,7 @@ public class Arm extends Subsystem {
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
     mShoulder.configMotionAcceleration(5);
-    mShoulder.configMotionCruiseVelocity(15, 10); // originally accel 5 veloc 10
+    mShoulder.configMotionCruiseVelocity(10, 10); // originally accel 5 veloc 10
   }
 
   public static Arm getInstance() {
@@ -260,8 +263,15 @@ public class Arm extends Subsystem {
   @Override
   public void zeroSensors() {
     // Sensor is flipped
-    mShoulder.setSelectedSensorPosition(-Constants.Arm.shoulderStartPosition);
-    mShoulder.setSensorPhase(true);
+    mShoulder.setSelectedSensorPosition(Constants.Arm.shoulderStartPosition);
+    
+    /*
+    if (getRotation() < 0) {
+      mShoulder.setSelectedSensorPosition(Constants.Arm.shoulderStartPosition);
+      mShoulder.setSensorPhase(fa);
+    }
+    */
+    
    }
 
   @Override
