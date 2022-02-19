@@ -8,13 +8,13 @@ import json
 if __name__ == "__main__":
     print("Vision capture starting")
 
-    directory = "samples"
+    directory = "./samples"
 
     if not os.path.isdir(directory):
         print("Directory doesn't exist, creating now")
         os.makedirs(directory)
 
-    files = os.listdir("./" + directory)
+    files = os.listdir(directory)
     print("Files in directory: ", files)
 
     if len(files) > 1:
@@ -53,7 +53,7 @@ if __name__ == "__main__":
         if time == 0:
             continue
 
-        cv2.imwrite("./" + directory + "/img_" + str(series) + "_" + str(time) + ".jpg", input_img)
-        print("./" + directory + "/img_" + str(series) + "_" + str(time) + ".jpg")
+        cv2.imwrite(directory + "/img_" + str(series) + "_" + str(time) + ".jpg", input_img)
+        print(directory + "/img_" + str(series) + "_" + str(time) + ".jpg")
 
         
