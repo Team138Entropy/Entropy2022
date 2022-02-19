@@ -146,6 +146,9 @@ public class Robot extends TimedRobot {
   /** Called at the Start of Autonomous **/
   @Override
   public void autonomousInit() {
+    // Default Robot Mode to CargoScorer
+    mCurrentMode = RobotMode.CargoScorer;
+    
     mOperatorInterface.setOperatorRumble(false);
 
     // zero sensors (if not zero'ed prior on this powerup)
@@ -169,7 +172,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {
+  public void teleopInit() {    
+    // Default Robot Mode to CargoScorer
+    mCurrentMode = RobotMode.CargoScorer;
+    
     mOperatorInterface.setOperatorRumble(false);
         
     // zero sensors (if not zero'ed prior on this powerup)
