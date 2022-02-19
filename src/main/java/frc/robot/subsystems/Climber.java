@@ -44,8 +44,14 @@ public class Climber extends Subsystem {
     // Climber Action Execution
     private final StageExecutor mClimberExecutor = new StageExecutor();
 
+    // Execution Variables
+    boolean mInitialLoopComplete = false;
+    int mLoopCount = 2;
+    int mCurrentLoop = 0;
+    int restartStage = 1;
+
     // Test Values
-    private int testClimbPosition = 0;
+    private double testClimbPosition = 0;
     private double testDegreesPosition = 0;
     private boolean testExtend = false;
     private boolean testInUpdateLoop = false;
@@ -222,12 +228,12 @@ public class Climber extends Subsystem {
         true
    );
 
-
         
     }
 
     public synchronized void reset(){
         mClimberExecutor.reset();
+        mInitialLoopComplete = false;
     }
 
     // Update runs the Climber State Machine
@@ -239,10 +245,53 @@ public class Climber extends Subsystem {
         mOperatorInterface.setOperatorRumble(mClimberExecutor.needUserInputToStart());
         SmartDashboard.putBoolean("Climber Needs Manual Input", mClimberExecutor.needUserInputToStart());
 
+
+        
+        // Climb is Complete, this is the initial setup loop
+        if(mClimberExecutor.isComplete() && !mInitialLoopComplete){
+            System.out.println("Climbing! Initial Complete!");
+            // the climbing execution wants to occur twice
+            /*
+ 
+            mCurrentLoop++;
+            if(mCurrentLoop < mLoopCount){
+                // go reset 
+                mClimberExecutor.resetToStage(restartStage);
+                mInitialLoopComplete = false;
+            }else{
+                mInitialLoopComplete = false;
+            }
+
+            */
+
+            SmartDashboard.putBoolean("TestUpdate", false);
+            SmartDashboard.putNumber("Test_ArmTarget", mArm.getRotation());
+            SmartDashboard.putNumber("Test_ClimberTarget", this.getClimberPosition());
+            SmartDashboard.putBoolean("Test_IsExtended", mArm.isExtended());
+            testDegreesPosition = mArm.getRotation();
+            testExtend = mArm.isExtended();
+            testClimbPosition = this.getClimberPosition();
+            mInitialLoopComplete = true;
+            testInUpdateLoop = true;
+        }
+
+        // TEST
+        // check for test loop update
+        if(SmartDashboard.getBoolean("TestUpdate", false)){
+            System.out.println("Test Update Init!");
+            // load in all test values
+            testDegreesPosition = SmartDashboard.getNumber("Test_ArmTarget", 0);
+            testClimbPosition = SmartDashboard.getNumber("Test_ClimberTarget", 0);
+            testExtend = SmartDashboard.getBoolean("Test_IsExtended", false);
+
+            // turn off toggle
+            SmartDashboard.putBoolean("TestUpdate", false);
+        }
+
         // test manual input - values progated over from test
         if(testInUpdateLoop){
             mArm.rotateToPosition(testDegreesPosition);
-            setPosition(testClimbPosition);
+            setPosition((int) testClimbPosition);
             if(testExtend){
                 mArm.extend();
             }else{
@@ -252,6 +301,8 @@ public class Climber extends Subsystem {
         SmartDashboard.putBoolean("Climber Test Loop", testInUpdateLoop);
     }
 
+
+    // Set Position into logic
     public synchronized void setPosition(int pos){
         mClimber.set(ControlMode.MotionMagic, pos, DemandType.ArbitraryFeedForward, 0.1);
         SmartDashboard.putNumber("Climber Target", pos);

@@ -2,18 +2,21 @@ package frc.robot.util;
 
 import java.util.Vector;
 import java.util.concurrent.Callable;
+import edu.wpi.first.wpilibj.Timer;
 
 class Stage {
     public final Callable<Boolean> mStageWorkerFunction;
     public final Callable<Boolean> mStageCompleteFunction;
     public final String mName;
     public final boolean mRequireUserToStart;
+    public final int mSecondsDelay;
 
     public Stage(String Name, Callable<Boolean> workerFunc, Callable<Boolean> completeFunc){
         mName = Name;
         mStageWorkerFunction = workerFunc;
         mStageCompleteFunction = completeFunc;
         mRequireUserToStart = false;
+        mSecondsDelay = 0;
     }
 
     public Stage(String Name, Callable<Boolean> workerFunc, Callable<Boolean> completeFunc, boolean reqStart){
@@ -21,6 +24,15 @@ class Stage {
         mStageWorkerFunction = workerFunc;
         mStageCompleteFunction = completeFunc;
         mRequireUserToStart = reqStart;
+        mSecondsDelay = 0;
+    }
+
+    public Stage(String Name, Callable<Boolean> workerFunc, Callable<Boolean> completeFunc, boolean reqStart, int SecondsDelay){
+        mName = Name;
+        mStageWorkerFunction = workerFunc;
+        mStageCompleteFunction = completeFunc;
+        mRequireUserToStart = reqStart;
+        mSecondsDelay = SecondsDelay;
     }
 
     public Stage(Callable<Boolean> workerFunc, Callable<Boolean> completeFunc){
@@ -28,6 +40,7 @@ class Stage {
         mStageWorkerFunction = workerFunc;
         mStageCompleteFunction = completeFunc;
         mRequireUserToStart = false;
+        mSecondsDelay = 0;
     }
 
     public Stage(Callable<Boolean> workerFunc, Callable<Boolean> completeFunc, boolean reqStart){
@@ -35,6 +48,7 @@ class Stage {
         mStageWorkerFunction = workerFunc;
         mStageCompleteFunction = completeFunc;
         mRequireUserToStart = reqStart;
+        mSecondsDelay = 0;
     }
 
     public boolean hasName(){
@@ -55,8 +69,10 @@ public class StageExecutor {
     private boolean mNeedUserInputToStartStage;
     private boolean mStartBlessed;
     private Vector<Stage> mStages;
+    private Timer mTimer;
 
     public StageExecutor(){
+        mTimer = null;
         mCurrentStage = 0;
         mCurrentStageLoopCount = 0;
         mVerboseMode = false;
@@ -86,6 +102,10 @@ public class StageExecutor {
         mStages.add(new Stage(Name, stageWorkerFunction, stageCompleteFunction, ReqUserInputStart));
     }
 
+    public synchronized void registerStage(String Name, Callable<Boolean> stageWorkerFunction, Callable<Boolean> stageCompleteFunction, boolean ReqUserInputStart, int seconds){
+        mStages.add(new Stage(Name, stageWorkerFunction, stageCompleteFunction, ReqUserInputStart, seconds));
+    }
+
     // Updates the Stage Executor
     public synchronized boolean update(){
         return update(false);
@@ -106,11 +126,11 @@ public class StageExecutor {
             if(mCurrentStageLoopCount == 1){
                 mNeedUserInputToStartStage = currentStage.mRequireUserToStart;
             }
-            if(mVerboseMode) System.out.println("Executing Stage: " + mCurrentStage);
+            if(mVerboseMode) System.out.println("Executing Stage: " + (mCurrentStage + 1));
             try {
                 // check if we need blessing to start
                 if(mNeedUserInputToStartStage && !mStartBlessed){
-                    if(mVerboseMode) System.out.println("Waiting for User Input to Start Stage: " + mCurrentStage);
+                    if(mVerboseMode) System.out.println("Waiting for User Input to Start Stage: " + (mCurrentStage + 1));
                     if(userInput){
                         // user says start
                         mStartBlessed = true;
@@ -133,12 +153,23 @@ public class StageExecutor {
             // Check if Stage is Complete
             try{
                 if(currentStage.mStageCompleteFunction.call()){
-                    // Move to Next Stage
-                    if(mVerboseMode) System.out.println("Stage " + mCurrentStage + " Complete!");
-                    mCurrentStage++;
-                    mCurrentStageLoopCount = 0; //clear out loop count
-                    mStartBlessed = false;
-                    mNeedUserInputToStartStage = false;
+                    // Complete Stage is Hit
+                    if(mTimer == null){
+                        mTimer = new Timer();
+                        mTimer.start();
+                    }
+
+                    // verify post delay is complete!
+                    if(mTimer.hasElapsed(currentStage.mSecondsDelay)){
+                        // Move to Next Stage
+                        if(mVerboseMode) System.out.println("Stage " + (mCurrentStage + 1) + " Complete!");
+                        mCurrentStage++;
+                        mCurrentStageLoopCount = 0; //clear out loop count
+                        mStartBlessed = false;
+                        mNeedUserInputToStartStage = false;
+                        mTimer.stop();
+                        mTimer = null;
+                    }
                 }
             }catch(Exception e){
                 // exception
@@ -158,6 +189,7 @@ public class StageExecutor {
         mCurrentStageLoopCount = 0; //clear out loop count
         mStartBlessed = false;
         mNeedUserInputToStartStage = false;
+        mTimer = null;
     }
 
     public synchronized void resetToStage(int stage){

@@ -351,7 +351,6 @@ public class Robot extends TimedRobot {
         target = ArmTarget.SCORE_FRONT;
       }
       
-      System.out.println("Target Position: " + target.degrees);
       mArm.rotateToPosition(target.degrees);
       if (target.isExtended) mArm.extend();
       else mArm.retract();
