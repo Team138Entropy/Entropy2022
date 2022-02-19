@@ -331,8 +331,8 @@ public class Robot extends TimedRobot {
     }
     mGrasper.update(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));
 
-    // Run Drive Code!
-    DriveLoop();
+    // Run Drive Code! Allow Precision Steer and Auto Aim
+    DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
   }
 
   private void RobotLoop(){
@@ -348,7 +348,7 @@ public class Robot extends TimedRobot {
       if (mGrasper.getBallsStored() < Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         mGrasper.intake();
       } else if (mGrasper.getBallsStored() == Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
-        //target = ArmTarget.SCORE_FRONT;
+        target = ArmTarget.SCORE_FRONT;
       }
       
       System.out.println("Target Position: " + target.degrees);
@@ -359,6 +359,9 @@ public class Robot extends TimedRobot {
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
       
       mGrasper.update(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));
+
+      // Drive with Precision Steer and Auto Steer
+      DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
     } else if(mCurrentMode == RobotMode.Climber) {
       // Objective is to Climb
       // Do not allow manual control of arm and grasper
@@ -372,18 +375,26 @@ public class Robot extends TimedRobot {
 
       // Update the Climber, manual stop and climber press
       mClimber.update(manualStop, mOperatorInterface.getOperatorClimbStageApprovePress());
+
+      // Drive with Precision Steer Automatically Enabled, no auto steer
+      DriveLoop(true, false);
     }
-    DriveLoop();
   }
 
-  private void DriveLoop(){
+  /**
+   * DriveLoop
+   * precisionSteer - Tunes Down Throttle. Useful for precise movements
+   * allowAutoSteer - Enables/Disables AutoSteering
+   */
+  private void DriveLoop(boolean precisionSteer, boolean allowAutoSteer){
     double driveThrottle = mOperatorInterface.getDriveThrottle();
     double driveTurn = mOperatorInterface.getDriveTurn();
 
     // precision steer (slow down throttle if left trigger is held)
-   if(mOperatorInterface.getDrivePrecisionSteer()) driveThrottle *= .5;
+   if(precisionSteer) driveThrottle *= .33;
 
     boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
+    wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed
     SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 
     // Get Target within the allowed Threshold

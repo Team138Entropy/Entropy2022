@@ -32,8 +32,8 @@ public class Arm extends Subsystem {
    * All useful arm target positions during a match. 
    */
   public static enum ArmTarget {
-    SCORE_FRONT(60, false),
-    SCORE_BACK(120, false),
+    SCORE_FRONT(120, false),
+    SCORE_BACK(60, false),
     INTAKE(-10, false),
     HOME(90, false);
 
