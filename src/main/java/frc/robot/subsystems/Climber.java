@@ -44,6 +44,12 @@ public class Climber extends Subsystem {
     // Climber Action Execution
     private final StageExecutor mClimberExecutor = new StageExecutor();
 
+    // Test Values
+    private int testClimbPosition = 0;
+    private double testDegreesPosition = 0;
+    private boolean testExtend = false;
+    private boolean testInUpdateLoop = false;
+
     public static synchronized Climber getInstance(){
         if (mInstance == null) {
             mInstance = new Climber();
@@ -135,11 +141,60 @@ public class Climber extends Subsystem {
         );
 
         mClimberExecutor.registerStage("Extend to 25000", 
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    // set climber position to climb position
+                    //mArm.rotateToPosition(90);
+                    setPosition(ClimberTarget.MID.ticks);
+                    return false;
+                }
+            },
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    return isAtPosition(ClimberTarget.MID.ticks);
+                }
+            }, 
+            true
+       );
+
+       mClimberExecutor.registerStage("Extend to 15000", 
         new Callable<Boolean>() {
             public Boolean call(){
                 // set climber position to climb position
-                //mArm.rotateToPosition(90);
+                setPosition(ClimberTarget.MID2.ticks);
+                return false;
+            }
+        },
+        new Callable<Boolean>() {
+            public Boolean call(){
+                return isAtPosition(ClimberTarget.MID2.ticks);
+            }
+        }, 
+        true
+      );
+
+      mClimberExecutor.registerStage("Rotate to 45", 
+        new Callable<Boolean>() {
+            public Boolean call(){
+                // set climber position to climb position
+                mArm.rotateToPosition(45);
+                return false;
+            }
+        },
+        new Callable<Boolean>() {
+            public Boolean call(){
+                return mArm.isAtPosition(45);
+            }
+        }, 
+      true
+     );
+
+     mClimberExecutor.registerStage("Pull Climber to Mid and Retract Arm", 
+        new Callable<Boolean>() {
+            public Boolean call(){
+                // set climber position to climb position
                 setPosition(ClimberTarget.MID.ticks);
+                mArm.retract();
                 return false;
             }
         },
@@ -149,89 +204,25 @@ public class Climber extends Subsystem {
             }
         }, 
         true
-       );
-
-       mClimberExecutor.registerStage("Extend to 15000", 
-       new Callable<Boolean>() {
-           public Boolean call(){
-               // set climber position to climb position
-               //mArm.rotateToPosition(90);
-               setPosition(ClimberTarget.MID2.ticks);
-               return false;
-           }
-       },
-       new Callable<Boolean>() {
-           public Boolean call(){
-               return isAtPosition(ClimberTarget.MID2.ticks);
-           }
-       }, 
-       true
-      );
-
-      mClimberExecutor.registerStage("Rotate to 45", 
-      new Callable<Boolean>() {
-          public Boolean call(){
-              // set climber position to climb position
-              mArm.rotateToPosition(45);
-              return false;
-          }
-      },
-      new Callable<Boolean>() {
-          public Boolean call(){
-              return mArm.isAtPosition(45);
-          }
-      }, 
-      true
-     );
-
-     mClimberExecutor.registerStage("Rotate to 85", 
-     new Callable<Boolean>() {
-         public Boolean call(){
-             // set climber position to climb position
-             setPosition(ClimberTarget.MID.ticks);
-             mArm.retract();
-             return false;
-         }
-     },
-     new Callable<Boolean>() {
-         public Boolean call(){
-             return isAtPosition(ClimberTarget.MID.ticks);
-         }
-     }, 
-     true
     );
 
-    mClimberExecutor.registerStage("Rotate to 85", 
-    new Callable<Boolean>() {
-        public Boolean call(){
-            // set climber position to climb position
-            mArm.rotateToPosition(75);
-            return false;
-        }
-    },
-    new Callable<Boolean>() {
-        public Boolean call(){
-            return mArm.isAtPosition(75);
-        }
-    }, 
-    true
+    mClimberExecutor.registerStage("Rotate to 75", 
+        new Callable<Boolean>() {
+            public Boolean call(){
+                // set climber position to climb position
+                mArm.rotateToPosition(75);
+                return false;
+            }
+        },
+        new Callable<Boolean>() {
+            public Boolean call(){
+                return mArm.isAtPosition(75);
+            }
+        }, 
+        true
    );
 
-   mClimberExecutor.registerStage("Rotate to 85", 
-   new Callable<Boolean>() {
-       public Boolean call(){
-           // set climber position to climb position
-           mArm.rotateToPosition(75);
-           return false;
-       }
-   },
-   new Callable<Boolean>() {
-       public Boolean call(){
-           return mArm.isAtPosition(75);
-       }
-   }, 
-   true
-  );
+
         
     }
 
@@ -247,6 +238,18 @@ public class Climber extends Subsystem {
         // Rumble Controller
         mOperatorInterface.setOperatorRumble(mClimberExecutor.needUserInputToStart());
         SmartDashboard.putBoolean("Climber Needs Manual Input", mClimberExecutor.needUserInputToStart());
+
+        // test manual input - values progated over from test
+        if(testInUpdateLoop){
+            mArm.rotateToPosition(testDegreesPosition);
+            setPosition(testClimbPosition);
+            if(testExtend){
+                mArm.extend();
+            }else{
+                mArm.retract();
+            }
+        }
+        SmartDashboard.putBoolean("Climber Test Loop", testInUpdateLoop);
     }
 
     public synchronized void setPosition(int pos){

@@ -160,6 +160,13 @@ public class StageExecutor {
         mNeedUserInputToStartStage = false;
     }
 
+    public synchronized void resetToStage(int stage){
+        stage -= 1; //convert stage to zero based
+        if(stage >= 0 && stage < mStages.size()){
+            reset();
+        }
+    }
+
     public synchronized void setVerboseMode() { mVerboseMode = true;}
     public synchronized void disableVerboseMode() { mVerboseMode = false;}
 
@@ -173,7 +180,7 @@ public class StageExecutor {
     }
 
     public synchronized boolean isComplete(){
-        return mCurrentStage == mStages.size();
+        return mCurrentStage >= mStages.size();
     }
 
     public synchronized boolean needUserInputToStart(){
