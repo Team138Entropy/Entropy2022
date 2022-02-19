@@ -6,6 +6,8 @@ from sqlite3 import Time
 import cv2
 import numpy as np
 
+vision_directory = 'src/main/java/frc/robot/vision/'
+
 def processSimple(image):
     input_img = image
 
@@ -204,10 +206,7 @@ def processSimple(image):
         last_contour_x = cx
         last_contour_y = cy
 
-        print('writing')
-        newImage = cv2.drawContours(image, [cnt_to_process], -1, (255, 255, 255), 3)
-        print(time.strftime('%Y-%m-%dT%H-%M', time.localtime()) + '-' + str(time.time()))
-        cv2.imwrite('src/main/java/frc/robot/vision/testing_output/simple/' + time.strftime('%Y-%m-%dT%H-%M', time.localtime()) + '-' + str(time.time()) + '.jpg', newImage)
+        return cnt_to_process
 
     except Exception as e:
         print('Exception ', e)
@@ -423,10 +422,18 @@ def processHough(input_img):
 
 print('Local testing starting')
 
-directory = 'src/main/java/frc/robot/vision/Vision Samples'
-filetype = '.png'
-for name in glob.glob(directory + '/*' + filetype):
+sample_directory = 'Vision Samples/'
+output_directory = 'testing_output/'
+file = '*.png'
+for name in glob.glob(vision_directory + sample_directory + file):
     file = cv2.imread(name)
-    processSimple(file)
+
+    #Process via simple mode
+    newImage = cv2.drawContours(file, [processSimple(file)], -1, (255, 255, 255), 10)
+    cv2.imwrite(vision_directory + output_directory + 'simple/' + name + 'processed' + '.png', newImage)
+
+    #cv2.imwrite('src/main/java/frc/robot/vision/testing_output/simple/' + time.strftime('%Y-%m-%dT%H-%M-%S', time.localtime()) + '-' + str(round(time.time() % 1 * 1000)) + '.jpg', newImage)
+    
     #processBlob(file)
+    
     #processHough(file)
