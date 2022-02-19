@@ -289,7 +289,7 @@ public class Robot extends TimedRobot {
       
       if (mOperatorInterface.getClimberTest()){
         System.out.println("Climber: Go to " + Climber.ClimberTarget.LOW.ticks);
-        mClimber.setPosition(Climber.ClimberTarget.LOW.ticks);
+        mClimber.setPosition(50);
       }
       if (mOperatorInterface.getClimberTest2()){
         System.out.println("Climber: Go to " + Climber.ClimberTarget.ABOVE_BAR.ticks);
@@ -335,6 +335,8 @@ public class Robot extends TimedRobot {
     DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
   }
 
+  private ArmTarget lastTarget = ArmTarget.HOME;
+
   private void RobotLoop(){
     // check for change of mode
     checkModeChange();
@@ -345,11 +347,18 @@ public class Robot extends TimedRobot {
 
       ArmTarget target = mOperatorInterface.getArmPos();
 
+      if (target == null) {
+        target = lastTarget;
+      }
+
       if (mGrasper.getBallsStored() < Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         mGrasper.intake();
+        System.out.println(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));
       } else if (mGrasper.getBallsStored() == Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         target = ArmTarget.SCORE_FRONT;
       }
+
+      lastTarget = target;
       
       mArm.rotateToPosition(target.degrees);
       if (target.isExtended) mArm.extend();
@@ -390,7 +399,7 @@ public class Robot extends TimedRobot {
     double driveTurn = mOperatorInterface.getDriveTurn();
 
     // precision steer (slow down throttle if left trigger is held)
-   if(precisionSteer) driveThrottle *= .33;
+   if(precisionSteer) driveThrottle *= .3;
 
     boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
     wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed

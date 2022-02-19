@@ -32,9 +32,9 @@ public class Arm extends Subsystem {
    * All useful arm target positions during a match. 
    */
   public static enum ArmTarget {
-    SCORE_FRONT(120, false),
-    SCORE_BACK(60, false),
-    INTAKE(-10, false),
+    SCORE_FRONT(105, false),
+    SCORE_BACK(65, false),
+    INTAKE(-25, false),
     HOME(90, false);
 
     public double degrees;
@@ -64,8 +64,8 @@ public class Arm extends Subsystem {
     mShoulder.config_kD(0, 0, 10);
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
-    mShoulder.configMotionAcceleration(5);
-    mShoulder.configMotionCruiseVelocity(10, 10); // originally accel 5 veloc 10
+    mShoulder.configMotionAcceleration(10);
+    mShoulder.configMotionCruiseVelocity(15, 10); // originally accel 5 veloc 10
   }
 
   public static Arm getInstance() {

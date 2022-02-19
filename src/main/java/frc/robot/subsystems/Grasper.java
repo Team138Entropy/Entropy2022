@@ -20,7 +20,10 @@ public class Grasper extends Subsystem {
   private int mThresholdExceedCount; // How many consecutive loops the current has exceeded the threshold for
   private int mMinThresholdExceedCount; // How many consecutive loops the current must exceed the threshold
   private int mPulseCounter; // Counts how long its been since the last "pulse" (running the motor)
-  private double mPulseCounterTime; // How long to wait between pulses, measured in robot loops
+  private int mPulseCounterTime; // How long to wait between pulses, measured in robot loops
+  private int mPulseTime;
+  private int mTimeSinceStart;
+  private int mStartWaitTime;
 
   public enum IntakeStatus {
     INTAKE, // Wheels are intaking
@@ -42,22 +45,26 @@ public class Grasper extends Subsystem {
     mThresholdExceedCount = 0;
     mBallsStored = 0;
     mCurrentThreshold = 10;
-    mMinThresholdExceedCount = 5;
+    mMinThresholdExceedCount = 10;
     mThresholdExceedCount = 0;
     mPulseCounter = 0;
-    mPulseCounterTime = 60;
+    mPulseCounterTime = 120;
+    mPulseTime = 10;
+    mTimeSinceStart = 0;
+    mStartWaitTime = 10;
   }
 
   public void update(double current) {
     switch (mIntakeStatus) {
       case INTAKE:
+      mTimeSinceStart++;
         if (mBallsStored >= Constants.Grasper.maxBallsStored) {
           stop();
           mIntakeStatus = IntakeStatus.IDLE;
         }
 
         // If the current exceeds the normal level then we have a ball
-        if (current > mCurrentThreshold) {
+        if (current > mCurrentThreshold && mTimeSinceStart > mStartWaitTime) {
           mThresholdExceedCount++;
         } else {
           mThresholdExceedCount = 0;
@@ -72,6 +79,7 @@ public class Grasper extends Subsystem {
         }
         break;
       case EJECT:
+        mTimeSinceStart = 0;
         if (mBallsStored == 0) {
           stop();
           mIntakeStatus = IntakeStatus.IDLE;
@@ -80,18 +88,19 @@ public class Grasper extends Subsystem {
         mBallsStored = 0;
         break;
       case IDLE:
+        mTimeSinceStart = 0;
 
         // The motor will periodically run to make sure that the ball is secure and hasn't came loose
-        // if (mBallsStored > 0) {
-        //   mPulseCounter++;
-        //   if (mPulseCounter > mPulseCounterTime) {
-        //     mTalon.set(kJogSpeed);
-        //     mPulseCounter = 0;
-        //   }
-        // }
+        if (mBallsStored > 0) {
+          mPulseCounter++;
+          if (mPulseCounter > mPulseCounterTime) {
+            mTalon.set(kJogSpeed);
+            mPulseCounter = 0;
+          }
+        }
 
         // Stop after 5 loops
-        if (mPulseCounter == 5) stop();
+        if (mPulseCounter == mPulseTime) stop();
         break;
       default:
         System.out.println("Grasper has no status!");
@@ -99,7 +108,7 @@ public class Grasper extends Subsystem {
     SmartDashboard.putNumber("Graspercurrent", current);
   }
 
-  public void intake(){
+  public void intake() {
     mTalon.set(kJogSpeed);
     mIntakeStatus = IntakeStatus.INTAKE;
   }

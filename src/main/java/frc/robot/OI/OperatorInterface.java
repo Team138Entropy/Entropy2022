@@ -23,9 +23,6 @@ public class OperatorInterface {
     private LatchedBoolean mClimberTestPress = new LatchedBoolean();
     private LatchedBoolean mOperatorClimbApprovePress = new LatchedBoolean();
 
-    // Arm Target
-    public ArmTarget mCurrentArmTarget = ArmTarget.HOME;
-
     public static synchronized OperatorInterface getInstance() {
         if (mInstance == null) {
             mInstance = new OperatorInterface();
@@ -76,13 +73,13 @@ public class OperatorInterface {
      */
     public ArmTarget getArmPos(){
         if (mOperatorController.getButton(Button.RB)) {
-            mCurrentArmTarget = ArmTarget.SCORE_FRONT;
+            return ArmTarget.SCORE_FRONT;
         } else if (mOperatorController.getButton(Button.LB)) {
-            mCurrentArmTarget = ArmTarget.SCORE_BACK;
+            return ArmTarget.SCORE_BACK;
         } else if (mOperatorController.getTrigger(Side.RIGHT)) {
-            mCurrentArmTarget = ArmTarget.INTAKE;    
+            return ArmTarget.INTAKE;    
         }
-        return mCurrentArmTarget; // Returns the last used arm target if no button is pressed
+        return null; // Return null otherwise
     }
 
     public boolean getArmEject() {
@@ -164,6 +161,4 @@ public class OperatorInterface {
     public boolean getOperatorClimbStageApprovePress() {
         return mOperatorClimbApprovePress.update(mOperatorController.getButton(Button.A));
     }
-
-
 }
