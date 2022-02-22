@@ -91,7 +91,7 @@ if __name__ == "__main__":
     #yelVal = [166,255]
 
     #Creating settings for blur filter
-    radius = 5.5
+    radius = 5.855
     ksize = (2 * round(radius) + 1)
 
     '''
@@ -198,11 +198,15 @@ if __name__ == "__main__":
                 try:
                     blob_x = keypoints[0].pt[0]
                     blob_y = keypoints[0].pt[1]
+                    print('X: %s, Y: %s' % (blob_x, blob_y))
                 except Exception as e:
                     print('Couldnt get x + y of keypoints: ', e)
-                print('X: %s, Y: %s' % (blob_x, blob_y))
-                blobs = cv2.drawKeypoints(mask, keypoints,np.array([]),(0, 0, 255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-                cv2.imwrite('Blobs.jpeg', blobs)
+                
+                try:
+                    blobs = cv2.drawKeypoints(mask, keypoints[0], np.array([]),(0, 0, 255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+                    cv2.imwrite('Blobs.jpeg', blobs)
+                except Exception as e:
+                    print('Couldnt draw keypoints: ', e)
                 print('sleeping')
                 time.sleep(2)
 

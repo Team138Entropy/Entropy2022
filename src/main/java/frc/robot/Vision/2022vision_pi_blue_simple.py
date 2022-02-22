@@ -48,6 +48,7 @@ if __name__ == "__main__":
     #Avoid touching camera server settings
     print('2022 Ball Vision Blue Starting')
 
+    '''
     #Load camera config (eg. Exposure, resolution, FPS)
     with open('/boot/frc.json') as f:
         cameraConfig = json.load(f)
@@ -60,13 +61,26 @@ if __name__ == "__main__":
     #Start camera server, start capturing from the camera and set the pixel format
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
-    cameraConfig['pixel format'] = 'yuyv'
-    cameraConfig['FPS'] = '60'
+    cameraConfig['pixel format'] = 'mjpeg'
+    cameraConfig['FPS'] = '120'
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
     print('Set to 60 now')
+    '''
+    cs = CameraServer.getInstance()
+    cameraSettings = cs.startAutomaticCapture()
 
+
+    with open('/home/pi/settings.json') as f:
+        cameraConfig = json.load(f)
+        #print(cameraConfig)
+        camera = cameraConfig['cameras'][0]
+
+    res_width = camera['width']
+    res_height = camera['height']
+    cameraSettings.setConfigJson(json.dumps(cameraConfig))
     input_stream = cs.getVideo()
     output_stream = cs.putVideo('Processed', res_width, res_height)
+    
     
     SocketThread = SocketWorker(PacketQueue).start()
 
@@ -81,9 +95,9 @@ if __name__ == "__main__":
     '''
 
     #Blue ball
-    blueHue = [85, 109]
-    blueSat = [161, 255]
-    blueVal = [37, 255]  
+    blueHue = [85, 122]
+    blueSat = [119, 255]
+    blueVal = [41, 255]  
 
     #Yellow Ball params
     #yelHue = [18,49]
@@ -91,16 +105,16 @@ if __name__ == "__main__":
     #yelVal = [166,255]
 
     #Creating settings for blur filter
-    radius = 18
+    radius = 2.83
     ksize = (2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
-    cnt_area_low = 4000
+    cnt_area_low = 900
     #cnt_area_high = 7500
-    minimum_perimeter = 70
-    width_minimum = 50
+    minimum_perimeter = 0
+    width_minimum = 20
     width_maximum = 300
-    height_minimum = 30
+    height_minimum = 20
     height_maximum = 300
     solid_Low = 94
     solid_High = 100
@@ -127,30 +141,10 @@ if __name__ == "__main__":
     #Create info for packet
     PacketValue = {}
 
-    params = cv2.SimpleBlobDetector_Params()
-    
-    # Set Area filtering parameters
-    
-    params.filterByArea = True
-    params.minArea = 100
-    
-    # Set Circularity filtering parameters
-    params.filterByCircularity = True
-    params.minCircularity = 0.8
-    
-    # Set Convexity filtering parameters
-    params.filterByConvexity = False
-    params.minConvexity = 0
-        
-    # Set inertia filtering parameters
-    params.filterByInertia = False
-    params.minInertiaRatio = 0.01
-    
     curTime = time.time()
     oldTime = ''
     
     # Create a detector with the parameters
-    detector = cv2.SimpleBlobDetector_create(params)
     blank = np.zeros((1, 1))
 
     print('Blue ball vision setup complete')
@@ -178,6 +172,13 @@ if __name__ == "__main__":
 
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             input_img = cv2.blur(input_img, (ksize, ksize))
+            
+            '''
+            #Attempt to add mask to top half of image
+            input_img[0:res_height/2, 0:res_width, :] = 0
+            print('writing')
+            cv2.imwrite('Masked_input.jpeg', input_img)
+            '''
 
             mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
                                 (blueHue[1], blueSat[1], blueVal[1]))
