@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.Logger.SupportedLevels;
 import frc.robot.util.geometry.*;
 
@@ -193,6 +194,7 @@ public class Constants {
     public static final int maxBallsStored = 1;
     public static final int pwmChannel = 0;
     public static final int powerDistributionNumber = 3;
+    public static final PowerDistribution globelPowerDistribution = new PowerDistribution(0, PowerDistribution.ModuleType.kCTRE);
   }
 
   public static class Climber {

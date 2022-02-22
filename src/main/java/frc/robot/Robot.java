@@ -59,7 +59,6 @@ public class Robot extends TimedRobot {
 
   private boolean inAutoMode = false;
   private boolean inTeleop = false;
-  private PowerDistribution powerPanel = new PowerDistribution(0, PowerDistribution.ModuleType.kCTRE);
   private Accelerometer accelerometer = new BuiltInAccelerometer();
 
   // Mode
@@ -96,16 +95,19 @@ public class Robot extends TimedRobot {
   private void populateAutonomousModes(){
     mAutoModes = new SendableChooser<AutoModeBase>();
     mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
-    mAutoModes.addOption("Test Drive", new TestDriveMode());
+    mAutoModes.addOption("One Ball", new OneBall());
+    mAutoModes.addOption("T3.5_B5", new T35_B5());
+   /* mAutoModes.addOption("Test Drive", new TestDriveMode());
     mAutoModes.addOption("Tarmac1_B2_B3_Tarmac2", new Tarmac1_B2_B3_Tarmac2());
     mAutoModes.addOption("DEMO", new DEMO());
     mAutoModes.addOption("TEST", new TEST());
-    mAutoModes.addOption("One Ball", new OneBall());
     mAutoModes.addOption("T2_B3_B2_T1", new T2_B3_B2_T1());
     mAutoModes.addOption("T2_B3_T2", new T2_B3_T2());
     mAutoModes.addOption("T1_B2_T1_B3_T2", new T1_B2_T1_B3_T2());
     mAutoModes.addOption("T2_Terminal", new T2_terminal());
     mAutoModes.addOption("T4_Terminal", new T4_terminal());
+    */
+
     SmartDashboard.putData(mAutoModes);
   }
 
@@ -130,7 +132,7 @@ public class Robot extends TimedRobot {
   
   //Updates SmartDashboard ;3
   private void updateRobotSmartDashboard() {
-    SmartDashboard.putData("power panel",powerPanel);
+    SmartDashboard.putData("power panel",Constants.Grasper.globelPowerDistribution);
     SmartDashboard.putNumber("accel X", accelerometer.getX());
     SmartDashboard.putNumber("accel Y", accelerometer.getY());
     SmartDashboard.putNumber("accel Z", accelerometer.getZ());
@@ -334,7 +336,7 @@ public class Robot extends TimedRobot {
     } else {
       //mGrasper.stop();
     }
-    mGrasper.update(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));
+    mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
 
     // Run Drive Code! Allow Precision Steer and Auto Aim
     DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
@@ -358,7 +360,7 @@ public class Robot extends TimedRobot {
 
       if (mGrasper.getBallsStored() < Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         mGrasper.intake();
-        System.out.println(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));
+        System.out.println(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
       } else if (mGrasper.getBallsStored() == Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         target = ArmTarget.SCORE_FRONT;
       }
@@ -371,7 +373,7 @@ public class Robot extends TimedRobot {
       
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
       
-      mGrasper.update(powerPanel.getCurrent(Constants.Grasper.powerDistributionNumber));
+      mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
 
       // Drive with Precision Steer and Auto Steer
       DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);

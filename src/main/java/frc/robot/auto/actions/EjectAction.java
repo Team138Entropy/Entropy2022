@@ -18,6 +18,7 @@ public class EjectAction implements Action {
     public void update() {
         mGrasper.eject();
         mLoopCount++;
+        mGrasper.update(0);
     }
 
     @Override

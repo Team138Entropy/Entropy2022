@@ -5,7 +5,7 @@ import java.lang.annotation.Target;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.vision.*;
-
+import edu.wpi.first.wpilibj.PowerDistribution;
 /**
  * Uses Vision System to steer to a ball
  * Runs the auto steer loop until ball is in cargo, or timeed out
@@ -18,7 +18,7 @@ public class AutoSteerAction implements Action {
   private VisionManager mVisionManager = VisionManager.getInstance();
   private Grasper mGrasper = Grasper.getInstance();
   private boolean mComplete;
-  private double mThrottleSpeed = .3;
+  private double mThrottleSpeed = -0.15;
   private boolean mAllowBacktrack;
 
   private enum Mode {
@@ -35,19 +35,21 @@ public class AutoSteerAction implements Action {
 
   @Override
   public void start() {
-
+    mGrasper.intake();
 
   }
 
   @Override
   public void update(){
+    mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
     switch(mCurrentMode){
       case VisionSteering:
         TargetInfo ti = mVisionManager.getSelectedTarget(Constants.Vision.kAllowedSecondsThreshold);
         double errorAngle = 0;
 
         // check if ball is in grasper, or we can't see the ball anymore
-        if(mGrasper.getBallsStored() > 0 || ti == null){
+        if(mGrasper.getBallsStored() > 0){
+          System.out.println("Ball stored is " + mGrasper.getBallsStored());
           // Done - either go backtrack or be done
           if(mAllowBacktrack){
             mCurrentMode = Mode.Backtracking;
@@ -109,5 +111,6 @@ public class AutoSteerAction implements Action {
   public void done() {
     // stop driving
     mDrive.setDrive(0, 0, false);
+    System.out.println("I AM DONE !!!!!!!!!!!!!!!!!!!!!!!");
   }
 }
