@@ -78,9 +78,9 @@ public class OperatorInterface {
             return ArmTarget.SCORE_BACK;
         } else if (mOperatorController.getTrigger(Side.RIGHT)) {
             return ArmTarget.INTAKE;    
-        } else if (mOperatorController.getButton(Button.X)) {
-            return ArmTarget.HOME;
         } else if (mOperatorController.getButton(Button.Y)) {
+            return ArmTarget.HOME;
+        } else if (mOperatorController.getButton(Button.X)) {
             return ArmTarget.FLAT_FRONT;
         } else if (mOperatorController.getButton(Button.B)) {
             return ArmTarget.FLAT_BACK;
