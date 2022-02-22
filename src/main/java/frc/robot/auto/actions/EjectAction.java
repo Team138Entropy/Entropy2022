@@ -7,7 +7,7 @@ public class EjectAction implements Action {
     private final int mMotorRunTime = 20;
     private int mLoopCount;
 
-    private EjectAction() {
+    public EjectAction() {
         mLoopCount = 0;
     }
 
