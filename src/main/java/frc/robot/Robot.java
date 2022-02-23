@@ -367,8 +367,14 @@ public class Robot extends TimedRobot {
 
       lastTarget = target;
       
-      mArm.rotateToPosition(target.degrees);    
-      if (mOperatorInterface.getArmEjectPress()) mArm.requestPunch(); // first press of trigger, starts punch  
+      mArm.rotateToPosition(target.degrees);  
+
+      // verify arm degrees are high enough to ensure not punching into floor
+      double currentArmDegrees = mArm.getRotation();
+      boolean armIsHighEnoughForPunch = ( currentArmDegrees >= 0 && currentArmDegrees <= 180);
+      armIsHighEnoughForPunch &= ( target.degrees >= 0 && target.degrees <= 180); // also ensure not targeting a low degrees
+
+      if (mOperatorInterface.getArmEjectPress() && armIsHighEnoughForPunch ) mArm.requestPunch(); // first press of trigger, starts punch  
       if (mOperatorInterface.getArmEject()) mGrasper.eject(); // on held
 
       mArm.updateExtensionLoop();

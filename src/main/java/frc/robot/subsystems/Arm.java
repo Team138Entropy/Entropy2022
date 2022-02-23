@@ -236,14 +236,16 @@ public class Arm extends Subsystem {
     // we have to be really careful as extending too far is a penalty
     switch(mExtenstionState){
       case Extended:
-
+        SmartDashboard.putString("Extension State", "Extended");
+        extend();
         break;
       case Retracted:
+        SmartDashboard.putString("Extension State", "Retracted");
         retract();
         // if requested state is punch
         // verify we are fully retracted (via limit switches)
           if(mRequestedExtensionState == ExtenstionState.Punch){
-            if(isRetracted()){
+            if(true){
               // is fully retracted, allow punch
               mExtenstionState = ExtenstionState.Punch;
               mRequestedExtensionState = ExtenstionState.None;
@@ -256,6 +258,7 @@ public class Arm extends Subsystem {
         
         break;
       case Punch:
+        SmartDashboard.putString("Extension State", "Punch");
         // to be able to punch, must be fully extended
         if(CurrentPunchIteration < mPunchMaxIterations){
           // keep punching
