@@ -46,6 +46,13 @@ public class Arm extends Subsystem {
     }
   }
 
+  public static enum ExtenstionState {
+      Extended,
+      Retracted,
+      Punch,
+      None
+  }
+
   public Arm() {
     mShoulder = new TalonSRX(Constants.Talons.Arm.shoulder);
     mShoulder.setNeutralMode(NeutralMode.Brake);
@@ -206,6 +213,69 @@ public class Arm extends Subsystem {
     extend(-kForearmExtendSpeed);
   }
 
+  /** Extension Loop 
+   *  This is used to constantly tell the arm what to do
+   *  This won't be used 
+   */
+  /*
+  public static enum ExtenstionState {
+      Extended,
+      Retracted,
+      Punch
+  }
+
+
+  */
+  public ExtenstionState mExtenstionState = ExtenstionState.Retracted;
+  public ExtenstionState mRequestedExtensionState = ExtenstionState.None;
+  public final int mPunchMaxIterations = 5;
+  public int CurrentPunchIteration = 0;
+
+  public void updateExtensionLoop(){
+    // When set into punch mode it moves forward for a number of ticks before then recovering
+    // we have to be really careful as extending too far is a penalty
+    switch(mExtenstionState){
+      case Extended:
+
+        break;
+      case Retracted:
+        retract();
+        // if requested state is punch
+        // verify we are fully retracted (via limit switches)
+          if(mRequestedExtensionState == ExtenstionState.Punch){
+            if(isRetracted()){
+              // is fully retracted, allow punch
+              mExtenstionState = ExtenstionState.Punch;
+              mRequestedExtensionState = ExtenstionState.None;
+              CurrentPunchIteration = 0;
+            }else{
+              // not fully retracted, do not allow punch
+              mRequestedExtensionState = ExtenstionState.None;
+            }
+          }
+        
+        break;
+      case Punch:
+        // to be able to punch, must be fully extended
+        if(CurrentPunchIteration < mPunchMaxIterations){
+          // keep punching
+          extend();
+          CurrentPunchIteration++;
+        }else{
+          CurrentPunchIteration = 0;
+          // done punching, go back to retreact
+          mExtenstionState = ExtenstionState.Retracted;
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  public void requestPunch(){
+    mRequestedExtensionState = ExtenstionState.Punch;
+  }
+
   /**
    * @return shoulder position in degrees
    */
@@ -262,16 +332,7 @@ public class Arm extends Subsystem {
 
   @Override
   public void zeroSensors() {
-    // Sensor is flipped
-    mShoulder.setSelectedSensorPosition(Constants.Arm.shoulderStartPosition);
-    
-    /*
-    if (getRotation() < 0) {
-      mShoulder.setSelectedSensorPosition(Constants.Arm.shoulderStartPosition);
-      mShoulder.setSensorPhase(fa);
-    }
-    */
-    
+    mShoulder.setSelectedSensorPosition(Constants.Arm.shoulderStartPosition);   
    }
 
   @Override

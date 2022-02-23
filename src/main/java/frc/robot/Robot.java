@@ -367,11 +367,11 @@ public class Robot extends TimedRobot {
 
       lastTarget = target;
       
-      mArm.rotateToPosition(target.degrees);
-      if (target.isExtended) mArm.extend();
-      else mArm.retract();
-      
-      if (mOperatorInterface.getArmEject()) mGrasper.eject();
+      mArm.rotateToPosition(target.degrees);    
+      if (mOperatorInterface.getArmEjectPress()) mArm.requestPunch(); // first press of trigger, starts punch  
+      if (mOperatorInterface.getArmEject()) mGrasper.eject(); // on held
+
+      mArm.updateExtensionLoop();
       
       mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
 

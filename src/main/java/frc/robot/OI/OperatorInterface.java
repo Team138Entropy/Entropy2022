@@ -22,6 +22,7 @@ public class OperatorInterface {
     private LatchedBoolean mArmRotateDown = new LatchedBoolean();
     private LatchedBoolean mClimberTestPress = new LatchedBoolean();
     private LatchedBoolean mOperatorClimbApprovePress = new LatchedBoolean();
+    private LatchedBoolean mEjectPress = new LatchedBoolean();
 
     public static synchronized OperatorInterface getInstance() {
         if (mInstance == null) {
@@ -84,6 +85,11 @@ public class OperatorInterface {
 
     public boolean getArmEject() {
         return mOperatorController.getTrigger(Side.LEFT);
+    }
+
+    // determines if eject has been pressed
+    public boolean getArmEjectPress() {
+        return mEjectPress.update(mOperatorController.getTrigger(Side.LEFT));
     }
 
     public boolean getGrasperIntakeManual() {
