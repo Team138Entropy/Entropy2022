@@ -245,7 +245,7 @@ public class Arm extends Subsystem {
         // if requested state is punch
         // verify we are fully retracted (via limit switches)
           if(mRequestedExtensionState == ExtenstionState.Punch){
-            if(true){
+            if(isRetracted()){
               // is fully retracted, allow punch
               mExtenstionState = ExtenstionState.Punch;
               mRequestedExtensionState = ExtenstionState.None;
