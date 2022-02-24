@@ -314,16 +314,7 @@ public class Robot extends TimedRobot {
       mArm.retract();
       mIsForearmJogging = true;
     } else {
-      if (mOperatorInterface.getArmExtend()) {
-        mArm.extend();
-        mIsForearmJogging = false;
-      } else if (mOperatorInterface.getArmRetract()) {
-        mArm.retract();
-        mIsForearmJogging = false;
-      } else if (mIsForearmJogging) {
-        mArm.stopForearm();
-        mIsForearmJogging = false;
-      }
+      mArm.stopForearm();
     }
 
 
