@@ -45,7 +45,7 @@ public class Grasper extends Subsystem {
     mThresholdExceedCount = 0;
     mBallsStored = 0;
     mCurrentThreshold = 10;
-    mMinThresholdExceedCount = 10;
+    mMinThresholdExceedCount = 15;
     mThresholdExceedCount = 0;
     mPulseCounter = 0;
     mPulseCounterTime = 120;

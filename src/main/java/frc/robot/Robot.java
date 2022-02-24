@@ -368,8 +368,10 @@ public class Robot extends TimedRobot {
       lastTarget = target;
       
       mArm.rotateToPosition(target.degrees);
+      /*
       if (target.isExtended) mArm.extend();
       else mArm.retract();
+      */
       
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
       
