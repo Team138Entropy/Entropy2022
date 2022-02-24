@@ -314,16 +314,7 @@ public class Robot extends TimedRobot {
       mArm.retract();
       mIsForearmJogging = true;
     } else {
-      if (mOperatorInterface.getArmExtend()) {
-        mArm.extend();
-        mIsForearmJogging = false;
-      } else if (mOperatorInterface.getArmRetract()) {
-        mArm.retract();
-        mIsForearmJogging = false;
-      } else if (mIsForearmJogging) {
-        mArm.stopForearm();
-        mIsForearmJogging = false;
-      }
+      mArm.stopForearm();
     }
 
 
@@ -426,12 +417,19 @@ public class Robot extends TimedRobot {
     }
     SmartDashboard.putBoolean("Valid Target", validTarget);
     SmartDashboard.putNumber("Target Angle", errorAngle);
-
+    
     if(wantsAutoSteer && validTargetInfo){
       if(ti.isValid()){ //only allow if valud packet
         // autonomously steering robot towards cargo
         SmartDashboard.putNumber("Vision Error Angle", ti.getErrorAngle());
-        mDrive.autoSteer(driveThrottle, -1 * ti.getErrorAngle());
+       // mDrive.autoSteer(driveThrottle, -1 * ti.getErrorAngle());
+
+       double errAngle = ti.getErrorAngle();
+       if(Math.abs(errAngle) < 4){
+        errAngle = 0;
+       }
+       final double driveKP = .005;
+       mDrive.setDrive(driveThrottle, driveKP * errAngle, true);
       }else{
         System.out.println("Invalid Packet!");
       }

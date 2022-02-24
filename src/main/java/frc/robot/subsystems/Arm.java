@@ -16,7 +16,7 @@ public class Arm extends Subsystem {
   // Some constants
   private final double kShoulderJogSpeed = .35;
   private final double kShoulderMaxGravityFF = .075;
-  private final double kForearmExtendSpeed = .8;
+  private final double kForearmExtendSpeed = .5;
 
   // Motors
   private TalonSRX mShoulder;
@@ -35,7 +35,9 @@ public class Arm extends Subsystem {
     SCORE_FRONT(105, false),
     SCORE_BACK(65, false),
     INTAKE(-25, false),
-    HOME(90, false);
+    HOME(90, false),
+    FLAT_FRONT(180, false),
+    FLAT_BACK(0, false);
 
     public double degrees;
     public boolean isExtended;
@@ -287,5 +289,6 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("shoulderOutput", getShoulderOutput());
     SmartDashboard.putNumber("forearmOutput", getForearmOutput());
     SmartDashboard.putNumber("shoulder talon output", mShoulder.getMotorOutputPercent());
+    SmartDashboard.putNumber("Forearm Current", mForearm.getSupplyCurrent());
   }
 }
