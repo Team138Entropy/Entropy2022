@@ -76,7 +76,7 @@ public class TargetInfo {
         Translation2d t = new Translation2d(distance * angle.cos(), distance * angle.sin());
         t.StoreDistance = getDistance();
         angle = td.direction();
-        return angle.getDegrees();
+        return angle.getDegrees()-10;
     }
 
     public void CalculateFields(){
