@@ -4,6 +4,7 @@ import java.lang.annotation.Target;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Arm.ArmTarget;
 import frc.robot.vision.*;
 import edu.wpi.first.wpilibj.PowerDistribution;
 /**
@@ -20,6 +21,7 @@ public class AutoSteerAction implements Action {
   private boolean mComplete;
   private double mThrottleSpeed = -0.15;
   private boolean mAllowBacktrack;
+  private boolean mInitialSet = false;
 
   private enum Mode {
     VisionSteering, 
@@ -35,7 +37,7 @@ public class AutoSteerAction implements Action {
 
   @Override
   public void start() {
-    mGrasper.intake();
+    mArm.rotateToPosition(ArmTarget.HOME.degrees);
 
   }
 
@@ -46,6 +48,18 @@ public class AutoSteerAction implements Action {
       case VisionSteering:
         TargetInfo ti = mVisionManager.getSelectedTarget(Constants.Vision.kAllowedSecondsThreshold);
         double errorAngle = 0;
+        if (ti != null) {
+          System.out.println("valid target!");
+          
+          errorAngle = ti.getErrorAngle();
+        }else{
+          System.out.println("no target");
+        }
+        if (Math.abs(errorAngle) < 5 && mInitialSet == false) {
+          mGrasper.intake();
+          mArm.rotateToPosition(ArmTarget.INTAKE.degrees);
+          mInitialSet = true;
+        }
 
         // check if ball is in grasper, or we can't see the ball anymore
         if(mGrasper.getBallsStored() > 0){
@@ -57,10 +71,12 @@ public class AutoSteerAction implements Action {
             // complete
             mComplete = true;
             mDrive.setDrive(0, 0, false);
+            System.out.println("auto aim complete");
           }
         }else{
           // continue driving
           mDrive.autoSteer(mThrottleSpeed, errorAngle);
+          System.out.println("still driving " + errorAngle);
         }
         break;
       case Backtracking:
