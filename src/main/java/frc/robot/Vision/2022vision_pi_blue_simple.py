@@ -75,8 +75,13 @@ if __name__ == "__main__":
         #print(cameraConfig)
         camera = cameraConfig['cameras'][0]
 
+
     res_width = camera['width']
     res_height = camera['height']
+    cameraConfig['pixel format'] = 'mjpeg'
+    cameraConfig['FPS'] = 120
+    cameraConfig['height'] = 480
+    cameraConfig['width'] = 640
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
     input_stream = cs.getVideo()
     output_stream = cs.putVideo('Processed', res_width, res_height)
@@ -143,6 +148,7 @@ if __name__ == "__main__":
 
     curTime = time.time()
     oldTime = ''
+    printCount = 1
     
     # Create a detector with the parameters
     blank = np.zeros((1, 1))
@@ -151,13 +157,16 @@ if __name__ == "__main__":
 
     while True:
         #Create info for packet
+        
         try:
             current_frame += 1
+            '''
             if current_frame % 60 == 0:
                 oldTime = curTime
                 curTime = time.time()
                 print(curTime - oldTime)
-                
+            '''
+
             PacketValue = {}
             PacketValue['cameraid'] = 0
             PacketValue['ballColor'] = 'blue'
@@ -278,7 +287,12 @@ if __name__ == "__main__":
             cy = int(M["m01"] / M["m00"])
             cx = int(M["m10"] / M["m00"])
 
-            print('X center:', cx, 'Y center:',cy)
+            if printCount % 100 == 0:
+                print('X center:', cx, 'Y center:',cy)
+                printCount = 1
+            
+            else:
+                printCount += 1
 
             PacketValue['BallX'] = cy
             PacketValue['BallY'] = cx

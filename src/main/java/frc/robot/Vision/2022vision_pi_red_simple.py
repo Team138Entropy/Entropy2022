@@ -48,6 +48,7 @@ if __name__ == "__main__":
     #Avoid touching camera server settings
     print('2022 Ball Vision Blue Starting')
 
+    '''
     #Load camera config (eg. Exposure, resolution, FPS)
     with open('/boot/frc.json') as f:
         cameraConfig = json.load(f)
@@ -60,13 +61,34 @@ if __name__ == "__main__":
     #Start camera server, start capturing from the camera and set the pixel format
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
-    cameraConfig['pixel format'] = 'yuyv'
-    cameraConfig['FPS'] = '60'
+    cameraConfig['pixel format'] = 'mjpeg'
+    cameraConfig['FPS'] = '120'
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
     print('Set to 60 now')
+    '''
+    cs = CameraServer.getInstance()
+    cameraSettings = cs.startAutomaticCapture()
 
+
+    with open('/home/pi/settings.json') as f:
+        cameraConfig = json.load(f)
+        #print(cameraConfig)
+        camera = cameraConfig['cameras'][0]
+
+
+    res_width = camera['width']
+    res_height = camera['height']
+    cameraConfig['pixel format'] = 'mjpeg'
+    cameraConfig['FPS'] = 120
+    cameraConfig['height'] = 480
+    cameraConfig['width'] = 640 
+    
+    #cameraConfig['properties']['contrast'] = 20
+    
+    cameraSettings.setConfigJson(json.dumps(cameraConfig))
     input_stream = cs.getVideo()
     output_stream = cs.putVideo('Processed', res_width, res_height)
+    
     
     SocketThread = SocketWorker(PacketQueue).start()
 
@@ -74,33 +96,28 @@ if __name__ == "__main__":
     imgForm = np.zeros(shape=(res_height, res_width, 3), dtype=np.uint8)
 
     #Red Ball
-    redHue = [0, 17]
-    redSat = [161, 255]
-    redVal = [37, 255] 
+    redHue = [149, 180]
+    redSat = [85, 255]
+    redVal = [58, 255]  
 
     #Blue ball
     '''
-    blueHue = [85, 109]
-    blueSat = [161, 255]
-    blueVal = [37, 255]  
+    blueHue = [85, 122]
+    blueSat = [119, 255]
+    blueVal = [41, 255]  
     '''
 
-    #Yellow Ball params
-    #yelHue = [18,49]
-    #yelSat = [52,255]
-    #yelVal = [166,255]
-
     #Creating settings for blur filter
-    radius = 18
+    radius = 10
     ksize = (2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
-    cnt_area_low = 4000
+    cnt_area_low = 900
     #cnt_area_high = 7500
-    minimum_perimeter = 70
-    width_minimum = 50
+    minimum_perimeter = 0
+    width_minimum = 20
     width_maximum = 300
-    height_minimum = 30
+    height_minimum = 20
     height_maximum = 300
     solid_Low = 94
     solid_High = 100
@@ -127,46 +144,30 @@ if __name__ == "__main__":
     #Create info for packet
     PacketValue = {}
 
-    params = cv2.SimpleBlobDetector_Params()
-    
-    # Set Area filtering parameters
-    
-    params.filterByArea = True
-    params.minArea = 100
-    
-    # Set Circularity filtering parameters
-    params.filterByCircularity = True
-    params.minCircularity = 0.8
-    
-    # Set Convexity filtering parameters
-    params.filterByConvexity = False
-    params.minConvexity = 0
-        
-    # Set inertia filtering parameters
-    params.filterByInertia = False
-    params.minInertiaRatio = 0.01
-    
     curTime = time.time()
     oldTime = ''
+    printCount = 1
     
     # Create a detector with the parameters
-    detector = cv2.SimpleBlobDetector_create(params)
     blank = np.zeros((1, 1))
 
-    print('Blue ball vision setup complete')
+    print('Red ball vision setup complete')
 
     while True:
         #Create info for packet
+        
         try:
             current_frame += 1
+            '''
             if current_frame % 60 == 0:
                 oldTime = curTime
                 curTime = time.time()
                 print(curTime - oldTime)
-                
+            '''
+
             PacketValue = {}
             PacketValue['cameraid'] = 0
-            PacketValue['ballColor'] = 'blue'
+            PacketValue['ballColor'] = 'red'
             
             #start_time = time.time() #Use this to get FPS below
             frame_time, input_img = input_stream.grabFrame(imgForm)
@@ -178,9 +179,16 @@ if __name__ == "__main__":
 
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             input_img = cv2.blur(input_img, (ksize, ksize))
+            
+            '''
+            #Attempt to add mask to top half of image
+            input_img[0:res_height/2, 0:res_width, :] = 0
+            print('writing')
+            cv2.imwrite('Masked_input.jpeg', input_img)
+            '''
 
-            mask = cv2.inRange(input_img, (redHue[0], redSat[0], redVal[0]),
-                                (redHue[1], redSat[1], redVal[1]))
+            mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
+                                (blueHue[1], blueSat[1], blueVal[1]))
 
             inverted_img = cv2.bitwise_not(mask)    
             # Detect blobs
@@ -277,7 +285,12 @@ if __name__ == "__main__":
             cy = int(M["m01"] / M["m00"])
             cx = int(M["m10"] / M["m00"])
 
-            print('X center:', cx, 'Y center:',cy)
+            if printCount % 100 == 0:
+                print('X center:', cx, 'Y center:',cy)
+                printCount = 1
+            
+            else:
+                printCount += 1
 
             PacketValue['BallX'] = cy
             PacketValue['BallY'] = cx
