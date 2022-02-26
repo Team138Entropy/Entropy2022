@@ -1,7 +1,10 @@
 import json
+import logging
 import math
+#from msilib.schema import tables
 import queue
 import socket
+import sys
 import threading
 import time
 from sqlite3 import Time
@@ -9,6 +12,8 @@ from sqlite3 import Time
 import cv2
 import numpy as np
 from cscore import CameraServer
+from networktables import NetworkTables
+from networktables import NetworkTablesInstance
 
 #Below link has a barebones version, useful for getting the camera server stuff
 #https://docs.wpilib.org/en/stable/docs/software/vision-processing/wpilibpi/basic-vision-example.html
@@ -44,37 +49,50 @@ class SocketWorker(threading.Thread):
             except Exception as e1:
                 pass
 
+
+def connectionListener(connected, info):
+    print(info, '; Connected=%s' % connected)
+    with cond:
+        notified[0] = True
+        cond.notify()
+
 if __name__ == "__main__":
     #Avoid touching camera server settings
+
     print('2022 Ball Vision Blue Starting')
-
-    '''
-    #Load camera config (eg. Exposure, resolution, FPS)
-    with open('/boot/frc.json') as f:
-        cameraConfig = json.load(f)
-        #print(cameraConfig)
-        camera = cameraConfig['cameras'][0]
-
-    res_width = camera['width']
-    res_height = camera['height']
-    
-    #Start camera server, start capturing from the camera and set the pixel format
-    cs = CameraServer.getInstance()
-    cameraSettings = cs.startAutomaticCapture()
-    cameraConfig['pixel format'] = 'mjpeg'
-    cameraConfig['FPS'] = '120'
-    cameraSettings.setConfigJson(json.dumps(cameraConfig))
-    print('Set to 60 now')
-    '''
-    cs = CameraServer.getInstance()
-    cameraSettings = cs.startAutomaticCapture()
-
 
     with open('/home/pi/settings.json') as f:
         cameraConfig = json.load(f)
         #print(cameraConfig)
         camera = cameraConfig['cameras'][0]
 
+    server = False
+    team = 138
+    team_Server = '10.1.38.2'
+    cond = threading.Condition()
+    notified = [False]
+
+    NetworkTables.initialize(server=team_Server)
+    ntinst = NetworkTablesInstance.getDefault()
+    NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
+
+    with cond:
+        print("Waiting")
+        if not notified[0]:
+            cond.wait()
+
+
+    table = NetworkTables.getTable('SmartDashboard')
+
+    foo = table.getBoolean('foo', True)
+
+    print(foo)
+
+    cs = CameraServer.getInstance()
+    cameraSettings = cs.startAutomaticCapture()
+
+
+    print(cameraConfig)
 
     res_width = camera['width']
     res_height = camera['height']
@@ -82,6 +100,7 @@ if __name__ == "__main__":
     cameraConfig['FPS'] = 120
     cameraConfig['height'] = 480
     cameraConfig['width'] = 640
+    cameraConfig['properties'][6]['value'] = 50
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
     input_stream = cs.getVideo()
     output_stream = cs.putVideo('Processed', res_width, res_height)
