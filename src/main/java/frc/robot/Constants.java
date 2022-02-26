@@ -69,10 +69,11 @@ public class Constants {
   }
 
   public static class Vision {
+    /*
     public static final String FMS = "FMS";
     public static final String BlueBall = "blueBall";
     public static final String RedBall = "redBall";
-
+    */
     public static final double diagonalView = Math.toRadians(75);
     public static final double horizontalAspect = 4;
     public static final double verticalAspect = 3;

@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
 
-  private static SendableChooser<String> mBallColorSelctor;
+  private static SendableChooser<Integer> mBallColorSelctor;
 
   // Booleans for Test Modes
   private boolean mTest_ArmJogging = true;
@@ -72,6 +72,8 @@ public class Robot extends TimedRobot {
 
   //boolean for color of ball selected, red is true and blue is false
   public Boolean selectedColor = false;
+
+  public int ballColor = 0;
 
   
   
@@ -124,10 +126,10 @@ public class Robot extends TimedRobot {
     */
 
     SmartDashboard.putData(mAutoModes);
-    mBallColorSelctor = new SendableChooser<String>();
-    mBallColorSelctor.setDefaultOption("FMS", Constants.Vision.FMS);
-    mBallColorSelctor.addOption("Blue Ball", Constants.Vision.BlueBall);
-    mBallColorSelctor.addOption("Red Ball", Constants.Vision.RedBall);
+    mBallColorSelctor = new SendableChooser<Integer>();
+    mBallColorSelctor.setDefaultOption("Blue Ball", 1);
+    mBallColorSelctor.addOption("FMS" , 0);
+    mBallColorSelctor.addOption("Red Ball", 2);
     SmartDashboard.putData(mBallColorSelctor);
   }
 
@@ -150,10 +152,10 @@ public class Robot extends TimedRobot {
     updateRobotSmartDashboard();
     NetworkTable table = inst.getTable("datatable");
     ballColorEntry = table.getEntry("selectedColor");
-    if (getBallColor() == Constants.TargetType.CAMERA_1_BLUE_CARGO) {
+    if (getBallColor() == false) {
       selectedColor = false;
     }
-    if (getBallColor() == Constants.TargetType.CAMERA_1_RED_CARGO) {
+    if (getBallColor() == true) {
       selectedColor = true;
     } 
     ballColorEntry.setBoolean(selectedColor);
@@ -503,21 +505,40 @@ public class Robot extends TimedRobot {
       }
     }
   }
+  /*
   public static TargetType getBallColor() {
-    if (mBallColorSelctor.getSelected() == Constants.Vision.BlueBall) {
+    if (mBallColorSelctor.getSelected() == 1) {
       return Constants.TargetType.CAMERA_1_BLUE_CARGO;
     }
-    if (mBallColorSelctor.getSelected() == Constants.Vision.RedBall) {
+    if (mBallColorSelctor.getSelected() == 2) {
       return Constants.TargetType.CAMERA_1_RED_CARGO;
     }
-    if (mBallColorSelctor.getSelected() == Constants.Vision.FMS && DriverStation.getAlliance() == Alliance.Blue) {
+    if (mBallColorSelctor.getSelected() == 0 && DriverStation.getAlliance() == Alliance.Blue) {
       return Constants.TargetType.CAMERA_1_BLUE_CARGO;
     }
-    if (mBallColorSelctor.getSelected() == Constants.Vision.FMS && DriverStation.getAlliance() == Alliance.Red) {
+    if (mBallColorSelctor.getSelected() == 0 && DriverStation.getAlliance() == Alliance.Red) {
       return Constants.TargetType.CAMERA_1_RED_CARGO;
     }
     else {
       return Constants.TargetType.CAMERA_1_BLUE_CARGO;
+    }
+  }
+  */
+  public static boolean getBallColor() {
+    if (mBallColorSelctor.getSelected() == 1) {
+      return false;
+    }
+    if (mBallColorSelctor.getSelected() == 2) {
+      return true;
+    }
+    if (mBallColorSelctor.getSelected() == 0 && DriverStation.getAlliance() == Alliance.Blue) {
+      return false;
+    }
+    if (mBallColorSelctor.getSelected() == 0 && DriverStation.getAlliance() == Alliance.Red) {
+      return true;
+    }
+    else {
+      return false;
     }
   }
 

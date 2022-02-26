@@ -25,8 +25,9 @@ public class VisionManager {
     private ConcurrentHashMap<Constants.TargetType, TargetInfo> mTargetData;
 
     // Current Selected Target
-    //private Constants.TargetType mSelectedTarget = Constants.TargetType.CAMERA_1_BLUE_CARGO;
-    private Constants.TargetType mSelectedTarget = Robot.getBallColor();
+    private Constants.TargetType mSelectedTarget = Constants.TargetType.CAMERA_1_BLUE_CARGO;
+    //private Constants.TargetType mSelectedTarget = Robot.getBallColor();
+    
 
 
     private static VisionManager mInstance;
@@ -180,6 +181,12 @@ public class VisionManager {
 
     // set selected target
     public void setSelectedTarget(Constants.TargetType ttype){
+      if (Robot.getBallColor() == false) {
+      mSelectedTarget = Constants.TargetType.CAMERA_1_BLUE_CARGO;
+      }
+      if (Robot.getBallColor() == true) {
+      mSelectedTarget = Constants.TargetType.CAMERA_1_RED_CARGO;
+      }
       mSelectedTarget = ttype;
     }
 
