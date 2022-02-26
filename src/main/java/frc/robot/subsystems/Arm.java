@@ -16,7 +16,7 @@ public class Arm extends Subsystem {
   // Some constants
   private final double kShoulderJogSpeed = .35;
   private final double kShoulderMaxGravityFF = .075;
-  private final double kForearmExtendSpeed = .5;
+  private final double kForearmExtendSpeed = .85;
 
   // Motors
   private TalonSRX mShoulder;
