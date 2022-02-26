@@ -70,9 +70,11 @@ public class StageExecutor {
     private boolean mStartBlessed;
     private Vector<Stage> mStages;
     private Timer mTimer;
+    private Timer mCurrentStageTimer;
 
     public StageExecutor(){
         mTimer = null;
+        mCurrentStageTimer = null;
         mCurrentStage = 0;
         mCurrentStageLoopCount = 0;
         mVerboseMode = false;
@@ -141,6 +143,12 @@ public class StageExecutor {
                     }
                 }
 
+                // create stage executing climber and start (if not done prior)
+                if(mCurrentStageTimer == null){
+                    mCurrentStageTimer = new Timer();
+                    mCurrentStageTimer.start();
+                }
+
                 // Executing Stage
                 currentStage.mStageWorkerFunction.call();
             }catch(Exception e){
@@ -169,6 +177,7 @@ public class StageExecutor {
                         mNeedUserInputToStartStage = false;
                         mTimer.stop();
                         mTimer = null;
+                        mCurrentStageTimer = null;
                     }
                 }
             }catch(Exception e){
@@ -190,6 +199,7 @@ public class StageExecutor {
         mStartBlessed = false;
         mNeedUserInputToStartStage = false;
         mTimer = null;
+        mCurrentStageTimer = null;
     }
 
     public synchronized void resetToStage(int stage){
@@ -217,5 +227,13 @@ public class StageExecutor {
 
     public synchronized boolean needUserInputToStart(){
         return mNeedUserInputToStartStage;
+    }
+
+    /**
+     * 
+     * @return Current Stage Execution Time in Seconds
+     */
+    public synchronized double getCurrentStageExecutionTime(){
+        return mCurrentStageTimer == null ? 0 : mCurrentStageTimer.get();
     }
 }

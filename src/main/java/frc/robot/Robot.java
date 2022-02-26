@@ -421,17 +421,8 @@ public class Robot extends TimedRobot {
     if(wantsAutoSteer && validTargetInfo){
       if(ti.isValid()){ //only allow if valud packet
         // autonomously steering robot towards cargo
-      
-       mDrive.autoSteer(driveThrottle*.4, ti.getErrorAngle());
-        /*
-       double errAngle = ti.getErrorAngle();
-       if(Math.abs(errAngle) < 4){
-        errAngle = 0;
-       }
-       final double driveKP = .04;
-       SmartDashboard.putNumber("calculated wheel", driveKP * errAngle);
-       mDrive.setDrive(driveThrottle, driveKP * errAngle, true); 
-       */
+        // todo: only allow drive in a certain direction? 
+       mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
       }else{
         System.out.println("Invalid Packet!");
       }
@@ -463,8 +454,10 @@ public class Robot extends TimedRobot {
           mCurrentMode = RobotMode.Climber;
         break;
         case Climber:
-          // going from climber to cargo scorer
+          // going from climber to cargo scorer 
+          // ideally this is never called!
           mGrasper.stop();
+          mClimber.setPosition(0);
 
           mCurrentMode = RobotMode.CargoScorer;
         break;
