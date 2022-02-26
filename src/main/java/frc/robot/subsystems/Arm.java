@@ -37,7 +37,8 @@ public class Arm extends Subsystem {
     INTAKE(-25, false),
     HOME(90, false),
     FLAT_FRONT(180, false),
-    FLAT_BACK(0, false);
+    FLAT_BACK(0, false),
+    CLIMB_START(140, false);
 
     public double degrees;
     public boolean isExtended;

@@ -453,6 +453,7 @@ public class Robot extends TimedRobot {
       switch(mCurrentMode){
         case CargoScorer:
           // going from cargo scorer to climber
+          mArm.rotateToPosition(Arm.ArmTarget.CLIMB_START.degrees);
           mGrasper.stop();
 
           // reset climber 
