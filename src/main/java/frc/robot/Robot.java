@@ -171,6 +171,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("isTipping", robotTippingCheck());
     SmartDashboard.putNumber("drive throttle", mOperatorInterface.getDriveThrottle());
     SmartDashboard.putNumber("drive turn", mOperatorInterface.getDriveTurn());
+    SmartDashboard.putBoolean("ball color", getBallColor());
     
     mSubsystemManager.updateSmartdashboard();
   }
