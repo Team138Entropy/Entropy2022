@@ -5,8 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.TargetType;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Arm.ArmTarget;
@@ -21,7 +23,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 
 /**
@@ -31,7 +37,8 @@ import edu.wpi.first.wpilibj.PowerDistribution;
  * project.
  */
 public class Robot extends TimedRobot {  
-
+  NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  NetworkTableEntry ballColorEntry;
   // Controllers Reference
   private final OperatorInterface mOperatorInterface = OperatorInterface.getInstance();
 
@@ -53,6 +60,8 @@ public class Robot extends TimedRobot {
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
 
+  private static SendableChooser<String> mBallColorSelctor;
+
   // Booleans for Test Modes
   private boolean mTest_ArmJogging = true;
   private boolean mTest_ClimberJogging = true;
@@ -60,6 +69,12 @@ public class Robot extends TimedRobot {
   private boolean inAutoMode = false;
   private boolean inTeleop = false;
   private Accelerometer accelerometer = new BuiltInAccelerometer();
+
+  //boolean for color of ball selected, red is true and blue is false
+  public Boolean selectedColor = false;
+
+  
+  
 
   // Mode
   public enum RobotMode {
@@ -109,6 +124,11 @@ public class Robot extends TimedRobot {
     */
 
     SmartDashboard.putData(mAutoModes);
+    mBallColorSelctor = new SendableChooser<String>();
+    mBallColorSelctor.setDefaultOption("FMS", Constants.Vision.FMS);
+    mBallColorSelctor.addOption("Blue Ball", Constants.Vision.BlueBall);
+    mBallColorSelctor.addOption("Red Ball", Constants.Vision.RedBall);
+    SmartDashboard.putData(mBallColorSelctor);
   }
 
   private boolean robotTippingCheck(){
@@ -128,6 +148,15 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     updateRobotSmartDashboard();
+    NetworkTable table = inst.getTable("datatable");
+    ballColorEntry = table.getEntry("selectedColor");
+    if (getBallColor() == Constants.TargetType.CAMERA_1_BLUE_CARGO) {
+      selectedColor = false;
+    }
+    if (getBallColor() == Constants.TargetType.CAMERA_1_RED_CARGO) {
+      selectedColor = true;
+    } 
+    ballColorEntry.setBoolean(selectedColor);
   }
   
   //Updates SmartDashboard ;3
@@ -140,8 +169,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("isTipping", robotTippingCheck());
     SmartDashboard.putNumber("drive throttle", mOperatorInterface.getDriveThrottle());
     SmartDashboard.putNumber("drive turn", mOperatorInterface.getDriveTurn());
+    
     mSubsystemManager.updateSmartdashboard();
   }
+
 
 
   /** Called at the Start of Autonomous **/
@@ -470,6 +501,23 @@ public class Robot extends TimedRobot {
         default:
         break;
       }
+    }
+  }
+  public static TargetType getBallColor() {
+    if (mBallColorSelctor.getSelected() == Constants.Vision.BlueBall) {
+      return Constants.TargetType.CAMERA_1_BLUE_CARGO;
+    }
+    if (mBallColorSelctor.getSelected() == Constants.Vision.RedBall) {
+      return Constants.TargetType.CAMERA_1_RED_CARGO;
+    }
+    if (mBallColorSelctor.getSelected() == Constants.Vision.FMS && DriverStation.getAlliance() == Alliance.Blue) {
+      return Constants.TargetType.CAMERA_1_BLUE_CARGO;
+    }
+    if (mBallColorSelctor.getSelected() == Constants.Vision.FMS && DriverStation.getAlliance() == Alliance.Red) {
+      return Constants.TargetType.CAMERA_1_RED_CARGO;
+    }
+    else {
+      return Constants.TargetType.CAMERA_1_BLUE_CARGO;
     }
   }
 
