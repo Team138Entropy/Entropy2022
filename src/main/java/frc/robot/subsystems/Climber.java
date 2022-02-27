@@ -146,7 +146,7 @@ public class Climber extends Subsystem {
             true
         );
 
-        mClimberExecutor.registerStage("Extend to 25000", 
+        mClimberExecutor.registerStage("Get off mid bar", 
             new Callable<Boolean>() {
                 public Boolean call(){
                     // set climber position to climb position
@@ -160,25 +160,8 @@ public class Climber extends Subsystem {
                     return isAtPosition(ClimberTarget.MID.ticks);
                 }
             }, 
-            true
+            true,3
        );
-
-       mClimberExecutor.registerStage("Extend to 15000", 
-        new Callable<Boolean>() {
-            public Boolean call(){
-                // set climber position to climb position
-                setPosition(ClimberTarget.MID2.ticks);
-                return false;
-            }
-        },
-        new Callable<Boolean>() {
-            public Boolean call(){
-                return isAtPosition(ClimberTarget.MID2.ticks);
-            }
-        }, 
-        true
-      );
-
       mClimberExecutor.registerStage("Rotate to 45", 
         new Callable<Boolean>() {
             public Boolean call(){
@@ -192,7 +175,7 @@ public class Climber extends Subsystem {
                 return mArm.isAtPosition(45);
             }
         }, 
-      true
+      false,2
      );
 
      mClimberExecutor.registerStage("Pull Climber to Mid and Retract Arm", 
@@ -206,10 +189,10 @@ public class Climber extends Subsystem {
         },
         new Callable<Boolean>() {
             public Boolean call(){
-                return isAtPosition(ClimberTarget.MID.ticks);
+                return isAtPosition(ClimberTarget.MID.ticks) && mArm.isRetracted();
             }
         }, 
-        true
+        false
     );
 
     mClimberExecutor.registerStage("Rotate to 75", 
@@ -227,7 +210,7 @@ public class Climber extends Subsystem {
                 return true;
             }
         }, 
-        true
+        false,1
    );
    mClimberExecutor.registerStage("Extend arm out", 
         new Callable<Boolean>() {
@@ -242,7 +225,7 @@ public class Climber extends Subsystem {
                 return mArm.isExtended();
             }
         }, 
-        true
+        false,1
    );
    mClimberExecutor.registerStage("Retract arm", 
         new Callable<Boolean>() {
@@ -258,7 +241,7 @@ public class Climber extends Subsystem {
                 return mArm.isRetracted();
             }
         }, 
-        true
+        false
    );
    mClimberExecutor.registerStage("Rotate to 95", 
         new Callable<Boolean>() {
@@ -272,7 +255,7 @@ public class Climber extends Subsystem {
                 return mArm.isAtPosition(97);
             }
         }, 
-        true
+        false,1
    );
    mClimberExecutor.registerStage("Extend arm + goto 50", 
         new Callable<Boolean>() {
@@ -287,7 +270,7 @@ public class Climber extends Subsystem {
                 return mArm.isExtended() && isAtPosition(ClimberTarget.LOW.ticks);
             }
         }, 
-        true
+        false
 
    );
     // Pull Climber Arms Down - Requires Operator Blessing
@@ -321,7 +304,7 @@ public class Climber extends Subsystem {
             return isAtPosition(ClimberTarget.MID.ticks);
         }
     }, 
-    true
+    true,4
     );
     mClimberExecutor.registerStage("Extend to 25000", 
     new Callable<Boolean>() {
@@ -338,7 +321,7 @@ public class Climber extends Subsystem {
             return isAtPosition(ClimberTarget.LOW.ticks);
         }
     }, 
-    true
+    false
     );
 
         
