@@ -19,7 +19,7 @@ public class AutoSteerAction implements Action {
   private VisionManager mVisionManager = VisionManager.getInstance();
   private Grasper mGrasper = Grasper.getInstance();
   private boolean mComplete;
-  private double mThrottleSpeed = -0.15;
+  private double mThrottleSpeed = -.19;
   private boolean mAllowBacktrack;
   private boolean mInitialSet = false;
 
@@ -55,10 +55,11 @@ public class AutoSteerAction implements Action {
         }else{
           System.out.println("no target");
         }
-        if (Math.abs(errorAngle) < 5 && mInitialSet == false) {
+        if (Math.abs(errorAngle) < 3 && mInitialSet == false) {
           mGrasper.intake();
           mArm.rotateToPosition(ArmTarget.INTAKE.degrees);
           mInitialSet = true;
+          errorAngle = 0;
         }
 
         // check if ball is in grasper, or we can't see the ball anymore

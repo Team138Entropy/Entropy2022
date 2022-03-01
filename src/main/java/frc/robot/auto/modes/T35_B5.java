@@ -29,6 +29,7 @@ public class T35_B5 extends AutoModeBase {
         driveActionList.add(new AutoSteerAction(false));
         driveActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
         driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5()));
+        driveActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
         driveActionList.add(new EjectAction());
     }
 

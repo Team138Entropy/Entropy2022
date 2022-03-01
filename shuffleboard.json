@@ -17,7 +17,7 @@
             ],
             "content": {
               "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/SendableChooser[3]",
+              "_source0": "network_table:///SmartDashboard/SendableChooser[0]",
               "_title": "Auto Mode"
             }
           },
@@ -274,6 +274,138 @@
               "_title": "Ball found",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Vision debug",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "3,1": {
+            "size": [
+              5,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Valid Target",
+              "_title": "SmartDashboard/Valid Target",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "8,1": {
+            "size": [
+              5,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Target Angle",
+              "_title": "SmartDashboard/Target Angle"
+            }
+          },
+          "3,2": {
+            "size": [
+              5,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Autosteer",
+              "_title": "SmartDashboard/Autosteer",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "3,3": {
+            "size": [
+              10,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Target Angle",
+              "_title": "SmartDashboard/Target Angle",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/Target Angle": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "grasper debug",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "3,1": {
+            "size": [
+              6,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Grasper Percent Output",
+              "_title": "SmartDashboard/Grasper Percent Output"
+            }
+          },
+          "3,3": {
+            "size": [
+              10,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Graspercurrent",
+              "_title": "SmartDashboard/Graspercurrent",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/Graspercurrent": true
+            }
+          },
+          "3,2": {
+            "size": [
+              6,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Exceed Count",
+              "_title": "SmartDashboard/Exceed Count"
+            }
+          },
+          "9,1": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Graspercurrent",
+              "_title": "SmartDashboard/Graspercurrent"
             }
           }
         }

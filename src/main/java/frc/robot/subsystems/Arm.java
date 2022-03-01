@@ -34,7 +34,7 @@ public class Arm extends Subsystem {
   public static enum ArmTarget {
     SCORE_FRONT(105, false),
     SCORE_BACK(65, false),
-    INTAKE(-25, false),
+    INTAKE(-30, false),
     HOME(90, false),
     FLAT_FRONT(180, false),
     FLAT_BACK(0, false),
@@ -67,8 +67,8 @@ public class Arm extends Subsystem {
     mShoulder.config_kD(0, 0, 10);
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
-    mShoulder.configMotionAcceleration(10);
-    mShoulder.configMotionCruiseVelocity(15, 10); // originally accel 5 veloc 10
+    mShoulder.configMotionAcceleration(20);
+    mShoulder.configMotionCruiseVelocity(26, 10); // originally accel 5 veloc 10
   }
 
   public static Arm getInstance() {

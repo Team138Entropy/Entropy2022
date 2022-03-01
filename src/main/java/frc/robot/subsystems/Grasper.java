@@ -45,7 +45,7 @@ public class Grasper extends Subsystem {
     mThresholdExceedCount = 0;
     mBallsStored = 0;
     mCurrentThreshold = 10;
-    mMinThresholdExceedCount = 15;
+    mMinThresholdExceedCount = 12;
     mThresholdExceedCount = 0;
     mPulseCounter = 0;
     mPulseCounterTime = 120;
@@ -159,5 +159,6 @@ public class Grasper extends Subsystem {
       SmartDashboard.putString("intakeStatus", getIntakeStatus().toString());
     }
     SmartDashboard.putNumber("Grasper Percent Output", mTalon.get());
+    SmartDashboard.putNumber("Exceed Count", mThresholdExceedCount);
   }
 }
