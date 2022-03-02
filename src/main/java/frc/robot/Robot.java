@@ -353,7 +353,7 @@ public class Robot extends TimedRobot {
         mGrasper.intake();
         System.out.println(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
       } else if (mGrasper.getBallsStored() == Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
-        target = ArmTarget.SCORE_FRONT;
+        target = ArmTarget.SCORE_BACK;
       }
 
       lastTarget = target;

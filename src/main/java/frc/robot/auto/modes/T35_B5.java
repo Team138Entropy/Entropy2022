@@ -20,6 +20,7 @@ public class T35_B5 extends AutoModeBase {
 
     public T35_B5(){
         // add multiple actions to drive trajectorys, these will run one after another
+        /*
         driveActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
         //driveActionList.add(new WaitAction(.3));
         driveActionList.add(new EjectAction());
@@ -30,6 +31,11 @@ public class T35_B5 extends AutoModeBase {
         driveActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
         driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5()));
         driveActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
+        driveActionList.add(new EjectAction());
+        */
+        driveActionList.add(new AutoTurnAction());
+        driveActionList.add(new DriveUntilPickupAction());
+        driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5()));
         driveActionList.add(new EjectAction());
     }
 

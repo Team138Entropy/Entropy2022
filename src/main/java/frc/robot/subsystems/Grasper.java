@@ -45,7 +45,7 @@ public class Grasper extends Subsystem {
     mThresholdExceedCount = 0;
     mBallsStored = 0;
     mCurrentThreshold = 10;
-    mMinThresholdExceedCount = 12;
+    mMinThresholdExceedCount = 6;
     mThresholdExceedCount = 0;
     mPulseCounter = 0;
     mPulseCounterTime = 120;
@@ -66,7 +66,7 @@ public class Grasper extends Subsystem {
         // If the current exceeds the normal level then we have a ball
         if (current > mCurrentThreshold && mTimeSinceStart > mStartWaitTime) {
           mThresholdExceedCount++;
-        } else {
+        } else if (mTimeSinceStart <= mStartWaitTime) {
           mThresholdExceedCount = 0;
         }
 
@@ -79,6 +79,7 @@ public class Grasper extends Subsystem {
         }
         break;
       case EJECT:
+        mThresholdExceedCount = 0;
         mTimeSinceStart = 0;
         if (mBallsStored == 0) {
           stop();
@@ -88,6 +89,7 @@ public class Grasper extends Subsystem {
         mBallsStored = 0;
         break;
       case IDLE:
+        mThresholdExceedCount = 0;
         mTimeSinceStart = 0;
 
         // The motor will periodically run to make sure that the ball is secure and hasn't came loose

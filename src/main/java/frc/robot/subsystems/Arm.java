@@ -34,7 +34,7 @@ public class Arm extends Subsystem {
   public static enum ArmTarget {
     SCORE_FRONT(105, false),
     SCORE_BACK(65, false),
-    INTAKE(-30, false),
+    INTAKE(-32, false),
     HOME(90, false),
     FLAT_FRONT(180, false),
     FLAT_BACK(0, false),

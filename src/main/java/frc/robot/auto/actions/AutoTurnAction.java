@@ -29,10 +29,14 @@ public class AutoTurnAction implements Action {
     if(ti != null && ti.isValid()){
         // has valid error
         errorAngle = ti.getErrorAngle();
+        System.out.println("error angle "+ errorAngle);
     }
     // turn in place to errorAngle
     mDrive.autoSteer(0, errorAngle);
-    if(Math.abs(errorAngle) < 5) mComplete = true;
+    if(Math.abs(errorAngle) <= 4) {
+      mComplete = true;
+      System.out.println("Done!");
+    }
   }
 
   @Override

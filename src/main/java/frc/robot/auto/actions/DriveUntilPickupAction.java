@@ -14,10 +14,12 @@ public class DriveUntilPickupAction implements Action {
     private Drive mDrive = Drive.getInstance();
     private Grasper mGrasper = Grasper.getInstance();
     private boolean mComplete;
-    private double mThrottleSpeed = -.19;
+    private double mThrottleSpeed = -.16;
     private double mStartingEncoderAngle;
     private Timer mTimer;
     private double mTimeoutSeconds = 8;
+    private int mContinueDrivingTime = 3;
+    private int mDriveTime = 0;
 
     public DriveUntilPickupAction(){
         mComplete = false;
@@ -34,18 +36,30 @@ public class DriveUntilPickupAction implements Action {
 
     @Override 
     public void update(){
-        double currentErrorAngle = mDrive.getGyro().getAngle() - mStartingEncoderAngle;
-        mDrive.setDrive(mThrottleSpeed, currentErrorAngle, true);
+        System.out.println("in update loop");
         mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
+
         if(mGrasper.getBallsStored() > 0){
+            System.out.println("got the ball");
             // Ball is stored!
+            
+           mDriveTime++;
+           if (mDriveTime > mContinueDrivingTime) {
             mComplete = true;
+           mDrive.setDrive(0, 0, false);
+            mArm.rotateToPosition(ArmTarget.SCORE_FRONT.degrees);
+           }
+        }else{
+            double currentErrorAngle = mDrive.getGyro().getAngle() - mStartingEncoderAngle;
+            mDrive.autoSteer(mThrottleSpeed, 0);
         }
         
         // check if timeout
         if(mTimer.hasElapsed(mTimeoutSeconds)) {
+            System.out.println("time out");
             mComplete = true;
             mGrasper.stop();
+            mDrive.setDrive(0, 0, false);
         }
     }
 
@@ -58,5 +72,6 @@ public class DriveUntilPickupAction implements Action {
     public void done() {
       // stop driving
       mDrive.setDrive(0, 0, false);
+      System.out.println("stop drving");
     }
 }
