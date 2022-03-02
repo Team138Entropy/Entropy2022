@@ -201,6 +201,10 @@ public class Drive extends Subsystem {
     setOpenLoop(s);    
   }
 
+  public synchronized void setUnrampedDrive(double throttle, double wheel, boolean quickTurn) {
+    DriveSignal s = getCheesyDrive(throttle, wheel, quickTurn);
+    setOpenLoop(s);    
+  }
   // Original Cheesy Drive Equation
   // Depcreated for memory system
   public DriveSignal getCheesyDrive(double throttle, double wheel, boolean quickTurn) {
@@ -393,6 +397,17 @@ public class Drive extends Subsystem {
     mLeftMaster.set(ControlMode.PercentOutput, left);
     mRightMaster.set(ControlMode.PercentOutput, right);
   } 
+
+  //setUnrampedDrive
+  // Drives Gyro at a setpoint
+  // This function is used to keep the robot straight
+  public synchronized void driveGyroSetpoint(double throttle, double gyroAngleSetpoint){
+    final double kP = 0.005;
+		double turningValue = (gyroAngleSetpoint - m_gyro.getAngle()) * kP;
+		turningValue = Math.copySign(turningValue, throttle);
+    System.out.println("TEST: Throttle -> " + turningValue);
+    setUnrampedDrive(throttle, turningValue, true);
+  }
 
   /** Updates the field-relative position. */
   public void updateOdometry() {

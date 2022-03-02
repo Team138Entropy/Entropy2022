@@ -76,7 +76,22 @@ public class TargetInfo {
         Translation2d t = new Translation2d(distance * angle.cos(), distance * angle.sin());
         t.StoreDistance = getDistance();
         angle = td.direction();
-        return angle.getDegrees()-4;
+
+        System.out.println("Vision Offset Test 1: " + getOffsetAngle(angle.getDegrees(), distance, 4));
+        System.out.println("Vision Offset Test 2: " + getOffsetAngle(angle.getDegrees(), distance, -4));
+
+        return angle.getDegrees();
+    }
+
+    public double getOffsetAngle(double errorAngleDegrees, double distance, double cameraHorizontalOffset){
+        double horizontalAngle = Math.PI / 2 - Math.toRadians(errorAngleDegrees);
+        double f = Math.sqrt(distance * distance + Math.pow(cameraHorizontalOffset, 2) - 2 * distance * cameraHorizontalOffset * Math.cos(horizontalAngle));
+        double c = Math.asin(cameraHorizontalOffset * Math.sin(horizontalAngle) / f);
+        double b = Math.PI - horizontalAngle - c;
+        // offset angle
+        double angle = (Math.PI / 2 - b) * 180.0 / Math.PI;
+        angle = angle *-1;
+        return angle;
     }
 
     public void CalculateFields(){

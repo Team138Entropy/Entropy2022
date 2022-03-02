@@ -15,7 +15,7 @@ public class DriveUntilPickupAction implements Action {
     private Grasper mGrasper = Grasper.getInstance();
     private boolean mComplete;
     private double mThrottleSpeed = -.16;
-    private double mStartingEncoderAngle;
+    private double mStartingGyroErrorAngle;
     private Timer mTimer;
     private double mTimeoutSeconds = 8;
     private int mContinueDrivingTime = 3;
@@ -29,7 +29,7 @@ public class DriveUntilPickupAction implements Action {
     @Override
     public void start() {
       mTimer.start();
-      mStartingEncoderAngle = mDrive.getGyro().getAngle();
+      mStartingGyroErrorAngle = mDrive.getGyro().getAngle();
       mArm.rotateToPosition(ArmTarget.INTAKE.degrees);
       mGrasper.intake();
     }
@@ -46,12 +46,12 @@ public class DriveUntilPickupAction implements Action {
            mDriveTime++;
            if (mDriveTime > mContinueDrivingTime) {
             mComplete = true;
-           mDrive.setDrive(0, 0, false);
-            mArm.rotateToPosition(ArmTarget.SCORE_FRONT.degrees);
+            mDrive.setDrive(0, 0, false);
            }
         }else{
-            double currentErrorAngle = mDrive.getGyro().getAngle() - mStartingEncoderAngle;
-            mDrive.autoSteer(mThrottleSpeed, 0);
+            System.out.println("Driving gyro setpoint!");
+            mDrive.driveGyroSetpoint(mThrottleSpeed, mStartingGyroErrorAngle);
+            mDrive.updateOdometry();
         }
         
         // check if timeout

@@ -447,5 +447,6 @@ public class Climber extends Subsystem {
         SmartDashboard.putBoolean("Climb Complete", mClimberExecutor.isComplete()); // Climb executor is complete
         SmartDashboard.putNumber("Climber Position", getClimberPosition()); // Climber Encoder Position
         SmartDashboard.putNumber("Climber Velocity", mClimber.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("Climber Winch Voltage", mClimber.getSupplyCurrent());
     }
 }
