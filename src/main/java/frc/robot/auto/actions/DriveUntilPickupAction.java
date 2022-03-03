@@ -19,7 +19,7 @@ public class DriveUntilPickupAction implements Action {
     private Timer mTimer;
     private double mTimeoutSeconds = 8;
     private int mContinueDrivingTime = 3;
-    private int mDriveTime = 0;
+    private int mDriveTime = 10;
 
     public DriveUntilPickupAction(){
         mComplete = false;
@@ -49,7 +49,6 @@ public class DriveUntilPickupAction implements Action {
             mDrive.setDrive(0, 0, false);
            }
         }else{
-            System.out.println("Driving gyro setpoint!");
             mDrive.driveGyroSetpoint(mThrottleSpeed, mStartingGyroErrorAngle);
             mDrive.updateOdometry();
         }

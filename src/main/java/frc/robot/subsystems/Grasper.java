@@ -21,7 +21,7 @@ public class Grasper extends Subsystem {
   private int mMinThresholdExceedCount; // How many consecutive loops the current must exceed the threshold
   private int mPulseCounter; // Counts how long its been since the last "pulse" (running the motor)
   private int mPulseCounterTime; // How long to wait between pulses, measured in robot loops
-  private int mPulseTime;
+  private int mMaxPulseTime;
   private int mTimeSinceStart;
   private int mStartWaitTime;
 
@@ -48,8 +48,8 @@ public class Grasper extends Subsystem {
     mMinThresholdExceedCount = 6;
     mThresholdExceedCount = 0;
     mPulseCounter = 0;
-    mPulseCounterTime = 120;
-    mPulseTime = 10;
+    mPulseCounterTime = 10;
+    mMaxPulseTime = 60;
     mTimeSinceStart = 0;
     mStartWaitTime = 10;
   }
@@ -57,8 +57,10 @@ public class Grasper extends Subsystem {
   public void update(double current) {
     switch (mIntakeStatus) {
       case INTAKE:
+      System.out.println("GRASPER: INTAKE! "+ current);
       mTimeSinceStart++;
         if (mBallsStored >= Constants.Grasper.maxBallsStored) {
+          System.out.println("GRASPER STOP!");
           stop();
           mIntakeStatus = IntakeStatus.IDLE;
         }
@@ -66,8 +68,10 @@ public class Grasper extends Subsystem {
         // If the current exceeds the normal level then we have a ball
         if (current > mCurrentThreshold && mTimeSinceStart > mStartWaitTime) {
           mThresholdExceedCount++;
+          System.out.println(" OVER THREADSHOLD!");
         } else if (mTimeSinceStart <= mStartWaitTime) {
           mThresholdExceedCount = 0;
+          System.out.println("ZEROING THRESHOLD!");
         }
 
         // If the current exceeds a set value for a set time and stop intaking
@@ -79,6 +83,7 @@ public class Grasper extends Subsystem {
         }
         break;
       case EJECT:
+      System.out.println("GRAPSER: EJECT!");
         mThresholdExceedCount = 0;
         mTimeSinceStart = 0;
         if (mBallsStored == 0) {
@@ -89,6 +94,7 @@ public class Grasper extends Subsystem {
         mBallsStored = 0;
         break;
       case IDLE:
+      System.out.println("GRASPER: IDLE");
         mThresholdExceedCount = 0;
         mTimeSinceStart = 0;
 
@@ -96,13 +102,18 @@ public class Grasper extends Subsystem {
         if (mBallsStored > 0) {
           mPulseCounter++;
           if (mPulseCounter > mPulseCounterTime) {
+            System.out.println("pulse is on");
             mTalon.set(kJogSpeed);
-            mPulseCounter = 0;
+            //mPulseCounter = 0;
           }
         }
 
         // Stop after 5 loops
-        if (mPulseCounter == mPulseTime) stop();
+        if (mPulseCounter >= mMaxPulseTime){
+          System.out.println("pulse is off");
+          stop();
+          mPulseCounter = 0;
+        } 
         break;
       default:
         System.out.println("Grasper has no status!");

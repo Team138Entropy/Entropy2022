@@ -77,9 +77,11 @@ public class TargetInfo {
         t.StoreDistance = getDistance();
         angle = td.direction();
 
-        System.out.println("Vision Offset Test 1: " + getOffsetAngle(angle.getDegrees(), distance, 4));
-        System.out.println("Vision Offset Test 2: " + getOffsetAngle(angle.getDegrees(), distance, -4));
+        //System.out.println("Degrees: " + angle.getDegrees());
+        //System.out.println("Vision Offset Test 1: " + getOffsetAngle(angle.getDegrees(), mDistance, 5));
+        //System.out.println("Vision Offset Test 2: " + getOffsetAngle(angle.getDegrees(), mDistance, -5));
 
+        //return  getOffsetAngle(angle.getDegrees(), mDistance, 5);
         return angle.getDegrees();
     }
 

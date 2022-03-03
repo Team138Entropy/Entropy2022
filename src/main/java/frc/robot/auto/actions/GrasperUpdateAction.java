@@ -24,6 +24,7 @@ public class GrasperUpdateAction implements Action {
   @Override
   public void update() {
     mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
+    System.out.println("grasper updating");
   }
 
   @Override

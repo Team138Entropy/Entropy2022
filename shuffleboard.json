@@ -50,6 +50,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Autosteer",
               "_title": "Auto steer",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -62,6 +63,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Valid Target",
               "_title": "Ball in sight",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -74,7 +76,8 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_title": "In climbing mode",
+              "_source0": "network_table:///SmartDashboard/Climb Complete",
+              "_title": "Climbing conplete",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
@@ -259,6 +262,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Autosteer",
               "_title": "Auto steer",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -271,6 +275,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Valid Target",
               "_title": "Ball found",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -399,13 +404,112 @@
           },
           "9,1": {
             "size": [
-              3,
+              4,
               2
             ],
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Graspercurrent",
               "_title": "SmartDashboard/Graspercurrent"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "climber debug",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "6,2": {
+            "size": [
+              7,
+              4
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Climber Winch Voltage",
+              "_title": "SmartDashboard/Climber Winch Voltage",
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul",
+              "Visible data/SmartDashboard/Climber Winch Voltage": true
+            }
+          },
+          "3,5": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Climb Complete",
+              "_title": "SmartDashboard/Climb Complete",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "3,4": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Climber Position",
+              "_title": "SmartDashboard/Climber Position"
+            }
+          },
+          "3,3": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Climber Stage",
+              "_title": "SmartDashboard/Climber Stage"
+            }
+          },
+          "3,1": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Climber Stage Name",
+              "_title": "SmartDashboard/Climber Stage Name"
+            }
+          },
+          "6,1": {
+            "size": [
+              7,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Climber Velocity",
+              "_title": "SmartDashboard/Climber Velocity"
+            }
+          },
+          "3,2": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Climber Winch Voltage",
+              "_title": "SmartDashboard/Climber Winch Voltage"
             }
           }
         }

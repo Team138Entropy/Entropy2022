@@ -90,7 +90,7 @@ public class VisionManager {
                     ((Number) CurrentPacket.get("cameraid")).intValue(),
                     ((Number) CurrentPacket.get("BallY")).doubleValue(),
                     ((Number) CurrentPacket.get("BallX")).doubleValue(),
-                   0);
+                    ((Number) CurrentPacket.get("Dist")).doubleValue());
 
             // Convert Ball Color to the Associated Enum
             // right now only one camera is supported, so only camera enums are used

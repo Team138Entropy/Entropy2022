@@ -405,7 +405,6 @@ public class Drive extends Subsystem {
     final double kP = 0.005;
 		double turningValue = (gyroAngleSetpoint - m_gyro.getAngle()) * kP;
 		turningValue = Math.copySign(turningValue, throttle);
-    System.out.println("TEST: Throttle -> " + turningValue);
     setUnrampedDrive(throttle, turningValue, true);
   }
 
