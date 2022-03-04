@@ -448,5 +448,6 @@ public class Climber extends Subsystem {
         SmartDashboard.putNumber("Climber Position", getClimberPosition()); // Climber Encoder Position
         SmartDashboard.putNumber("Climber Velocity", mClimber.getSelectedSensorVelocity());
         SmartDashboard.putNumber("Climber Winch Voltage", mClimber.getSupplyCurrent());
+        SmartDashboard.putNumber("Climber Closed Loop Error", mClimber.getClosedLoopError());
     }
 }
