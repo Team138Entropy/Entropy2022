@@ -19,7 +19,7 @@ public class TEST extends AutoModeBase {
 
     public TEST(){
         // add multiple actions to drive trajectorys, these will run one after another
-      driveActionList.add(new TurnInPlaceAction(90,true));
+      //driveActionList.add(new TurnInPlaceAction(90,true));
     }
 
     @Override

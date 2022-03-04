@@ -9,7 +9,7 @@ class Stage {
     public final Callable<Boolean> mStageCompleteFunction;
     public final String mName;
     public final boolean mRequireUserToStart;
-    public final int mSecondsDelay;
+    public final double mSecondsDelay;
 
     public Stage(String Name, Callable<Boolean> workerFunc, Callable<Boolean> completeFunc){
         mName = Name;
@@ -27,7 +27,7 @@ class Stage {
         mSecondsDelay = 0;
     }
 
-    public Stage(String Name, Callable<Boolean> workerFunc, Callable<Boolean> completeFunc, boolean reqStart, int SecondsDelay){
+    public Stage(String Name, Callable<Boolean> workerFunc, Callable<Boolean> completeFunc, boolean reqStart, double SecondsDelay){
         mName = Name;
         mStageWorkerFunction = workerFunc;
         mStageCompleteFunction = completeFunc;

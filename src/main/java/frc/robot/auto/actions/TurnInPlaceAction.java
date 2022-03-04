@@ -19,63 +19,28 @@ public class TurnInPlaceAction implements Action {
     private boolean mComplete;
     private double mDegrees;
     private Drive mDrive = Drive.getInstance();
-    private PIDController mPIDController;
 
-    public TurnInPlaceAction(double degrees,boolean stopWhenDone) {
+    public TurnInPlaceAction(double degrees) {
         mComplete = false;
-        mStopWhenDone = stopWhenDone;
         mDegrees = degrees;
-
-        mPIDController = new PIDController(.1, 0, 0);
-        mPIDController.setSetpoint(degrees);
-        mPIDController.setTolerance(1); // degrees tolerance
     }
 
 
     @Override
     public void start() {
-        System.out.println("Target Degrees" + mDegrees);
+        System.out.println("TurnInPlaceAction - Target Degrees" + mDegrees);
+        mDrive.getGyro().reset();
     }
 
     @Override
     public void update() {
-        double gyroAngle = mDrive.getGyro().getAngle();
-        double out = mPIDController.calculate(gyroAngle);
-        double clampedOutput = MathUtil.clamp(out, -1, 1);
-
-        // square potentially?
-        clampedOutput = Math.copySign(clampedOutput * clampedOutput, clampedOutput);
-
-
-        if(mPIDController.atSetpoint()){
-            // Stop Robot
-            mDrive.setPercentOutputDrive(0, 0);
+        if(Math.abs(mDrive.getGyro().getAngle()) < 5){
+            // within turn accuracy
             mComplete = true;
-
         }else{
-            // Turning
-            mDrive.setPercentOutputDrive(clampedOutput, -1 * clampedOutput);
+            // continue driving
+            mDrive.driveGyroSetpoint(0, mDegrees);
         }
-
-        /*
-        final double kP = 0.005;
-        
-        if (mDegrees > 180) {
-            mDegrees = -(360 - mDegrees);
-        } else if (mDegrees < -180) {
-            mDegrees = 360 + mDegrees;
-        }
-        
-        double err = mDegrees - gyroAngle;
-        double speed = MathUtil.clamp(err * kP, -0.4, 0.4);
-        
-        if(Math.abs(err) > 2){
-          mDrive.setDrive(0, speed, true);   
-        }else{
-          mDrive.setPercentOutputDrive(0,0);
-          mComplete = true;   
-        }
-        */
     }
 
     // if trajectory is done

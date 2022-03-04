@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.motorcontrol.PWMTalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.util.DutyCycleExecutor;
+import java.util.concurrent.Callable;
 import frc.robot.Constants;
 
 /**
@@ -24,6 +26,30 @@ public class Grasper extends Subsystem {
   private int mMaxPulseTime;
   private int mTimeSinceStart;
   private int mStartWaitTime;
+
+  // Pulse Exector (On for X amount of Seconds, Off for X amount of Seconds)
+  private final int mPulseOnSeconds = 1;
+  private final int mPulseOffSeconds = 4;
+  private DutyCycleExecutor mPulseExecutor = new DutyCycleExecutor(
+      new Callable<Boolean>() {
+          public Boolean call(){
+              // on function
+              // turn on grasper
+              mTalon.set(kJogSpeed);
+              return true;
+          }
+      },
+      new Callable<Boolean>() {
+        public Boolean call(){
+            // off function
+            // turn off grasper
+            stop();
+            return true;
+        }
+    },
+    mPulseOnSeconds,
+    mPulseOffSeconds
+  );
 
   public enum IntakeStatus {
     INTAKE, // Wheels are intaking
@@ -80,6 +106,7 @@ public class Grasper extends Subsystem {
           mBallsStored++;
           mIntakeStatus = IntakeStatus.IDLE;
           mPulseCounter = 0;
+          mPulseExecutor.reset();
         }
         break;
       case EJECT:
@@ -92,6 +119,7 @@ public class Grasper extends Subsystem {
           mPulseCounter = 0;
         }
         mBallsStored = 0;
+        mPulseExecutor.reset();
         break;
       case IDLE:
       System.out.println("GRASPER: IDLE");
@@ -99,21 +127,9 @@ public class Grasper extends Subsystem {
         mTimeSinceStart = 0;
 
         // The motor will periodically run to make sure that the ball is secure and hasn't came loose
-        if (mBallsStored > 0) {
-          mPulseCounter++;
-          if (mPulseCounter > mPulseCounterTime) {
-            System.out.println("pulse is on");
-            mTalon.set(kJogSpeed);
-            //mPulseCounter = 0;
-          }
+        if(mBallsStored > 0){
+          mPulseExecutor.update();
         }
-
-        // Stop after 5 loops
-        if (mPulseCounter >= mMaxPulseTime){
-          System.out.println("pulse is off");
-          stop();
-          mPulseCounter = 0;
-        } 
         break;
       default:
         System.out.println("Grasper has no status!");

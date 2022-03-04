@@ -78,7 +78,7 @@ public class VisionManager {
           // Make sure the parse function is only called one at a time
           synchronized (ParserLock) {
             CurrentPacket = (JSONObject) parser.parse(packet);
-          }
+      }
     
           // Attempt to form target info object
           // is possible this fails!

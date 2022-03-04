@@ -81,8 +81,9 @@ public class TargetInfo {
         //System.out.println("Vision Offset Test 1: " + getOffsetAngle(angle.getDegrees(), mDistance, 5));
         //System.out.println("Vision Offset Test 2: " + getOffsetAngle(angle.getDegrees(), mDistance, -5));
 
-        //return  getOffsetAngle(angle.getDegrees(), mDistance, 5);
-        return angle.getDegrees();
+        // 5 inches estimated offset
+        return  getOffsetAngle(angle.getDegrees(), mDistance, 5);
+        //return angle.getDegrees();
     }
 
     public double getOffsetAngle(double errorAngleDegrees, double distance, double cameraHorizontalOffset){
