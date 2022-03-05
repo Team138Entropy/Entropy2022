@@ -56,6 +56,8 @@ public class Drive extends Subsystem {
   private final DifferentialDriveKinematics mKinematics = 
     new DifferentialDriveKinematics(kTrackWidth);
 
+  private Pose2d mStoredPose;
+
   // FeedForwardController for Autonomous Use
   // ks = static gain
   // kv = velocity gain
@@ -434,6 +436,14 @@ public class Drive extends Subsystem {
    */
   public Pose2d getPose() {
     return mOdometry.getPoseMeters();
+  }
+
+  /**
+   * Stores the Pose of the Robot
+   * Useful for generating a backtracked robot path
+   */
+  public synchronized void storeCurrentPose(){
+    mStoredPose = getPose();
   }
 
   /**

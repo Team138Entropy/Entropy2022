@@ -459,6 +459,7 @@ public class Robot extends TimedRobot {
           // ideally this is never called!
           mGrasper.stop();
           mClimber.setPosition(0);
+          mArm.retract();
 
           mCurrentMode = RobotMode.CargoScorer;
         break;

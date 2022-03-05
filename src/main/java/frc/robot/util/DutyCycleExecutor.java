@@ -12,8 +12,10 @@ public class DutyCycleExecutor {
     private Callable<Boolean> mOffFunction;
     private double mOnSeconds;
     private double mOffSeconds;
+    private double mPreDelay;
     private boolean mIsOn;
     private Timer mTimer;
+    private Timer mPreDelayTimer;
 
     public DutyCycleExecutor(Callable<Boolean> onFunc, Callable<Boolean> offFunc, double onSeconds, double offSeconds){
         mOnFunction = onFunc;
@@ -22,9 +24,30 @@ public class DutyCycleExecutor {
         mOffSeconds = offSeconds;
         mIsOn = false;
         mTimer = null;
+        mPreDelayTimer = null;
+        mPreDelay = 0;
     }
 
     public synchronized void update(){
+        // If a pre delay is active
+        if(mPreDelay > 0){
+            //create the predelay timer isn't active
+            if(mPreDelayTimer == null){
+                mPreDelayTimer = new Timer();
+                mPreDelayTimer.start();
+            }
+
+            //check if predelay is complete
+            if(mPreDelayTimer.hasElapsed(mPreDelay)){
+                // done predelay
+                mPreDelay = 0;
+                mPreDelayTimer = null;
+            }else{
+                // continue to predelay
+                return;
+            }
+        }
+
         // Create and Start Timer
         if(mTimer == null){
             mTimer = new Timer();
@@ -80,5 +103,13 @@ public class DutyCycleExecutor {
 
     public synchronized boolean isOn(){
         return mIsOn;
+    }
+
+    /**
+     * A Special Case PreDelay that happens before execution
+     * @param seconds
+     */
+    public synchronized void setPreDelay(double seconds){
+        mPreDelay = seconds;
     }
 }
