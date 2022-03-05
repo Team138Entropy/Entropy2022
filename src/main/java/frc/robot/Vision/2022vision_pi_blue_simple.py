@@ -1,6 +1,7 @@
 import json
 import logging
 import math
+from multiprocessing.sharedctypes import Value
 #from msilib.schema import tables
 import queue
 import socket
@@ -11,6 +12,7 @@ from sqlite3 import Time
 
 import cv2
 import numpy as np
+
 from cscore import CameraServer
 from networktables import NetworkTables
 from networktables import NetworkTablesInstance
@@ -56,15 +58,43 @@ def connectionListener(connected, info):
         notified[0] = True
         cond.notify()
 
+def calculateDistanceFeet(targetPixelWidth):
+    # d = Tft*FOVpixel/(2*Tpixel*tanΘ)
+    #Target width in feet * 
+    Tft = .75
+    tanFOV = math.tan(170/2)
+    distEst = Tft * 640 / (2 * targetPixelWidth * tanFOV)
+    
+    # Unsure as to what measurement distEst is producing in the above line, but multiplying it by .32 will return your distance in feet
+    distEstFeet = distEst * .32
+    #distEstInches = distEstFeet *.32*12
+    return (abs(distEstFeet))
+
 if __name__ == "__main__":
     #Avoid touching camera server settings
 
     print('2022 Ball Vision Blue Starting')
-
-    with open('/home/pi/settings.json') as f:
-        cameraConfig = json.load(f)
+    
+    cameraConfig = ''
+    #with open('/home/pi/settings.json') as f:
+    with open('/boot/frc.json', 'r') as f:
+        mycamera = json.load(f)
+        cameraConfig = mycamera
         #print(cameraConfig)
         camera = cameraConfig['cameras'][0]
+        
+        #cameraConfig['cameras'][0]['stream']['properties'] = [{"name": "connect_verbose","value": 1},{"name": "raw_brightness","value": -60},{"name": "brightness","value": 30},{"name": "raw_contrast","value": 14},{"name": "contrast","value": 23},{"name": "raw_saturation","value": 128},{"name": "saturation","value": 100},{"name": "raw_hue","value": 17},{"name": "hue","value": 72},{"name": "white_balance_temperature_auto","value": True},{"name": "gamma","value": 72},{"name": "raw_gain","value": 0},{"name": "gain","value": 0},{"name": "power_line_frequency","value": 1},{"name": "white_balance_temperature","value": 4600},{"name": "raw_sharpness","value": 1},{"name": "sharpness","value": 33},{"name": "backlight_compensation","value": 1},{"name": "exposure_auto","value": 1},{"name": "raw_exposure_absolute","value": 300},{"name": "exposure_absolute","value": 6},{"name": "exposure_auto_priority","value": True}]
+        #jsontest.update()
+        #print(jsontest)
+
+        cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":0},{"name":"hue","value":50},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":2},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":157},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
+        
+
+    '''
+    with open('/boot/frc.json', 'w') as f:
+        json.dump(cameraConfig, f, indent=2)
+    ''' 
+        #print("FPS before edits", cameraConfig['fps'])
 
     server = False
     team = 138
@@ -72,6 +102,7 @@ if __name__ == "__main__":
     cond = threading.Condition()
     notified = [False]
 
+    '''
     NetworkTables.initialize(server=team_Server)
     ntinst = NetworkTablesInstance.getDefault()
     NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
@@ -84,32 +115,40 @@ if __name__ == "__main__":
 
     table = NetworkTables.getTable('SmartDashboard')
 
-    foo = table.getBoolean('foo', True)
+    try:
+        foo = table.getBoolean('selectedColor')
 
-    print(foo)
+        print(foo)
+    except Exception as e:
+        print('Likely couldnt get color of ball from network table. Exception:', e)
+    '''
+
 
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
 
+    #jsontest.update(myObj)
+    
+    '''
+    cameraConfig['cameras'][0]['fps'] = 120
+    cameraConfig['cameras'][0]['height'] = 480
+    cameraConfig['cameras'][0]['width'] = 640
+    cameraConfig['cameras'][0]['pixel format'] = 'mjpeg'
+    print('CameraConfig: ', cameraConfig)
+    '''
 
-    print(cameraConfig)
+    #print(cameraConfig['properties'][1]['value'])
+    #cameraConfig['properties'][6]['value'] = 50
 
-    res_width = camera['width']
-    res_height = camera['height']
-    cameraConfig['pixel format'] = 'mjpeg'
-    cameraConfig['FPS'] = 120
-    cameraConfig['height'] = 480
-    cameraConfig['width'] = 640
-    cameraConfig['properties'][6]['value'] = 50
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
     input_stream = cs.getVideo()
-    output_stream = cs.putVideo('Processed', res_width, res_height)
+    output_stream = cs.putVideo('Processed', 640, 480)
     
     
     SocketThread = SocketWorker(PacketQueue).start()
 
     #Numpy creates an array of zeros in the size of the image width/height. Its mentioned in documentation this can be performance intensive, and to do it outside the loop
-    imgForm = np.zeros(shape=(res_height, res_width, 3), dtype=np.uint8)
+    imgForm = np.zeros(shape=(480, 640, 3), dtype=np.uint8)
 
     #Red Ball
     '''
@@ -133,16 +172,20 @@ if __name__ == "__main__":
     ksize = (2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
-    cnt_area_low = 900
+    
+    #900
+    cnt_area_low = 600
     #cnt_area_high = 7500
     minimum_perimeter = 0
-    width_minimum = 20
+    #20
+    width_minimum = 15
     width_maximum = 300
-    height_minimum = 20
+    #20
+    height_minimum = 15
     height_maximum = 300
     solid_Low = 94
     solid_High = 100
-    min_vertices = 20
+    min_vertices = 18
     max_vertices = 100
     rat_low = 0
     rat_high = 3
@@ -168,6 +211,7 @@ if __name__ == "__main__":
     curTime = time.time()
     oldTime = ''
     printCount = 1
+    myDistFeet = 0
     
     # Create a detector with the parameters
     blank = np.zeros((1, 1))
@@ -200,6 +244,7 @@ if __name__ == "__main__":
 
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             input_img = cv2.blur(input_img, (ksize, ksize))
+            input_img = cv2.flip(input_img, 1)
             
             '''
             #Attempt to add mask to top half of image
@@ -297,6 +342,7 @@ if __name__ == "__main__":
                         validCnt &= (.5 < circularity < 1.5)
                     
                     if(validCnt) and y < lowest_y :
+                        myDistFeet = calculateDistanceFeet(w)
                         #print(cntArea, circularity, ratio)
                         cnt_to_process = cnt
 
@@ -313,9 +359,15 @@ if __name__ == "__main__":
             else:
                 printCount += 1
 
+            
+            dist = myDistFeet
+            dist = (dist/2)-.6
+            print(dist)
+            
             PacketValue['BallX'] = cy
             PacketValue['BallY'] = cx
-
+            PacketValue['Dist'] = dist
+            
             last_contour_x = cx
             last_contour_y = cy
             
