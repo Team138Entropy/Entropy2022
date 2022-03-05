@@ -82,10 +82,6 @@ if __name__ == "__main__":
         #print(cameraConfig)
         camera = cameraConfig['cameras'][0]
         
-        #cameraConfig['cameras'][0]['stream']['properties'] = [{"name": "connect_verbose","value": 1},{"name": "raw_brightness","value": -60},{"name": "brightness","value": 30},{"name": "raw_contrast","value": 14},{"name": "contrast","value": 23},{"name": "raw_saturation","value": 128},{"name": "saturation","value": 100},{"name": "raw_hue","value": 17},{"name": "hue","value": 72},{"name": "white_balance_temperature_auto","value": True},{"name": "gamma","value": 72},{"name": "raw_gain","value": 0},{"name": "gain","value": 0},{"name": "power_line_frequency","value": 1},{"name": "white_balance_temperature","value": 4600},{"name": "raw_sharpness","value": 1},{"name": "sharpness","value": 33},{"name": "backlight_compensation","value": 1},{"name": "exposure_auto","value": 1},{"name": "raw_exposure_absolute","value": 300},{"name": "exposure_absolute","value": 6},{"name": "exposure_auto_priority","value": True}]
-        #jsontest.update()
-        #print(jsontest)
-
         cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":0},{"name":"hue","value":50},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":2},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":157},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
         
 
@@ -122,13 +118,14 @@ if __name__ == "__main__":
 
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
     input_stream = cs.getVideo()
-    output_stream = cs.putVideo('Processed', 640, 480)
+    output_stream = cs.putVideo('Processed', 320, 240)
     
     
     SocketThread = SocketWorker(PacketQueue).start()
 
     #Numpy creates an array of zeros in the size of the image width/height. Its mentioned in documentation this can be performance intensive, and to do it outside the loop
-    imgForm = np.zeros(shape=(480, 640, 3), dtype=np.uint8)
+    #Note that the order is height, width in shape
+    imgForm = np.zeros(shape=(240, 320, 3), dtype=np.uint8)
 
     #Blue ball
     blueHue = [85, 122]
@@ -140,12 +137,13 @@ if __name__ == "__main__":
     ksize = (2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
-    cnt_area_low = 600
+
+    cnt_area_low = 500
     #cnt_area_high = 7500
-    minimum_perimeter = 0
-    width_minimum = 15
+    minimum_perimeter = 10
+    width_minimum = 10
     width_maximum = 300
-    height_minimum = 15
+    height_minimum = 10
     height_maximum = 300
     solid_Low = 94
     solid_High = 100
@@ -305,8 +303,8 @@ if __name__ == "__main__":
             else:
                 printCount += 1
 
-            
             dist = myDistFeet
+            #The /2 and -.6 are entirely arbitrary values. If re-using this code in the future, you will need to re-sample to find those valvues.
             dist = (dist/2)-.6
             print(dist)
             
