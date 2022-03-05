@@ -318,6 +318,8 @@ public class Robot extends TimedRobot {
       mArm.stopForearm();
     }
 
+    System.out.println("Extension Position: " + mArm.getExtensionPosition());
+
 
 
     // grapser test controls

@@ -263,6 +263,11 @@ public class Arm extends Subsystem {
     return getRotation() >= angle + 4 || getRotation() <= angle - 4;
   }
 
+  
+  public double getExtensionPosition(){
+    return mForearm.getSelectedSensorPosition();
+}
+
   @Override
   public void zeroSensors() {
     // Sensor is flipped
@@ -291,5 +296,6 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("forearmOutput", getForearmOutput());
     SmartDashboard.putNumber("shoulder talon output", mShoulder.getMotorOutputPercent());
     SmartDashboard.putNumber("Forearm Current", mForearm.getSupplyCurrent());
+    SmartDashboard.putNumber("Extension Position", getExtensionPosition());
   }
 }
