@@ -396,7 +396,7 @@ public class Robot extends TimedRobot {
    * allowAutoSteer - Enables/Disables AutoSteering
    */
   private void DriveLoop(boolean precisionSteer, boolean allowAutoSteer){
-    double driveThrottle = mOperatorInterface.getDriveThrottle();
+    double driveThrottle = mOperatorInterface.getDriveThrottle()*-1;
     double driveTurn = mOperatorInterface.getDriveTurn();
 
     // precision steer (slow down throttle if left trigger is held)
