@@ -73,7 +73,7 @@ def calculateDistanceFeet(targetPixelWidth):
 if __name__ == "__main__":
     #Avoid touching camera server settings
 
-    print('2022 Ball Vision Blue Starting')
+    print('2022 Ball Vision Red Starting')
     
     cameraConfig = ''
     #with open('/home/pi/settings.json') as f:
@@ -87,18 +87,20 @@ if __name__ == "__main__":
         #jsontest.update()
         #print(jsontest)
 
-        cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":0},{"name":"hue","value":50},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":2},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":157},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
         
+        
+        #print("FPS before edits", cameraConfig['fps'])
 
+    
     server = False
     team = 138
     team_Server = '10.1.38.2'
     cond = threading.Condition()
     notified = [False]
+    teamColor = ''
 
     
     #Network table setup stuff
-    '''
     NetworkTables.initialize(server=team_Server)
     ntinst = NetworkTablesInstance.getDefault()
     NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
@@ -112,12 +114,36 @@ if __name__ == "__main__":
     table = NetworkTables.getTable('SmartDashboard')
 
     try:
-        foo = table.getBoolean('selectedColor')
+        teamColor = table.getBoolean('selectedColor')
 
-        print(foo)
+        print(teamColor)
     except Exception as e:
         print('Likely couldnt get color of ball from network table. Exception:', e)
-    '''
+
+    cameraHue = [85, 122]
+    cameraSat = [119, 255]
+    cameraVal = [41, 255]  
+    
+    while teamColor != True or teamColor != False:
+        try:
+            if teamColor == True:
+                #Red
+                cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":-40},{"name":"hue","value":0},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":1},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":150},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
+
+                cameraHue = [128, 168]
+                cameraSat = [0, 255]
+                cameraVal = [80, 255]  
+
+            else:
+                #Blue
+                cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":0},{"name":"hue","value":50},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":2},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":157},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
+
+                cameraHue = [85, 122]
+                cameraSat = [119, 255]
+                cameraVal = [41, 255]  
+
+        except:
+            pass
 
 
     cs = CameraServer.getInstance()
@@ -133,21 +159,25 @@ if __name__ == "__main__":
     #Numpy creates an array of zeros in the size of the image width/height. Its mentioned in documentation this can be performance intensive, and to do it outside the loop
     imgForm = np.zeros(shape=(480, 640, 3), dtype=np.uint8)
 
-    #Blue ball
-    blueHue = [85, 122]
-    blueSat = [119, 255]
-    blueVal = [41, 255]  
+    #Red Ball
+    redHue = [128, 168]
+    redSat = [0, 255]
+    redVal = [80, 255]  
 
     #Creating settings for blur filter
     radius = 2.83
     ksize = (2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
+    
+    #900
     cnt_area_low = 600
     #cnt_area_high = 7500
     minimum_perimeter = 0
+    #20
     width_minimum = 15
     width_maximum = 300
+    #20
     height_minimum = 15
     height_maximum = 300
     solid_Low = 94
@@ -220,21 +250,10 @@ if __name__ == "__main__":
             cv2.imwrite('Masked_input.jpeg', input_img)
             '''
 
-            mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
-                                (blueHue[1], blueSat[1], blueVal[1]))
+            mask = cv2.inRange(input_img, (cameraHue[0], cameraSat[0], cameraVal[0]),
+                                (cameraHue[1], cameraSat[1], cameraVal[1]))
 
             inverted_img = cv2.bitwise_not(mask)    
-            # Detect blobs
-            '''
-            keypoints = detector.detect(inverted_img)
-            
-            blank = np.zeros((1, 1))
-            blobs = cv2.drawKeypoints(mask, keypoints,np.array([]),(0, 0, 255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-            #TODO: Find way to fill in  the drawn keypoints
-            cv2.imwrite('blobs.jpg', blobs)
-            print('Blobs')
-            time.sleep(1)
-            '''
 
             _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
@@ -313,6 +332,7 @@ if __name__ == "__main__":
                         #print(cntArea, circularity, ratio)
                         cnt_to_process = cnt
 
+            
             x, y, w, h = cv2.boundingRect(cnt_to_process)
             
             M = cv2.moments(cnt_to_process)
@@ -347,6 +367,6 @@ if __name__ == "__main__":
             lowest_y = 1000
 
             #print(PacketValue)
-        except:
-            print('Error, likely that a ball wasnt found')
+        except Exception as e:
+            print('Error, likely that a ball wasnt found, error: ')
 

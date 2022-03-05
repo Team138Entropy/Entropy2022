@@ -135,9 +135,9 @@ if __name__ == "__main__":
     imgForm = np.zeros(shape=(480, 640, 3), dtype=np.uint8)
 
     #Red Ball
-    redHue = [96, 168]
+    redHue = [128, 168]
     redSat = [0, 255]
-    redVal = [112, 255]  
+    redVal = [80, 255]  
 
     #Creating settings for blur filter
     radius = 2.83
