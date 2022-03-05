@@ -2,7 +2,6 @@ import json
 import logging
 import math
 from multiprocessing.sharedctypes import Value
-#from msilib.schema import tables
 import queue
 import socket
 import sys
@@ -96,9 +95,8 @@ if __name__ == "__main__":
     cond = threading.Condition()
     notified = [False]
 
-    
-    #Network table setup stuff
     '''
+    #Network table setup stuff
     NetworkTables.initialize(server=team_Server)
     ntinst = NetworkTablesInstance.getDefault()
     NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
@@ -118,7 +116,6 @@ if __name__ == "__main__":
     except Exception as e:
         print('Likely couldnt get color of ball from network table. Exception:', e)
     '''
-
 
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
@@ -182,7 +179,9 @@ if __name__ == "__main__":
     
     # Create a detector with the parameters
     blank = np.zeros((1, 1))
-
+ 
+    black_mask = cv2.imread('/home/pi/black_mask.png')
+    
     print('Blue ball vision setup complete')
 
     while True:
@@ -212,29 +211,9 @@ if __name__ == "__main__":
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             input_img = cv2.blur(input_img, (ksize, ksize))
             input_img = cv2.flip(input_img, 1)
-            
-            '''
-            #Attempt to add mask to top half of image
-            input_img[0:res_height/2, 0:res_width, :] = 0
-            print('writing')
-            cv2.imwrite('Masked_input.jpeg', input_img)
-            '''
 
             mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
                                 (blueHue[1], blueSat[1], blueVal[1]))
-
-            inverted_img = cv2.bitwise_not(mask)    
-            # Detect blobs
-            '''
-            keypoints = detector.detect(inverted_img)
-            
-            blank = np.zeros((1, 1))
-            blobs = cv2.drawKeypoints(mask, keypoints,np.array([]),(0, 0, 255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-            #TODO: Find way to fill in  the drawn keypoints
-            cv2.imwrite('blobs.jpg', blobs)
-            print('Blobs')
-            time.sleep(1)
-            '''
 
             _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
@@ -347,6 +326,6 @@ if __name__ == "__main__":
             lowest_y = 1000
 
             #print(PacketValue)
-        except:
-            print('Error, likely that a ball wasnt found')
+        except Exception as e:
+            print('Error, likely that a ball wasnt found, error: ')
 
