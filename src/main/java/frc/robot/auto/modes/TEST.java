@@ -14,18 +14,19 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class TEST extends AutoModeBase {
-    List<TurnInPlaceAction> driveActionList = new ArrayList<TurnInPlaceAction>();  
+    List<Action> driveActionList = new ArrayList<Action>();  
 
 
     public TEST(){
         // add multiple actions to drive trajectorys, these will run one after another
-      driveActionList.add(new TurnInPlaceAction(90));
+        driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_B2_setup_B3())));
+        //driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5()));
     }
 
     @Override
     protected void routine() throws AutoModeEndedException {
          // Traverse list and run each action
-      for(TurnInPlaceAction currentAction:  driveActionList )  {
+      for(Action currentAction:  driveActionList )  {
         runAction(currentAction);
      }
     }

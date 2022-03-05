@@ -404,7 +404,7 @@ public class Drive extends Subsystem {
   // Drives Gyro at a setpoint
   // This function is used to keep the robot straight
   public synchronized void driveGyroSetpoint(double throttle, double gyroAngleSetpoint){
-    final double kP = 0.012;
+    final double kP = 0.018;
 		double turningValue = (gyroAngleSetpoint - (m_gyro.getAngle()*-1)) * kP;
 		//turningValue = Math.copySign(turningValue, throttle);
     setUnrampedDrive(throttle, turningValue*-1, true);

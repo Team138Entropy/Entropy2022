@@ -69,7 +69,7 @@ public class Constants {
   }
 
   public static class Vision {
-    public static final double diagonalView = Math.toRadians(75);
+    public static final double diagonalView = Math.toRadians(170);
     public static final double horizontalAspect = 4;
     public static final double verticalAspect = 3;
     public static final double diagonalAspect = Math.hypot(horizontalAspect, verticalAspect);

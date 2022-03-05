@@ -70,8 +70,8 @@ public class Climber extends Subsystem {
 
         // Make a Rotate to Position which is given an encoder position
         
-        mClimber.configMotionAcceleration(1200);
-        mClimber.configMotionCruiseVelocity(1200, 10);
+        mClimber.configMotionAcceleration(2800);
+        mClimber.configMotionCruiseVelocity(2000, 10);
         
         mClimber.config_kF(0, 0, 10);
         mClimber.config_kP(0, .8, 10);

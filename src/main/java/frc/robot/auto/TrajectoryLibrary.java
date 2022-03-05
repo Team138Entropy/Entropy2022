@@ -248,6 +248,17 @@ public class TrajectoryLibrary {
       }
       return traj;
      }
+     public Trajectory get_B2_setup_B3(){
+      Trajectory traj = null;
+      String fileName = "B2_setup_B3.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
 }
 
 

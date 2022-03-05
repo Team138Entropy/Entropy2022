@@ -3,6 +3,7 @@ package frc.robot.vision;
 import frc.robot.Constants;
 import frc.robot.util.geometry.*;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 // TargetInfo describes a Target
@@ -80,9 +81,10 @@ public class TargetInfo {
         //System.out.println("Degrees: " + angle.getDegrees());
         //System.out.println("Vision Offset Test 1: " + getOffsetAngle(angle.getDegrees(), mDistance, 5));
         //System.out.println("Vision Offset Test 2: " + getOffsetAngle(angle.getDegrees(), mDistance, -5));
-
+        SmartDashboard.putNumber("pre-calculated angle", angle.getDegrees());
+        SmartDashboard.putNumber("vision distance", mDistance);
         // 5 inches estimated offset
-        return  getOffsetAngle(angle.getDegrees(), mDistance, 5);
+        return  getOffsetAngle(angle.getDegrees(), mDistance, .416);
         //return angle.getDegrees();
     }
 
@@ -106,8 +108,8 @@ public class TargetInfo {
     
         // packets from High Goal Camera
         // Height (z), horizontal (y)
-        nZ = (1.0 / 240.0) * (239.5 - mZ);
-        nY = (1.0 / 320.0) * (mY - 319.5);
+        nZ = (1.0 / 120.0) * (119.5 - mZ);
+        nY = (1.0 / 160.0) * (mY - 159.5);
 
         // nY = -((y - 320.0)/320.0);
         // nZ = -((z - 240.0)/240.0);
