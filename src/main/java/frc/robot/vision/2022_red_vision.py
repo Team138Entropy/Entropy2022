@@ -73,7 +73,7 @@ def calculateDistanceFeet(targetPixelWidth):
 if __name__ == "__main__":
     #Avoid touching camera server settings
 
-    print('2022 Ball Vision Blue Starting')
+    print('2022 Ball Vision Red Starting')
     
     cameraConfig = ''
     #with open('/home/pi/settings.json') as f:
@@ -87,15 +87,11 @@ if __name__ == "__main__":
         #jsontest.update()
         #print(jsontest)
 
-        cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":0},{"name":"hue","value":50},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":2},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":157},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
+        cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":-40},{"name":"hue","value":0},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":1},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":150},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
         
-
-    '''
-    with open('/boot/frc.json', 'w') as f:
-        json.dump(cameraConfig, f, indent=2)
-    ''' 
         #print("FPS before edits", cameraConfig['fps'])
 
+    
     server = False
     team = 138
     team_Server = '10.1.38.2'
@@ -103,6 +99,7 @@ if __name__ == "__main__":
     notified = [False]
 
     '''
+    #Network table setup stuff
     NetworkTables.initialize(server=team_Server)
     ntinst = NetworkTablesInstance.getDefault()
     NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
@@ -121,24 +118,11 @@ if __name__ == "__main__":
         print(foo)
     except Exception as e:
         print('Likely couldnt get color of ball from network table. Exception:', e)
+    
     '''
-
 
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
-
-    #jsontest.update(myObj)
-    
-    '''
-    cameraConfig['cameras'][0]['fps'] = 120
-    cameraConfig['cameras'][0]['height'] = 480
-    cameraConfig['cameras'][0]['width'] = 640
-    cameraConfig['cameras'][0]['pixel format'] = 'mjpeg'
-    print('CameraConfig: ', cameraConfig)
-    '''
-
-    #print(cameraConfig['properties'][1]['value'])
-    #cameraConfig['properties'][6]['value'] = 50
 
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
     input_stream = cs.getVideo()
@@ -151,21 +135,9 @@ if __name__ == "__main__":
     imgForm = np.zeros(shape=(480, 640, 3), dtype=np.uint8)
 
     #Red Ball
-    '''
-    redHue = [0, 12]
-    redSat = [109, 255]
-    redVal = [58, 255]  
-    '''
-
-    #Blue ball
-    blueHue = [85, 122]
-    blueSat = [119, 255]
-    blueVal = [41, 255]  
-
-    #Yellow Ball params
-    #yelHue = [18,49]
-    #yelSat = [52,255]
-    #yelVal = [166,255]
+    redHue = [96, 168]
+    redSat = [0, 255]
+    redVal = [112, 255]  
 
     #Creating settings for blur filter
     radius = 2.83
@@ -346,11 +318,15 @@ if __name__ == "__main__":
                         #print(cntArea, circularity, ratio)
                         cnt_to_process = cnt
 
+            
             x, y, w, h = cv2.boundingRect(cnt_to_process)
             
             M = cv2.moments(cnt_to_process)
             cy = int(M["m01"] / M["m00"])
             cx = int(M["m10"] / M["m00"])
+
+            
+            print('Error in making bounding rect')
 
             if printCount % 100 == 0:
                 print('X center:', cx, 'Y center:',cy)
@@ -380,6 +356,6 @@ if __name__ == "__main__":
             lowest_y = 1000
 
             #print(PacketValue)
-        except:
-            print('Error, likely that a ball wasnt found')
+        except Exception as e:
+            print('Error, likely that a ball wasnt found, error: ')
 

@@ -1,13 +1,19 @@
 import json
+import logging
 import math
+#from msilib.schema import tables
 import queue
 import socket
+import sys
 import threading
+import time
+from sqlite3 import Time
 
 import cv2
 import numpy as np
 from cscore import CameraServer
 from networktables import NetworkTables
+from networktables import NetworkTablesInstance
 
 #Below link has a barebones version, useful for getting the camera server stuff
 #https://docs.wpilib.org/en/stable/docs/software/vision-processing/wpilibpi/basic-vision-example.html
@@ -43,28 +49,95 @@ class SocketWorker(threading.Thread):
             except Exception as e1:
                 pass
 
+
+def connectionListener(connected, info):
+    print(info, '; Connected=%s' % connected)
+    with cond:
+        notified[0] = True
+        cond.notify()
+
+def calculateDistance138(targetHeightPixels):
+    #Current res is 640x480, up to 75FPS or 320x240 up to 187 FPS both (4:3)
+    #FOV is 53.5
+    targHeightInch = 9.5
+    imageWidthPixels = 480
+    camerafov = math.tan(170/2)
+    myDist = (targHeightInch*imageWidthPixels)/(2*targetHeightPixels*camerafov)
+    return myDist
+
 if __name__ == "__main__":
     #Avoid touching camera server settings
-    print('2022 Ball Vision Yellow Starting')
 
-    #Load camera config (eg. Exposure, resolution, FPS)
-    with open('/boot/frc.json') as f:
+    print('2022 Ball Vision Blue Starting')
+
+    with open('/home/pi/settings.json') as f:
         cameraConfig = json.load(f)
         #print(cameraConfig)
         camera = cameraConfig['cameras'][0]
+        print('CameraConfig: ', cameraConfig)
+        
+        #print("FPS before edits", cameraConfig['fps'])
+
+    server = False
+    team = 138
+    team_Server = '10.1.38.2'
+    cond = threading.Condition()
+    notified = [False]
+
+    NetworkTables.initialize(server=team_Server)
+    ntinst = NetworkTablesInstance.getDefault()
+    NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
+
+    with cond:
+        print("Waiting")
+        if not notified[0]:
+            cond.wait()
+
+
+    table = NetworkTables.getTable('SmartDashboard')
+
+    try:
+        foo = table.getBoolean('selectedColor')
+
+        print(foo)
+    except Exception as e:
+        print('Likely couldnt get color of ball from network table. Exception:', e)
+
+
+    cs = CameraServer.getInstance()
+    cameraSettings = cs.startAutomaticCapture()
+
+
+    #print(cameraConfig)
 
     res_width = camera['width']
     res_height = camera['height']
-    
-    #Start camera server, start capturing from the camera and set the pixel format
-    cs = CameraServer.getInstance()
-    cameraSettings = cs.startAutomaticCapture()
-    cameraConfig['pixel format'] = 'yuyv'
-    cameraConfig['fps'] = '60'
-    cameraSettings.setConfigJson(json.dumps(cameraConfig))
+    cameraConfig['pixel format'] = 'mjpeg'
+    cameraConfig['FPS'] = 120
+    cameraConfig['height'] = 480
+    cameraConfig['width'] = 640
+    cameraConfig['brightness'] = 50
+    cameraConfig['contrast'] = 47
+    cameraConfig['saturation'] = 100
+    cameraConfig['hue'] = 0
+    cameraConfig['gamma'] = 100
 
+
+    
+    try:
+        
+        print("My FPS print:", cameraConfig['FPS'])
+        print(cameraConfig['properties'][0])
+    except:
+        pass
+
+    #print(cameraConfig['properties'][1]['value'])
+    #cameraConfig['properties'][6]['value'] = 50
+
+    cameraSettings.setConfigJson(json.dumps(cameraConfig))
     input_stream = cs.getVideo()
     output_stream = cs.putVideo('Processed', res_width, res_height)
+    
     
     SocketThread = SocketWorker(PacketQueue).start()
 
@@ -72,14 +145,16 @@ if __name__ == "__main__":
     imgForm = np.zeros(shape=(res_height, res_width, 3), dtype=np.uint8)
 
     #Red Ball
-    redHue = [0, 12]
-    redSat = [109, 255]
-    redVal = [58, 255]  
+    '''
+    redHue = [149, 165]
+    redSat = [85, 255]
+    redVal = [0, 255]  
+    '''
 
-    #Blue ball estimates
-    blueHue = [78, 120]
-    blueSat = [156, 255]
-    blueVal = [28, 255]  
+    #Blue ball
+    blueHue = [85, 122]
+    blueSat = [119, 255]
+    blueVal = [41, 255]  
 
     #Yellow Ball params
     #yelHue = [18,49]
@@ -87,40 +162,66 @@ if __name__ == "__main__":
     #yelVal = [166,255]
 
     #Creating settings for blur filter
-    radius = 5.855855855855857
+    radius = 2.83
     ksize = (2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
-    hull_area_low = 3000
-    hull_area_high = 7000
-    minimum_perimeter = 75
-    width_minimum = 100
+    cnt_area_low = 900
+    #cnt_area_high = 7500
+    minimum_perimeter = 0
+    width_minimum = 20
     width_maximum = 300
-    height_minimum = 30
+    height_minimum = 20
     height_maximum = 300
     solid_Low = 94
     solid_High = 100
+    min_vertices = 20
     max_vertices = 100
     rat_low = 0
-    rat_high = 10
+    rat_high = 3
     cy = ''
     cx = ''
     solid = 0
     last_cnt_area = 0
     conCount = 0
     cnt_to_process = 0
-    lowest_y = 1000000
+
+    #Used to pick the lowest detected contour in the image which is most likely the closest ball
+    lowest_y = 1000
+
+    last_contour_x = 1000
+    last_contour_y = 1000
+    current_frame = 0
+    frame_memory = 0
+    contour_found_once = False
 
     #Create info for packet
     PacketValue = {}
-    print('Yellowball vision setup complete')
+
+    curTime = time.time()
+    oldTime = ''
+    printCount = 1
+    
+    # Create a detector with the parameters
+    blank = np.zeros((1, 1))
+
+    print('Blue ball vision setup complete')
 
     while True:
         #Create info for packet
+        
         try:
+            current_frame += 1
+            '''
+            if current_frame % 60 == 0:
+                oldTime = curTime
+                curTime = time.time()
+                print(curTime - oldTime)
+            '''
+
             PacketValue = {}
             PacketValue['cameraid'] = 0
-            PacketValue['ballColor'] = 'yellow'
+            PacketValue['ballColor'] = 'blue'
             
             #start_time = time.time() #Use this to get FPS below
             frame_time, input_img = input_stream.grabFrame(imgForm)
@@ -132,9 +233,30 @@ if __name__ == "__main__":
 
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             input_img = cv2.blur(input_img, (ksize, ksize))
+            input_img = cv2.flip(input_img, 1)
+            
+            '''
+            #Attempt to add mask to top half of image
+            input_img[0:res_height/2, 0:res_width, :] = 0
+            print('writing')
+            cv2.imwrite('Masked_input.jpeg', input_img)
+            '''
 
             mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
                                 (blueHue[1], blueSat[1], blueVal[1]))
+
+            inverted_img = cv2.bitwise_not(mask)    
+            # Detect blobs
+            '''
+            keypoints = detector.detect(inverted_img)
+            
+            blank = np.zeros((1, 1))
+            blobs = cv2.drawKeypoints(mask, keypoints,np.array([]),(0, 0, 255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+            #TODO: Find way to fill in  the drawn keypoints
+            cv2.imwrite('blobs.jpg', blobs)
+            print('Blobs')
+            time.sleep(1)
+            '''
 
             _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
@@ -143,69 +265,74 @@ if __name__ == "__main__":
 
             con = []
             for cnt in cntsSorted:
-                # Get moments of contour; mainly for centroid
-                M = cv2.moments(cnt)
-                # Get convex hull (bounding polygon on contour)
-                hull = cv2.convexHull(cnt)
                 # Calculate Contour area
                 cntArea = cv2.contourArea(cnt)
-                # calculate area of convex hull
-                hullArea = cv2.contourArea(hull)
+                if (cntArea > cnt_area_low):# and (cntArea < cnt_area_high)
+                    # Get moments of contour; mainly for centroid
+                    M = cv2.moments(cnt)
+                    # Get convex hull (bounding polygon on contour)
+                    hull = cv2.convexHull(cnt)
                     
-                # Approximate shape
-                approximateShape = cv2.approxPolyDP(hull, 0.01 * cv2.arcLength(hull, True), True)
+                    # calculate area of convex hull
+                    hullArea = cv2.contourArea(hull)
+                        
+                    # Approximate shape
+                    approximateShape = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
 
-                x, y, w, h = cv2.boundingRect(hull)
-                ratio = float(w) / h
+                    x, y, w, h = cv2.boundingRect(cnt)
+                    ratio = float(w) / h
 
-                perimeter = cv2.arcLength(cnt, True)
-                
+                    perimeter = cv2.arcLength(cnt, True)
+                    
 
-                # finding center point of shape
-                M = cv2.moments(hull)
-                if M['m00'] != 0.0:
-                    x = int(M['m10']/M['m00'])
-                    y = int(M['m01']/M['m00'])
+                    # finding center point of shape
+                    M = cv2.moments(cnt)
+                    if M['m00'] != 0.0:
+                        x = int(M['m10']/M['m00'])
+                        y = int(M['m01']/M['m00'])
 
-                #Frequently attempts to divide by zero, so a check that they aren't is necessary
-                if cntArea != 0 and hullArea != 0:
-                    solid = 100 * cntArea / hullArea
+                    #Frequently attempts to divide by zero, so a check that they aren't is necessary
+                    '''
+                    if cntArea != 0 and cntArea != 0:
+                        solid = 100 * cntArea / hullArea
+                    '''
 
-                #Filtering out the contours based on tuned values we are looking for
-                validCnt = True 
-                validCnt &= (hullArea > hull_area_low)# and (hullArea < hull_area_high)
-                validCnt &= (perimeter > minimum_perimeter)
-                validCnt &= (w >= width_minimum) and (w <= width_maximum)
-                validCnt &= (h >= height_minimum) and (h <= height_maximum)
-                if solid != 0:
-                    validCnt &= (solid > solid_Low) and (solid <= solid_High)
-                validCnt &= (len(approximateShape) >= 8)
-                validCnt &= (ratio >= rat_low) and (ratio < rat_high)
+                    #Filtering out the contours based on tuned values we are looking for
+                    validCnt = True 
+                    validCnt &= (perimeter > minimum_perimeter)
+                    validCnt &= (w >= width_minimum) and (w <= width_maximum)
+                    validCnt &= (h >= height_minimum) and (h <= height_maximum)
+                    '''
+                    if solid != 0:
+                        validCnt &= (solid > solid_Low) and (solid <= solid_High)
+                    '''
+                    validCnt &= (len(approximateShape) >= 8)
+                    validCnt &= (ratio >= rat_low) and (ratio < rat_high)
 
-                '''
-                print('Hullarea: ' , hullArea)
-                print('Perimeter:', perimeter)
-                print('Width:', w)
-                print('Height:', h)
-                print('Solid:', solid)
-                print('Approximate Shape:', approximateShape)
-                print('Ratio:', ratio)
-                '''
-                
-                #validCnt &= (y > cutOffHeight)
+                    '''
+                    print('Hullarea: ' , hullArea)
+                    print('Perimeter:', perimeter)
+                    print('Width:', w)
+                    print('Height:', h)
+                    print('Solid:', solid)
+                    print('Approximate Shape:', approximateShape)
+                    print('Ratio:', ratio)
+                    '''
+                    
+                    #validCnt &= (y > cutOffHeight)
 
-                validCnt &= (cv2.arcLength(cnt, True) < 10000)
-                
-                circularity = 0
-                if(perimeter == 0):
-                    validCnt = False 
-                else:
-                    circularity = 4*math.pi*(cntArea/(perimeter*perimeter))
-                    validCnt &= (.5 < circularity < 1.5)
-                
-                if(validCnt) and y < lowest_y :
-                    #print(cntArea, circularity, ratio)
-                    cnt_to_process = cnt
+                    validCnt &= (cv2.arcLength(cnt, True) < 10000)
+                    
+                    circularity = 0
+                    if(perimeter == 0):
+                        validCnt = False 
+                    else:
+                        circularity = 4*math.pi*(cntArea/(perimeter*perimeter))
+                        validCnt &= (.5 < circularity < 1.5)
+                    
+                    if(validCnt) and y < lowest_y :
+                        #print(cntArea, circularity, ratio)
+                        cnt_to_process = cnt
 
             x, y, w, h = cv2.boundingRect(cnt_to_process)
             
@@ -213,17 +340,33 @@ if __name__ == "__main__":
             cy = int(M["m01"] / M["m00"])
             cx = int(M["m10"] / M["m00"])
 
-            print('X center:', cx, 'Y center:',cy)
+            if printCount % 100 == 0:
+                print('X center:', cx, 'Y center:',cy)
+                printCount = 1
+            
+            else:
+                printCount += 1
+
+            dist = calculateDistance138(560-cy)
+            #print(dist)
 
             PacketValue['BallX'] = cy
             PacketValue['BallY'] = cx
+            PacketValue['Dist'] = dist
+
+
+            last_contour_x = cx
+            last_contour_y = cy
+            
             #print(PacketValue)
             PacketQueue.put_nowait(PacketValue)
             cx = ''
             cy = ''
             last_cnt_area = 0
             cnt_to_process = ''
-            lowest_y = 1000000
+            lowest_y = 1000
+
+            #print(PacketValue)
         except:
             print('Error, likely that a ball wasnt found')
 
