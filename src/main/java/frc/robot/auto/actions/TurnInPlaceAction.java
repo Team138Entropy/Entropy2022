@@ -34,13 +34,18 @@ public class TurnInPlaceAction implements Action {
 
     @Override
     public void update() {
-        if(Math.abs(mDrive.getGyro().getAngle()) < 5){
+        System.out.println("being called");
+        if(Math.abs(mDegrees - (mDrive.getGyro().getAngle()*-1)) < 5){
+            System.out.println("done");
             // within turn accuracy
             mComplete = true;
         }else{
+            System.out.println("still driving");
             // continue driving
             mDrive.driveGyroSetpoint(0, mDegrees);
         }
+       System.out.println("check " + Math.abs(mDegrees - (mDrive.getGyro().getAngle()*-1)));
+
     }
 
     // if trajectory is done

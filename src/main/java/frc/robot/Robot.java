@@ -97,10 +97,11 @@ public class Robot extends TimedRobot {
     mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
     mAutoModes.addOption("One Ball", new OneBall());
     mAutoModes.addOption("T3.5_B5", new T35_B5());
+    mAutoModes.addOption("TEST", new TEST());
    /* mAutoModes.addOption("Test Drive", new TestDriveMode());
     mAutoModes.addOption("Tarmac1_B2_B3_Tarmac2", new Tarmac1_B2_B3_Tarmac2());
     mAutoModes.addOption("DEMO", new DEMO());
-    mAutoModes.addOption("TEST", new TEST());
+    
     mAutoModes.addOption("T2_B3_B2_T1", new T2_B3_B2_T1());
     mAutoModes.addOption("T2_B3_T2", new T2_B3_T2());
     mAutoModes.addOption("T1_B2_T1_B3_T2", new T1_B2_T1_B3_T2());

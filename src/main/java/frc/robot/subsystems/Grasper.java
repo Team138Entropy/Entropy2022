@@ -28,8 +28,8 @@ public class Grasper extends Subsystem {
   private int mStartWaitTime;
 
   // Pulse Exector (On for X amount of Seconds, Off for X amount of Seconds)
-  private final int mPulseOnSeconds = 1;
-  private final int mPulseOffSeconds = 4;
+  private final double mPulseOnSeconds = .2;
+  private final double mPulseOffSeconds = 2;
   private DutyCycleExecutor mPulseExecutor = new DutyCycleExecutor(
       new Callable<Boolean>() {
           public Boolean call(){
