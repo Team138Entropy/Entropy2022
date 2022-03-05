@@ -91,27 +91,6 @@ if __name__ == "__main__":
     cond = threading.Condition()
     notified = [False]
 
-    '''
-    #Network table setup stuff
-    NetworkTables.initialize(server=team_Server)
-    ntinst = NetworkTablesInstance.getDefault()
-    NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
-
-    with cond:
-        print("Waiting")
-        if not notified[0]:
-            cond.wait()
-
-
-    table = NetworkTables.getTable('SmartDashboard')
-
-    try:
-        foo = table.getBoolean('selectedColor')
-
-        print(foo)
-    except Exception as e:
-        print('Likely couldnt get color of ball from network table. Exception:', e)
-    '''
 
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
