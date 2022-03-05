@@ -225,8 +225,8 @@ if __name__ == "__main__":
             cv2.imwrite('Masked_input.jpeg', input_img)
             '''
 
-            mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
-                                (blueHue[1], blueSat[1], blueVal[1]))
+            mask = cv2.inRange(input_img, (redHue[0], redSat[0], redVal[0]),
+                                (redHue[1], redSat[1], redVal[1]))
 
             inverted_img = cv2.bitwise_not(mask)    
             # Detect blobs
@@ -324,9 +324,6 @@ if __name__ == "__main__":
             M = cv2.moments(cnt_to_process)
             cy = int(M["m01"] / M["m00"])
             cx = int(M["m10"] / M["m00"])
-
-            
-            print('Error in making bounding rect')
 
             if printCount % 100 == 0:
                 print('X center:', cx, 'Y center:',cy)
