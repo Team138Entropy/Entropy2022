@@ -49,6 +49,19 @@ public class Arm extends Subsystem {
     }
   }
 
+  public static enum ArmExtensionTarget {
+    FULLY_RETRACTED(0),
+    MIDWAY(200),
+    FULLy_EXTENDED(400);
+
+    public double ticks;
+
+    private ArmExtensionTarget(double tick){
+      this.ticks = tick;
+    }
+  } 
+
+
   public Arm() {
     mShoulder = new TalonSRX(Constants.Talons.Arm.shoulder);
     mShoulder.setNeutralMode(NeutralMode.Brake);
@@ -67,8 +80,18 @@ public class Arm extends Subsystem {
     mShoulder.config_kD(0, 0, 10);
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
-    mShoulder.configMotionAcceleration(20);
-    mShoulder.configMotionCruiseVelocity(26, 10); // originally accel 5 veloc 10
+    mShoulder.configMotionAcceleration(22);
+    mShoulder.configMotionCruiseVelocity(27, 10); // originally accel 5 veloc 10
+    
+    // Forearm configuration
+    /*
+    mForearm.config_kF(0, 1, 10);
+    mForearm.config_kP(0, 35, 10);
+		mForearm.config_kI(0, 0, 10);
+    mForearm.config_kD(0, 0, 10);
+    mForearm.configMotionAcceleration(22);
+    mForearm.configMotionCruiseVelocity(27, 10); // originally accel 5 veloc 10
+    */
   }
 
   public static Arm getInstance() {
@@ -263,6 +286,10 @@ public class Arm extends Subsystem {
     return getRotation() >= angle + 4 || getRotation() <= angle - 4;
   }
 
+  public boolean isAtExtension(double extPos){
+    return getExtensionPosition() >= extPos + 4 || getExtensionPosition() <= extPos - 4;
+  }
+
   
   public double getExtensionPosition(){
     return mForearm.getSelectedSensorPosition();
@@ -272,6 +299,7 @@ public class Arm extends Subsystem {
   public void zeroSensors() {
     // Sensor is flipped
     mShoulder.setSelectedSensorPosition(Constants.Arm.shoulderStartPosition);
+    mForearm.setSelectedSensorPosition(0);
     
     /*
     if (getRotation() < 0) {
@@ -293,9 +321,10 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("shoulderPosition", getRotation());
     SmartDashboard.putNumber("shoulderVelocity", getRotationVelocity());
     SmartDashboard.putNumber("shoulderOutput", getShoulderOutput());
-    SmartDashboard.putNumber("forearmOutput", getForearmOutput());
     SmartDashboard.putNumber("shoulder talon output", mShoulder.getMotorOutputPercent());
-    SmartDashboard.putNumber("Forearm Current", mForearm.getSupplyCurrent());
+    SmartDashboard.putNumber("Extension Output", getForearmOutput());
+    SmartDashboard.putNumber("Extension Current", mForearm.getSupplyCurrent());
     SmartDashboard.putNumber("Extension Position", getExtensionPosition());
+    SmartDashboard.putNumber("Extension Velocity", mForearm.getSelectedSensorVelocity());
   }
 }

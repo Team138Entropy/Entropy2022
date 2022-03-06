@@ -80,11 +80,256 @@ public class Climber extends Subsystem {
 
         // Initialize the Climber Executor
         mClimberExecutor.setVerboseMode();
-        initClimberExecutor();
+        initBasicClimbSequence(); // basic climb instance, less agressive
+        // initAdvancedClimbSequence();
+
     }
 
     // Load the Climber Stage Functions into Climber Executor
-    private void initClimberExecutor(){
+    private void initBasicClimbSequence(){
+        // Prepare Climber - Verify Arm and Climber Position
+        mClimberExecutor.registerStage("Prepare Climber", 
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    System.out.println("PREPARE CLIMBER WORK!");
+                    // set arm to its starting position for climbing
+                    mArm.rotateToPosition(95);
+                    if(mArm.isAtPosition(95)){
+                        mArm.extend();
+                    }
+                    // set climber position to 0
+                    setPosition(ClimberTarget.ABOVE_BAR.ticks);
+                    return false;
+                }
+            },
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    System.out.println("IS DONE FUNCTION!?");
+                    // arm is in position and climber is in position
+                    System.out.println(mArm.isAtPosition(95));
+                    System.out.println(isAtPosition(ClimberTarget.ABOVE_BAR.ticks));
+                    return mArm.isAtPosition(95) && isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
+                }
+            },
+            true
+        );
+
+        // Lift Climber Arms - Requires Operator Blessing
+        mClimberExecutor.registerStage("Lift Climber Arms", 
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    // set climber position to climb position
+                    setPosition(ClimberTarget.LOW.ticks);
+                    return false;
+                }
+            },
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    return isAtPosition(ClimberTarget.LOW.ticks);
+                }
+            }, 
+            true
+        );
+        
+        // Pull Climber Arms Down - Requires Operator Blessing
+        mClimberExecutor.registerStage("Pull Climber Arms Down", 
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    // set climber position to climb position
+                    mArm.rotateToPosition(115);
+                    return false;
+                }
+            },
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    return mArm.isAtPosition(115);
+                }
+            }, 
+            true
+        );
+
+        mClimberExecutor.registerStage("Get off mid bar", 
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    // set climber position to climb position
+                    //mArm.rotateToPosition(90);
+                    setPosition(ClimberTarget.MID.ticks);
+                    return false;
+                }
+            },
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    return isAtPosition(ClimberTarget.MID.ticks);
+                }
+            }, 
+            true,3
+       );
+      mClimberExecutor.registerStage("Rotate to 45", 
+        new Callable<Boolean>() {
+            public Boolean call(){
+                // set climber position to climb position
+                mArm.rotateToPosition(45);
+                return false;
+            }
+        },
+        new Callable<Boolean>() {
+            public Boolean call(){
+                return mArm.isAtPosition(45);
+            }
+        }, 
+      false,2
+     );
+
+     mClimberExecutor.registerStage("Pull Climber to Mid and Retract Arm", 
+        new Callable<Boolean>() {
+            public Boolean call(){
+                // set climber position to climb position
+                setPosition(ClimberTarget.MID.ticks);
+                mArm.retract();
+                return false;
+            }
+        },
+        new Callable<Boolean>() {
+            public Boolean call(){
+                return isAtPosition(ClimberTarget.MID.ticks) && mArm.isRetracted();
+            }
+        }, 
+        false
+    );
+
+    mClimberExecutor.registerStage("Rotate to 75", 
+        new Callable<Boolean>() {
+            public Boolean call(){
+                // set climber position to climb position
+                //mArm.rotateToPosition(80);
+                mArm.jogStop();
+                return false;
+            }
+        },
+        new Callable<Boolean>() {
+            public Boolean call(){
+                //return mArm.isAtPosition(75);
+                return true;
+            }
+        }, 
+        false,1
+   );
+   mClimberExecutor.registerStage("Extend arm out", 
+        new Callable<Boolean>() {
+            public Boolean call(){                
+                mArm.extend();
+                mArm.rotateToPosition(mArm.getRotation() + 1);
+                return false;
+            }
+        },
+        new Callable<Boolean>() {
+            public Boolean call(){
+                return mArm.isExtended();
+            }
+        }, 
+        false,1
+   );
+   mClimberExecutor.registerStage("Retract arm", 
+        new Callable<Boolean>() {
+            public Boolean call(){
+                // set climber position to climb position
+                //mArm.rotateToPosition(80);
+                mArm.retract();
+                return false;
+            }
+        },
+        new Callable<Boolean>() {
+            public Boolean call(){
+                return mArm.isRetracted();
+            }
+        }, 
+        false
+   );
+   mClimberExecutor.registerStage("Rotate to 95", 
+        new Callable<Boolean>() {
+            public Boolean call(){
+                mArm.rotateToPosition(97);
+                return false;
+            }
+        },
+        new Callable<Boolean>() {
+            public Boolean call(){
+                return mArm.isAtPosition(97);
+            }
+        }, 
+        false,1
+   );
+   mClimberExecutor.registerStage("Extend arm + goto 50", 
+        new Callable<Boolean>() {
+            public Boolean call(){
+                mArm.extend();
+                setPosition(ClimberTarget.LOW.ticks);
+                return false;
+            }
+        },
+        new Callable<Boolean>() {
+            public Boolean call(){
+                return mArm.isExtended() && isAtPosition(ClimberTarget.LOW.ticks);
+            }
+        }, 
+        false
+
+   );
+    // Pull Climber Arms Down - Requires Operator Blessing
+    mClimberExecutor.registerStage("Pull Climber Arms Down", 
+    new Callable<Boolean>() {
+        public Boolean call(){
+            // set climber position to climb position
+            mArm.rotateToPosition(115);
+            return false;
+        }
+    },
+    new Callable<Boolean>() {
+        public Boolean call(){
+            return mArm.isAtPosition(115);
+        }
+    }, 
+    true
+    );
+
+    mClimberExecutor.registerStage("Extend to 25000", 
+    new Callable<Boolean>() {
+        public Boolean call(){
+            // set climber position to climb position
+            //mArm.rotateToPosition(90);
+            setPosition(ClimberTarget.MID.ticks);
+            return false;
+        }
+    },
+    new Callable<Boolean>() {
+        public Boolean call(){
+            return isAtPosition(ClimberTarget.MID.ticks);
+        }
+    }, 
+    true,4
+    );
+    mClimberExecutor.registerStage("Extend to 25000", 
+    new Callable<Boolean>() {
+        public Boolean call(){
+            // set climber position to climb position
+            //mArm.rotateToPosition(90);
+            setPosition(ClimberTarget.LOW.ticks);
+            mArm.jogStop();
+            return false;
+        }
+    },
+    new Callable<Boolean>() {
+        public Boolean call(){
+            return isAtPosition(ClimberTarget.LOW.ticks);
+        }
+    }, 
+    false
+    );
+
+        
+    }
+
+    private void initAdvancedClimbSequence(){
         // Prepare Climber - Verify Arm and Climber Position
         mClimberExecutor.registerStage("Prepare Climber", 
             new Callable<Boolean>() {
