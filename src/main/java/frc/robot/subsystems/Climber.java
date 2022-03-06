@@ -93,8 +93,8 @@ public class Climber extends Subsystem {
                 public Boolean call(){
                     System.out.println("PREPARE CLIMBER WORK!");
                     // set arm to its starting position for climbing
-                    mArm.rotateToPosition(95);
-                    if(mArm.isAtPosition(95)){
+                    mArm.rotateToPosition(102);
+                    if(mArm.isAtPosition(102)){
                         mArm.extend();
                     }
                     // set climber position to 0
@@ -106,9 +106,9 @@ public class Climber extends Subsystem {
                 public Boolean call(){
                     System.out.println("IS DONE FUNCTION!?");
                     // arm is in position and climber is in position
-                    System.out.println(mArm.isAtPosition(95));
+                    System.out.println(mArm.isAtPosition(102));
                     System.out.println(isAtPosition(ClimberTarget.ABOVE_BAR.ticks));
-                    return mArm.isAtPosition(95) && isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
+                    return mArm.isAtPosition(102) && isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
                 }
             },
             true
@@ -136,13 +136,16 @@ public class Climber extends Subsystem {
             new Callable<Boolean>() {
                 public Boolean call(){
                     // set climber position to climb position
-                    mArm.rotateToPosition(115);
+                    mArm.rotateToPosition(100);
                     return false;
                 }
             },
             new Callable<Boolean>() {
                 public Boolean call(){
-                    return mArm.isAtPosition(115);
+                    System.out.println("pull climber arms down");
+                    System.out.println(mArm.getRotation());
+                    System.out.println( mArm.isAtPosition(100));
+                    return mArm.isAtPosition(100);
                 }
             }, 
             true
@@ -695,5 +698,6 @@ public class Climber extends Subsystem {
         SmartDashboard.putNumber("Climber Winch Output Percentage", mClimber.getMotorOutputPercent());
         SmartDashboard.putNumber("Climber Winch Voltage Percentage", mClimber.getMotorOutputVoltage());
         SmartDashboard.putNumber("Climber Closed Loop Error", mClimber.getClosedLoopError());
+        SmartDashboard.putNumber("Climber Winch Current", mClimber.getSupplyCurrent());
     }
 }

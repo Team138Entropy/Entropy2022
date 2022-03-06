@@ -32,9 +32,9 @@ public class Arm extends Subsystem {
    * All useful arm target positions during a match. 
    */
   public static enum ArmTarget {
-    SCORE_FRONT(105, false),
+    SCORE_FRONT(110, false),
     SCORE_BACK(65, false),
-    INTAKE(-32, false),
+    INTAKE(-30, false),
     HOME(90, false),
     FLAT_FRONT(180, false),
     FLAT_BACK(0, false),
@@ -51,8 +51,8 @@ public class Arm extends Subsystem {
 
   public static enum ArmExtensionTarget {
     FULLY_RETRACTED(0),
-    MIDWAY(200),
-    FULLy_EXTENDED(400);
+    MIDWAY(92000),
+    FULLy_EXTENDED(184453);
 
     public double ticks;
 
@@ -74,24 +74,25 @@ public class Arm extends Subsystem {
     
     // PID constants
     // Old constants are 1, 33, .01, 330
-    mShoulder.config_kF(0, 1, 10);
+  mShoulder.config_kF(0, 1, 10);
     mShoulder.config_kP(0, 35, 10);
 		mShoulder.config_kI(0, 0, 10);
     mShoulder.config_kD(0, 0, 10);
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
-    mShoulder.configMotionAcceleration(22);
-    mShoulder.configMotionCruiseVelocity(27, 10); // originally accel 5 veloc 10
+    mShoulder.configMotionAcceleration(20);
+    mShoulder.configMotionCruiseVelocity(25, 10); // originally accel 5 veloc 10
+
+    mForearm.setSensorPhase(true);
     
     // Forearm configuration
-    /*
+    
     mForearm.config_kF(0, 1, 10);
-    mForearm.config_kP(0, 35, 10);
+    mForearm.config_kP(0, .9, 10);
 		mForearm.config_kI(0, 0, 10);
     mForearm.config_kD(0, 0, 10);
-    mForearm.configMotionAcceleration(22);
-    mForearm.configMotionCruiseVelocity(27, 10); // originally accel 5 veloc 10
-    */
+    mForearm.configMotionAcceleration(20000);
+    mForearm.configMotionCruiseVelocity(7200, 10); 
   }
 
   public static Arm getInstance() {
@@ -210,6 +211,10 @@ public class Arm extends Subsystem {
 
     mForearm.set(ControlMode.PercentOutput, speed);
   }
+
+  public void extendToPosition(double ticks) {
+    mForearm.set(ControlMode.MotionMagic, ticks, DemandType.ArbitraryFeedForward, 0);
+  }
   
   /**
    * Stop the forearm.
@@ -287,7 +292,7 @@ public class Arm extends Subsystem {
   }
 
   public boolean isAtExtension(double extPos){
-    return getExtensionPosition() >= extPos + 4 || getExtensionPosition() <= extPos - 4;
+    return getExtensionPosition() >= extPos + 10 || getExtensionPosition() <= extPos - 10;
   }
 
   

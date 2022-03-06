@@ -66,6 +66,7 @@ public class Grasper extends Subsystem {
   
   private Grasper(){
     mTalon = new PWMTalonSRX(Constants.Grasper.pwmChannel);
+    mTalon.setInverted(true);
 
     mIntakeStatus = IntakeStatus.IDLE;
     mThresholdExceedCount = 0;
