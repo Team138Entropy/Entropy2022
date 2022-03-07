@@ -167,4 +167,8 @@ public class OperatorInterface {
     public boolean getOperatorClimbStageApprovePress() {
         return mOperatorClimbApprovePress.update(mOperatorController.getButton(Button.A));
     }
+
+    public boolean getPushEject(){
+        return mOperatorController.getButton(Button.A);
+    }
 }

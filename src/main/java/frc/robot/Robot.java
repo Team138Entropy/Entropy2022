@@ -351,13 +351,11 @@ public class Robot extends TimedRobot {
 
       if (mGrasper.getBallsStored() < Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         mGrasper.intake();
-        System.out.println(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
       } else if (mGrasper.getBallsStored() == Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         target = ArmTarget.SCORE_BACK;
       }
 
       lastTarget = target;
-      
       mArm.rotateToPosition(target.degrees);
       /*
       if (target.isExtended) mArm.extend();
