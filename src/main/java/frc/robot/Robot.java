@@ -148,6 +148,9 @@ public class Robot extends TimedRobot {
   /** Called at the Start of Autonomous **/
   @Override
   public void autonomousInit() {
+    // Reset AutoMode Executor
+    if(mAutoModeExecutor != null) mAutoModeExecutor.reset();
+
     // Default Robot Mode to CargoScorer
     mCurrentMode = RobotMode.CargoScorer;
     
@@ -155,8 +158,6 @@ public class Robot extends TimedRobot {
 
     // zero sensors (if not zero'ed prior on this powerup)
     mSubsystemManager.zeroSensorsIfFresh();
-
-    // set auto mode
 
     // Get Selected AutoMode
     mAutoModeExecutor.setAutoMode(mAutoModes.getSelected());
@@ -363,6 +364,8 @@ public class Robot extends TimedRobot {
       */
       
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
+
+      // TODO: check for press of A button on Operator Controller to Cancel Intake
       
       mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
 

@@ -138,6 +138,7 @@ public class StageExecutor {
                         mStartBlessed = true;
                         mNeedUserInputToStartStage = false;
                     }else{
+                        if(mVerboseMode) System.out.println("No Start Blessing - Next Loop!");
                         // no start blessing, go to next loop
                         return false;
                     }
@@ -178,7 +179,13 @@ public class StageExecutor {
                         mTimer.stop();
                         mTimer = null;
                         mCurrentStageTimer = null;
+                    }else{
+                        // Still Waiting for stage to finish
+                        if(mVerboseMode) System.out.println("Waiting for Stage " + (mCurrentStage + 1) + " Post Delay to Complete!");
                     }
+                }else{
+                    // Stage Not Complete
+                    if(mVerboseMode) System.out.println("Stage " + (mCurrentStage + 1) + " Not Complete!");
                 }
             }catch(Exception e){
                 // exception
@@ -189,11 +196,13 @@ public class StageExecutor {
         }else{
             // Stages Complete
             result = true;
+            if(mVerboseMode) System.out.println("Stages Complete!");
         }
         return result;
     }
 
     public synchronized void reset(){
+        if(mVerboseMode) System.out.println("Reset StageExecutor");
         mCurrentStage = 0;
         mCurrentStageLoopCount = 0; //clear out loop count
         mStartBlessed = false;
