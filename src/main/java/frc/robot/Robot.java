@@ -364,6 +364,7 @@ public class Robot extends TimedRobot {
       */
       
       if (mOperatorInterface.getArmEject()) mGrasper.eject();
+      if (mOperatorInterface.getGrasperCancelIntake()) mGrasper.stop();
 
       // TODO: check for press of A button on Operator Controller to Cancel Intake
       

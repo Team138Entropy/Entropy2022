@@ -21,9 +21,6 @@ public class Grasper extends Subsystem {
   private double mCurrentThreshold; // The threshold the current must exceed to register
   private int mThresholdExceedCount; // How many consecutive loops the current has exceeded the threshold for
   private int mMinThresholdExceedCount; // How many consecutive loops the current must exceed the threshold
-  private int mPulseCounter; // Counts how long its been since the last "pulse" (running the motor)
-  private int mPulseCounterTime; // How long to wait between pulses, measured in robot loops
-  private int mMaxPulseTime;
   private int mTimeSinceStart;
   private int mStartWaitTime;
 
@@ -74,9 +71,6 @@ public class Grasper extends Subsystem {
     mCurrentThreshold = 10;
     mMinThresholdExceedCount = 6;
     mThresholdExceedCount = 0;
-    mPulseCounter = 0;
-    mPulseCounterTime = 10;
-    mMaxPulseTime = 60;
     mTimeSinceStart = 0;
     mStartWaitTime = 10;
   }
@@ -84,8 +78,8 @@ public class Grasper extends Subsystem {
   public void update(double current) {
     switch (mIntakeStatus) {
       case INTAKE:
-      System.out.println("GRASPER: INTAKE! "+ current);
-      mTimeSinceStart++;
+        System.out.println("GRASPER: INTAKE! "+ current);
+        mTimeSinceStart++;
         if (mBallsStored >= Constants.Grasper.maxBallsStored) {
           System.out.println("GRASPER STOP!");
           stop();
@@ -103,27 +97,23 @@ public class Grasper extends Subsystem {
 
         // If the current exceeds a set value for a set time and stop intaking
         if (mThresholdExceedCount > mMinThresholdExceedCount) {
-          stop();
           mBallsStored++;
-          mIntakeStatus = IntakeStatus.IDLE;
-          mPulseCounter = 0;
           mPulseExecutor.reset();
         }
         break;
       case EJECT:
-      System.out.println("GRAPSER: EJECT!");
+        System.out.println("GRAPSER: EJECT!");
         mThresholdExceedCount = 0;
         mTimeSinceStart = 0;
         if (mBallsStored == 0) {
           stop();
           mIntakeStatus = IntakeStatus.IDLE;
-          mPulseCounter = 0;
         }
         mBallsStored = 0;
         mPulseExecutor.reset();
         break;
       case IDLE:
-      System.out.println("GRASPER: IDLE");
+        System.out.println("GRASPER: IDLE");
         mThresholdExceedCount = 0;
         mTimeSinceStart = 0;
 

@@ -88,6 +88,10 @@ public class OperatorInterface {
         return null; // Return null otherwise
     }
 
+    public boolean getGrasperCancelIntake() {
+        return mOperatorController.getButton(Button.A);
+    }
+
     public boolean getArmEject() {
         return mOperatorController.getTrigger(Side.LEFT);
     }
