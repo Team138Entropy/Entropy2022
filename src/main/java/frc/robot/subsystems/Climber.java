@@ -93,8 +93,8 @@ public class Climber extends Subsystem {
                 public Boolean call(){
                     System.out.println("PREPARE CLIMBER WORK!");
                     // set arm to its starting position for climbing
-                    mArm.rotateToPosition(102);
-                    if(mArm.isAtPosition(102)){
+                    mArm.rotateToPosition(100);
+                    if(mArm.isAtPosition(100)){
                         mArm.extend();
                     }
                     // set climber position to 0
@@ -104,11 +104,8 @@ public class Climber extends Subsystem {
             },
             new Callable<Boolean>() {
                 public Boolean call(){
-                    System.out.println("IS DONE FUNCTION!?");
                     // arm is in position and climber is in position
-                    System.out.println(mArm.isAtPosition(102));
-                    System.out.println(isAtPosition(ClimberTarget.ABOVE_BAR.ticks));
-                    return mArm.isAtPosition(102) && isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
+                    return mArm.isAtPosition(100) && isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
                 }
             },
             true
@@ -136,7 +133,7 @@ public class Climber extends Subsystem {
             new Callable<Boolean>() {
                 public Boolean call(){
                     // set climber position to climb position
-                    mArm.rotateToPosition(100);
+                    mArm.rotateToPosition(109);
                     return false;
                 }
             },
@@ -144,8 +141,8 @@ public class Climber extends Subsystem {
                 public Boolean call(){
                     System.out.println("pull climber arms down");
                     System.out.println(mArm.getRotation());
-                    System.out.println( mArm.isAtPosition(100));
-                    return mArm.isAtPosition(100);
+                    System.out.println( mArm.isAtPosition(109));
+                    return mArm.isAtPosition(109);
                 }
             }, 
             true
@@ -283,13 +280,13 @@ public class Climber extends Subsystem {
     new Callable<Boolean>() {
         public Boolean call(){
             // set climber position to climb position
-            mArm.rotateToPosition(115);
+            mArm.rotateToPosition(117);
             return false;
         }
     },
     new Callable<Boolean>() {
         public Boolean call(){
-            return mArm.isAtPosition(115);
+            return mArm.isAtPosition(117);
         }
     }, 
     true
@@ -686,7 +683,8 @@ public class Climber extends Subsystem {
     }
 
     public boolean isAtPosition(int encoderPosition){
-        return getClimberPosition() >= encoderPosition + 500 || getClimberPosition() <= encoderPosition + 500;
+        //return getClimberPosition() >= encoderPosition - 500 && getClimberPosition() <= encoderPosition + 500;
+        return true;
     }
 
     public void updateSmartDashBoard() {

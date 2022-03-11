@@ -38,7 +38,7 @@ public class Arm extends Subsystem {
     HOME(90, false),
     FLAT_FRONT(180, false),
     FLAT_BACK(0, false),
-    CLIMB_START(140, false);
+    CLIMB_START(155, false);
 
     public double degrees;
     public boolean isExtended;
@@ -287,12 +287,14 @@ public class Arm extends Subsystem {
   }
 
   // Returns if the Shoulder Position is correct given a threshold
-  public boolean isAtPosition(int angle){
-    return getRotation() >= angle + 4 || getRotation() <= angle - 4;
+  public boolean isAtPosition(double angle){
+    double foundAngle = getRotation();
+    return (foundAngle <= angle + 4) && (foundAngle >= angle - 4);
   }
 
   public boolean isAtExtension(double extPos){
-    return getExtensionPosition() >= extPos + 10 || getExtensionPosition() <= extPos - 10;
+    double extensionPosition = getExtensionPosition();
+    return (extensionPosition <= extPos + 300) && (extensionPosition >= extPos - 300);
   }
 
   
