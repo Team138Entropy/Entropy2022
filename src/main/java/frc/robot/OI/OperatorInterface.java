@@ -23,6 +23,10 @@ public class OperatorInterface {
     private LatchedBoolean mClimberTestPress = new LatchedBoolean();
     private LatchedBoolean mOperatorClimbApprovePress = new LatchedBoolean();
 
+    private LatchedBoolean mExtensionUp = new LatchedBoolean();
+    private LatchedBoolean mExtensionDown = new LatchedBoolean();
+    private LatchedBoolean mExtensionSwitchMode = new LatchedBoolean();
+
     public static synchronized OperatorInterface getInstance() {
         if (mInstance == null) {
             mInstance = new OperatorInterface();
@@ -127,6 +131,14 @@ public class OperatorInterface {
         return mOperatorController.getButton(Button.X);
     }
 
+    public boolean getArmExtendPress(){
+        return mExtensionUp.update(mOperatorController.getButton(Button.B));
+    }
+
+    public boolean getArmRetractPress(){
+        return mExtensionDown.update(mOperatorController.getButton(Button.X));
+    }
+
     public boolean getArmJogUp() {
         return mOperatorController.getButton(Button.Y);
     }
@@ -161,6 +173,10 @@ public class OperatorInterface {
 
     public boolean getTestZeroPress(){
         return mOperatorController.getButton(Button.L_JOYSTICK);
+    }
+
+    public boolean getSwitchExtensionMode(){
+        return mExtensionSwitchMode.update(mOperatorController.getButton(Button.R_JOYSTICK));
     }
 
     // Operator Presses to Approve Next Climbing Stage

@@ -56,6 +56,7 @@ public class Robot extends TimedRobot {
   // Booleans for Test Modes
   private boolean mTest_ArmJogging = true;
   private boolean mTest_ClimberJogging = true;
+  private boolean mTest_ExtensionJogging = true;
 
   private boolean inAutoMode = false;
   private boolean inTeleop = false;
@@ -229,10 +230,14 @@ public class Robot extends TimedRobot {
     // Default to Jogging Modes
     mTest_ArmJogging = true;
     mTest_ClimberJogging = true;
+    mTest_ExtensionJogging = true;
+    extensionTargetPosition = 0;
   }
+  double extensionTargetPosition = 0;
 
   private boolean mIsShoulderJogging = false;
   private boolean mIsForearmJogging = false;
+  private boolean mIsExtensionJogging = false;
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
@@ -249,6 +254,9 @@ public class Robot extends TimedRobot {
     }
     if(mOperatorInterface.getSwitchModePress()){
       mTest_ClimberJogging = !mTest_ClimberJogging;
+    }
+    if(mOperatorInterface.getSwitchExtensionMode()){
+      mTest_ExtensionJogging = !mTest_ExtensionJogging;
     }
     
     // Arm is in Jogging Mode or Position Mode
@@ -309,16 +317,27 @@ public class Robot extends TimedRobot {
     }
 
     // arm extension test controls
-    if (mOperatorInterface.getArmExtendManual()) {
-      mArm.extend();
-      mIsForearmJogging = true;
-    } else if (mOperatorInterface.getArmRetractManual()) {
-      mArm.retract();
-      mIsForearmJogging = true;
-    } else {
-      mArm.stopForearm();
-    }
 
+    if(mTest_ExtensionJogging){
+      if (mOperatorInterface.getArmExtendManual()) {
+        mArm.extend();
+        mIsForearmJogging = true;
+      } else if (mOperatorInterface.getArmRetractManual()) {
+        mArm.retract();
+        mIsForearmJogging = true;
+      } else {
+        mArm.stopForearm();
+      }
+    }else{
+      extensionTargetPosition = mArm.getExtensionPosition();
+      if(mOperatorInterface.getArmExtendPress()){
+        extensionTargetPosition += 10000;
+      }else if(mOperatorInterface.getArmRetractPress()){
+        extensionTargetPosition -= 10000;
+      }
+      SmartDashboard.putNumber("ExtensionTargetPosTest", extensionTargetPosition);
+      mArm.extendToPosition(extensionTargetPosition);
+    }
 
     // grapser test controls
     if (mOperatorInterface.getArmEject()) {

@@ -15,7 +15,7 @@ public class Arm extends Subsystem {
 
   // Some constants
   private final double kShoulderJogSpeed = .35;
-  private final double kShoulderMaxGravityFF = .075;
+  private final double kShoulderMaxGravityFF = .2;
   private final double kForearmExtendSpeed = 1;
 
   // Motors
@@ -52,6 +52,9 @@ public class Arm extends Subsystem {
   public static enum ArmExtensionTarget {
     FULLY_RETRACTED(0),
     MIDWAY(92000),
+    ABOVE_HIGH_BAR(80000),
+    UNDER_HIGH_BAR(40000),
+    SLIGHT_RETRACTION(138000),
     FULLy_EXTENDED(184453);
 
     public double ticks;
@@ -66,6 +69,7 @@ public class Arm extends Subsystem {
     mShoulder = new TalonSRX(Constants.Talons.Arm.shoulder);
     mShoulder.setNeutralMode(NeutralMode.Brake);
     mForearm = new TalonSRX(Constants.Talons.Arm.forearm);
+    mForearm.setNeutralMode(NeutralMode.Brake);
     mForearm.setInverted(true);
     mTargets = new int[] {-50, 0, 60, 90, 120, 210};
 
@@ -74,13 +78,13 @@ public class Arm extends Subsystem {
     
     // PID constants
     // Old constants are 1, 33, .01, 330
-  mShoulder.config_kF(0, 1, 10);
+   mShoulder.config_kF(0, 1, 10);
     mShoulder.config_kP(0, 35, 10);
 		mShoulder.config_kI(0, 0, 10);
     mShoulder.config_kD(0, 0, 10);
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
-    mShoulder.configMotionAcceleration(20);
+    mShoulder.configMotionAcceleration(10);
     mShoulder.configMotionCruiseVelocity(25, 10); // originally accel 5 veloc 10
 
     mForearm.setSensorPhase(true);
@@ -100,6 +104,11 @@ public class Arm extends Subsystem {
       mInstance = new Arm();
     }
     return mInstance;
+  }
+
+  public synchronized void configArmVelocityAndAcceleration(double velocity, double acceleration){
+    mShoulder.configMotionAcceleration(acceleration);
+    mShoulder.configMotionCruiseVelocity(velocity, 10); // originally accel 5 veloc 10
   }
 
   /**
@@ -213,13 +222,14 @@ public class Arm extends Subsystem {
   }
 
   public void extendToPosition(double ticks) {
-    mForearm.set(ControlMode.MotionMagic, ticks, DemandType.ArbitraryFeedForward, 0);
+    mForearm.set(ControlMode.MotionMagic, ticks, DemandType.ArbitraryFeedForward, .3);
   }
   
   /**
    * Stop the forearm.
    */
   public void stopForearm() {
+    System.out.println("STOP!");
     extend(0);
   }
 
@@ -227,6 +237,7 @@ public class Arm extends Subsystem {
    * Extend the forearm at a fixed speed.
    */
   public void extend() {
+    System.out.println("EXTEND!");
     extend(kForearmExtendSpeed);
   }
 
@@ -234,6 +245,7 @@ public class Arm extends Subsystem {
    * Retract the forearm at a fixed speed.
    */
   public void retract() {
+    System.out.println("RETRACT!");
     extend(-kForearmExtendSpeed);
   }
 
@@ -333,5 +345,6 @@ public class Arm extends Subsystem {
     SmartDashboard.putNumber("Extension Current", mForearm.getSupplyCurrent());
     SmartDashboard.putNumber("Extension Position", getExtensionPosition());
     SmartDashboard.putNumber("Extension Velocity", mForearm.getSelectedSensorVelocity());
+
   }
 }
