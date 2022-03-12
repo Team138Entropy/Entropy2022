@@ -44,6 +44,9 @@ public class Climber extends Subsystem {
     // Reference to the Arm
     private final Arm mArm = Arm.getInstance();
 
+
+    private double limpVariable = 0;
+
     // Climber Action Execution
     private final StageExecutor mClimberExecutor = new StageExecutor();
 
@@ -184,7 +187,7 @@ public class Climber extends Subsystem {
         }, 
       true,0
      );
-
+        /*
      mClimberExecutor.registerStage("Pull Climber to Mid and Retract Arm", 
         new Callable<Boolean>() {
             public Boolean call(){
@@ -201,6 +204,24 @@ public class Climber extends Subsystem {
         }, 
         true
     );
+    */
+
+    mClimberExecutor.registerStage("Pull Climber to Mid and Retract Arm", 
+    new Callable<Boolean>() {
+        public Boolean call(){
+            // set climber position to climb position
+            setPosition(ClimberTarget.ABOVE_BAR.ticks);
+            mArm.extendToPosition(ArmExtensionTarget.FULLY_EXTENDED.ticks - 10000);
+            return false;
+        }
+    },
+    new Callable<Boolean>() {
+        public Boolean call(){
+            return isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
+        }
+    }, 
+    true
+);
 
     mClimberExecutor.registerStage("Rotate to 75", 
         new Callable<Boolean>() {
@@ -218,23 +239,66 @@ public class Climber extends Subsystem {
                 return true;
             }
         }, 
-        true,0
+        true,1
    );
-   mClimberExecutor.registerStage("Extend arm out", 
-        new Callable<Boolean>() {
-            public Boolean call(){                
-                mArm.extend();
-                mArm.rotateToPosition(mArm.getRotation() + 1);
-                return false;
-            }
-        },
-        new Callable<Boolean>() {
-            public Boolean call(){
-                return mArm.isExtended();
-            }
-        }, 
-        true,0
-   );
+
+
+   mClimberExecutor.registerStage("save value", 
+   new Callable<Boolean>() {
+       public Boolean call(){
+           // set climber position to climb position
+           //mArm.rotateToPosition(80);
+           limpVariable = mArm.getRotation();
+           return false;
+       }
+   },
+   new Callable<Boolean>() {
+       public Boolean call(){
+           return true;
+       }
+   }, 
+   false,0
+);
+
+
+
+mClimberExecutor.registerStage("Extend arm out", 
+new Callable<Boolean>() {
+    public Boolean call(){                
+        //mArm.rotateToPosition(mArm.getRotation() + 1);
+        mArm.rotateToPosition(limpVariable - 2);
+        return false;
+    }
+},
+new Callable<Boolean>() {
+    public Boolean call(){
+        return true;
+    }
+}, 
+false,0
+);
+   mClimberExecutor.registerStage("Pull Climber to Mid and Retract Arm", 
+    new Callable<Boolean>() {
+        public Boolean call(){
+            // set climber position to climb position
+            mArm.extend();
+            setPosition(ClimberTarget.MID.ticks);
+            mArm.rotateToPosition(limpVariable - 6);
+
+            //mArm.extendToPosition(ArmExtensionTarget.ABOVE_HIGH_BAR.ticks);
+            return false;
+        }
+    },
+    new Callable<Boolean>() {
+        public Boolean call(){
+            return isAtPosition(ClimberTarget.MID.ticks);
+        }
+    }, 
+    true
+    );
+
+
+
    mClimberExecutor.registerStage("Retract arm", 
         new Callable<Boolean>() {
             public Boolean call(){

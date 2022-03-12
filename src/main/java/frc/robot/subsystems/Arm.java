@@ -55,7 +55,7 @@ public class Arm extends Subsystem {
     ABOVE_HIGH_BAR(80000),
     UNDER_HIGH_BAR(40000),
     SLIGHT_RETRACTION(138000),
-    FULLy_EXTENDED(184453);
+    FULLY_EXTENDED(184453);
 
     public double ticks;
 
