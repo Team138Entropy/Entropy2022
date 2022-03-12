@@ -139,16 +139,12 @@ if __name__ == "__main__":
     printCount = 1
     myDistFeet = 0
     
-    # Create a detector with the parameters
-    blank = np.zeros((1, 1))
-
     black_mask = cv2.imread('/home/pi/black_mask.png')
 
     print('Blue ball vision setup complete')
 
     while True:
         #Try covers the following code to make sure we never fail during a match.
-        
         try:
             current_frame += 1
             '''
