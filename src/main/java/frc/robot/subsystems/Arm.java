@@ -30,9 +30,10 @@ public class Arm extends Subsystem {
 
   /** 
    * All useful arm target positions during a match. 
+   * note: we changed the pos for score front from 110 to 155 on 3/13/22 :)
    */
   public static enum ArmTarget {
-    SCORE_FRONT(110, false),
+    SCORE_FRONT(115, false),
     SCORE_BACK(65, false),
     INTAKE(-30, false),
     HOME(90, false),
