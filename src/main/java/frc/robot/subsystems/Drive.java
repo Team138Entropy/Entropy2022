@@ -434,7 +434,7 @@ public class Drive extends Subsystem {
    *
    * @return The pose.
    */
-  public Pose2d getPose() {
+  public synchronized Pose2d getPose() {
     return mOdometry.getPoseMeters();
   }
 
@@ -444,6 +444,14 @@ public class Drive extends Subsystem {
    */
   public synchronized void storeCurrentPose(){
     mStoredPose = getPose();
+  }
+
+  /**
+   * Get Stored Pose of RObot
+   * @return
+   */
+  public synchronized Pose2d getStoredPose(){
+    return mStoredPose;
   }
 
   /**

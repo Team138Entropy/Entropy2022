@@ -116,8 +116,8 @@ public class Constants {
     }
 
       public static class Auto {
-        public static final double VelocityMetersPerSecond = 1.8288; // m/s, from 6 ft/s
-        public static final double AccelerationMetersPerSecondSq = 1.2192; //m/s^2 from 4 ft/s^2
+        public static final double MaxVelocityMetersPerSecond = 1.8288; // m/s, from 6 ft/s
+        public static final double MaxAccelerationMetersPerSecondSq = 1.2192; //m/s^2 from 4 ft/s^2
       }
 
       // Diameter of wheel & ticksPerRevolution used to convert meters into encoder ticks

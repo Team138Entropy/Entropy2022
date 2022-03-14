@@ -79,19 +79,18 @@ public class Arm extends Subsystem {
     
     // PID constants
     // Old constants are 1, 33, .01, 330
-   mShoulder.config_kF(0, 1, 10);
+    mShoulder.config_kF(0, 1, 10);
     mShoulder.config_kP(0, 35, 10);
 		mShoulder.config_kI(0, 0, 10);
     mShoulder.config_kD(0, 0, 10);
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
-    mShoulder.configMotionAcceleration(10);
+    mShoulder.configMotionAcceleration(20);
     mShoulder.configMotionCruiseVelocity(25, 10); // originally accel 5 veloc 10
 
-    mForearm.setSensorPhase(true);
     
     // Forearm configuration
-    
+    mForearm.setSensorPhase(true);
     mForearm.config_kF(0, 1, 10);
     mForearm.config_kP(0, .9, 10);
 		mForearm.config_kI(0, 0, 10);

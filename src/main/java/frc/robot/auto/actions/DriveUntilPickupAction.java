@@ -4,6 +4,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Arm.ArmTarget;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /*
     Drive Until Pickup Action
@@ -18,7 +19,7 @@ public class DriveUntilPickupAction implements Action {
     private double mStartingGyroErrorAngle;
     private Timer mTimer;
     private double mTimeoutSeconds = 8;
-    private int mContinueDrivingTime = 3;
+    private int mContinueDrivingTime = 0;
     private int mDriveTime = 10;
 
     public DriveUntilPickupAction(){
@@ -49,7 +50,13 @@ public class DriveUntilPickupAction implements Action {
             mDrive.setDrive(0, 0, false);
            }
         }else{
-            mDrive.driveGyroSetpoint(mThrottleSpeed, mStartingGyroErrorAngle);
+            // continue driving forward
+            // TODO: This might be the wrong offset 
+            double offsetGyro = mStartingGyroErrorAngle - mDrive.getGyro().getAngle();
+            SmartDashboard.putNumber("Gyro Straight Offset", offsetGyro);
+            mDrive.autoSteer(mThrottleSpeed, offsetGyro);
+            //mDrive.driveGyroSetpoint(mThrottleSpeed, mStartingGyroErrorAngle);
+
             mDrive.updateOdometry();
         }
         

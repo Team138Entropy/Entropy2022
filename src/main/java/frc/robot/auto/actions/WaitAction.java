@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 public class WaitAction implements Action {
     private final double mTimeToWait;
     private double mStartTime;
+    private Timer mTimer;
 
     public WaitAction(double timeToWait) {
         mTimeToWait = timeToWait;
@@ -15,7 +16,8 @@ public class WaitAction implements Action {
 
     @Override
     public void start() {
-        mStartTime = Timer.getFPGATimestamp();
+        mTimer = new Timer();
+        mTimer.start();
     }
 
     @Override
@@ -23,7 +25,7 @@ public class WaitAction implements Action {
 
     @Override
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() - mStartTime >= mTimeToWait;
+        return mTimer.hasElapsed(mTimeToWait);
     }
 
     @Override

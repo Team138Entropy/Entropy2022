@@ -84,10 +84,8 @@ public class Grasper extends Subsystem {
   public void update(double current) {
     switch (mIntakeStatus) {
       case INTAKE:
-      System.out.println("GRASPER: INTAKE! "+ current);
-      mTimeSinceStart++;
+        mTimeSinceStart++;
         if (mBallsStored >= Constants.Grasper.maxBallsStored) {
-          System.out.println("GRASPER STOP!");
           stop();
           mIntakeStatus = IntakeStatus.IDLE;
         }
@@ -95,10 +93,8 @@ public class Grasper extends Subsystem {
         // If the current exceeds the normal level then we have a ball
         if (current > mCurrentThreshold && mTimeSinceStart > mStartWaitTime) {
           mThresholdExceedCount++;
-          System.out.println(" OVER THREADSHOLD!");
         } else if (mTimeSinceStart <= mStartWaitTime) {
           mThresholdExceedCount = 0;
-          System.out.println("ZEROING THRESHOLD!");
         }
 
         // If the current exceeds a set value for a set time and stop intaking
@@ -111,7 +107,6 @@ public class Grasper extends Subsystem {
         }
         break;
       case EJECT:
-      System.out.println("GRAPSER: EJECT!");
         mThresholdExceedCount = 0;
         mTimeSinceStart = 0;
         if (mBallsStored == 0) {
@@ -123,7 +118,6 @@ public class Grasper extends Subsystem {
         mPulseExecutor.reset();
         break;
       case IDLE:
-      System.out.println("GRASPER: IDLE");
         mThresholdExceedCount = 0;
         mTimeSinceStart = 0;
 
@@ -135,7 +129,7 @@ public class Grasper extends Subsystem {
       default:
         System.out.println("Grasper has no status!");
     }
-    SmartDashboard.putNumber("Graspercurrent", current);
+    SmartDashboard.putNumber("Grasper Current", current);
   }
 
   public void intake() {

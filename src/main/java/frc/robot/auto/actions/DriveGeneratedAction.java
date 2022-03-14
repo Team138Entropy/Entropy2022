@@ -1,6 +1,13 @@
 package frc.robot.auto.actions;
 
 import frc.robot.subsystems.Drive;
+import frc.robot.auto.TrajectoryFollower;
+import frc.robot.auto.TrajectoryLibrary;
+import edu.wpi.first.math.trajectory.*;
+import frc.robot.Constants;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import java.util.ArrayList;
 
 /**
  * Stores the Initial Drive Position Action
@@ -8,26 +15,60 @@ import frc.robot.subsystems.Drive;
  */
 public class DriveGeneratedAction implements Action {
   private final Drive mDrive  = Drive.getInstance();
-  private boolean mIsComplete;
+  private boolean mReverse;
+  private boolean mStopWhenDone;
+  private Trajectory mTrajectory;
+  private TrajectoryFollower mTrajectoryFollower = TrajectoryFollower.getInstance();
+  private TrajectoryLibrary mTrajectoryLibrary = TrajectoryLibrary.getInstance();
 
-  public DriveGeneratedAction() {
+
+  public DriveGeneratedAction(boolean reverse, boolean stopWhenDone) {
+    mStopWhenDone = stopWhenDone;
+    mReverse = reverse;
+  }
+
+  public DriveGeneratedAction(boolean reverse){
+    this(reverse, true);
   }
 
   @Override
   public void start() {
+    // generate trajectory
+    Pose2d StartPose = mDrive.getStoredPose();
+    Pose2d EndPose = mDrive.getPose();
 
+    // Generate trajectory
+    TrajectoryConfig trajConfig = new TrajectoryConfig(Constants.Drive.Auto.MaxVelocityMetersPerSecond, 
+                                  Constants.Drive.Auto.MaxAccelerationMetersPerSecondSq);
+    mTrajectory = TrajectoryGenerator.generateTrajectory(StartPose, new ArrayList<Translation2d>(), 
+                                                                    EndPose, trajConfig);
+
+    // reverse trajectory (if applicable)
+    if(mReverse) mTrajectory = mTrajectoryLibrary.getReversedTrajectory(mTrajectory);
+
+    // set Trajectory into TrajectoryFollower
+    mTrajectoryFollower.setTrajectory(mTrajectory);
+
+    // perform intailization of trajectory follower
+    mTrajectoryFollower.Start();
   }
 
   @Override
   public void update() {
-
+    // update trajectory
+    mTrajectoryFollower.Update();
   }
 
   @Override
   public boolean isFinished() {
-    return mIsComplete;
+    return mTrajectoryFollower.isComplete();
   }
 
   @Override
-  public void done() {}
+  public void done() {
+    System.out.println("DriveTrajectoryAction Complete!");
+    if (mStopWhenDone) {
+        mTrajectoryFollower.StopDrive();
+    }
+  }
 }
