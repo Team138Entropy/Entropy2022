@@ -33,17 +33,24 @@ public class T35_B5 extends AutoModeBase {
         driveActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
         driveActionList.add(new EjectAction());
         */
+        /*
         List<Action > driveBackActions = new ArrayList<Action >(); 
         driveBackActions.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
         driveBackActions.add(new GrasperUpdateAction(3));
         driveBackActions.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5()));
-        
+        */
         driveActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
         driveActionList.add(new EjectAction());
+        driveActionList.add(new StoreDrivePositionAction());
         driveActionList.add(new AutoTurnAction());
         driveActionList.add(new DriveUntilPickupAction());
-        driveActionList.add(new ParallelAction(driveBackActions));
+        driveActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
+        //driveActionList.add(new DriveGeneratedAction(true));
+        driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5()));
         driveActionList.add(new EjectAction());
+
+        //driveActionList.add(new ParallelAction(driveBackActions));
+        //driveActionList.add(new EjectAction());
     }
 
     @Override

@@ -15,7 +15,7 @@ public class DriveUntilPickupAction implements Action {
     private Drive mDrive = Drive.getInstance();
     private Grasper mGrasper = Grasper.getInstance();
     private boolean mComplete;
-    private double mThrottleSpeed = -.16;
+    private double mThrottleSpeed = -.13;
     private double mStartingGyroErrorAngle;
     private Timer mTimer;
     private double mTimeoutSeconds = 8;
@@ -47,6 +47,7 @@ public class DriveUntilPickupAction implements Action {
            mDriveTime++;
            if (mDriveTime > mContinueDrivingTime) {
             mComplete = true;
+            mDrive.updateOdometry();
             mDrive.setDrive(0, 0, false);
            }
         }else{

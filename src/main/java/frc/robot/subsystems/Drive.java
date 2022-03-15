@@ -307,7 +307,7 @@ public class Drive extends Subsystem {
   }
 
   public synchronized void autoSteer(double throttle, double angle){
-    double radians = (0.0174533) * angle;
+    double radians = (0.0174) * angle;
     double heading_error_rad = radians;
     final double kAutosteerKp = 0.1;
     boolean towards_goal = true;

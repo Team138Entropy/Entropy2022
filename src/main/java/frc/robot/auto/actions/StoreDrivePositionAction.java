@@ -15,7 +15,8 @@ public class StoreDrivePositionAction implements Action {
 
   @Override
   public void start() {
-
+    mDrive.storeCurrentPose();
+    mIsComplete = true;
     }
 
   @Override

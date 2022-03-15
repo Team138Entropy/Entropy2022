@@ -22,9 +22,9 @@ public class OneBall extends AutoModeBase {
         // add multiple actions to drive trajectorys, these will run one after another
         //driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T1_B2()));
         driveActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
-        //driveActionList.add(new WaitAction(.3));
+        driveActionList.add(new WaitAction(.5));
         driveActionList.add(new EjectAction());
-        //driveActionList.add(new WaitAction(.3));
+        driveActionList.add(new WaitAction(.5));
         driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_New_T1_B2())));
         driveActionList.add(new ArmRotateAction(Arm.ArmTarget.HOME.degrees));
     }

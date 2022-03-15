@@ -19,7 +19,7 @@ public class TEST extends AutoModeBase {
 
     public TEST(){
         // add multiple actions to drive trajectorys, these will run one after another
-        driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_B2_setup_B3())));
+        driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_New_T1_B3())));
         //driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5()));
     }
 
