@@ -415,15 +415,15 @@ public class Robot extends TimedRobot {
    * allowAutoSteer - Enables/Disables AutoSteering
    */
   private void DriveLoop(boolean precisionSteer, boolean allowAutoSteer){
-    double driveThrottle = mOperatorInterface.getDriveThrottle()*-1;
-    double driveTurn = mOperatorInterface.getDriveTurn();
+    double driveThrottle = mOperatorInterface.getDriveThrottle()*-.2;
+    double driveTurn = mOperatorInterface.getDriveTurn() * .5;
 
     // precision steer (slow down throttle if left trigger is held)
    if(precisionSteer) driveThrottle *= .3;
 
-    boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
-    wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed
-    SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
+    // boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
+    // wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed
+    // SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 
     // Get Target within the allowed Threshold
     TargetInfo ti = mVisionManager.getSelectedTarget(Constants.Vision.kAllowedSecondsThreshold);
@@ -438,21 +438,25 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Valid Target", validTarget);
     SmartDashboard.putNumber("Target Angle", errorAngle);
     
-    if(wantsAutoSteer && validTargetInfo){
-      if(ti.isValid()){ //only allow if valud packet
-        // autonomously steering robot towards cargo
-        // todo: only allow drive in a certain direction? 
-       mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
-      }else{
-        System.out.println("Invalid Packet!");
-      }
-    }else if(wantsAutoSteer){
-      // wants auto steer, but invalid target info
-      // TODO: vibrate controller so driver knows
-    }else{
+    // if(wantsAutoSteer && validTargetInfo){
+    //   if(ti.isValid()){ //only allow if valud packet
+    //     // autonomously steering robot towards cargo
+    //     // todo: only allow drive in a certain direction? 
+    //    mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
+    //   }else{
+    //     System.out.println("Invalid Packet!");
+    //   }
+    // }else if(wantsAutoSteer){
+    //   // wants auto steer, but invalid target info
+    //   // TODO: vibrate controller so driver knows
+    // }else{
       //manual drive
+
+      // if ((mDrive.getHeading() - )) {
+
+      // }
       mDrive.setDrive(driveThrottle, driveTurn, false);
-    }
+    // }
   }
 
   // Check for Change of Mode 
