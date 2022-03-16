@@ -85,7 +85,7 @@ public class Arm extends Subsystem {
     mShoulder.config_kD(0, 300, 10);
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);
-    mShoulder.configMotionAcceleration(15);
+    mShoulder.configMotionAcceleration(20);
     mShoulder.configMotionCruiseVelocity(25, 10); // originally accel 5 veloc 10
 
     
@@ -172,7 +172,6 @@ public class Arm extends Subsystem {
    */
   public void jogRotateDown() {
     rotate(-kShoulderJogSpeed);
-    
   }
 
   public void jogStop(){

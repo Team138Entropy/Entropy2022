@@ -24,12 +24,16 @@ public class AutoTurnAction implements Action {
 
   @Override
   public void update(){
+    System.out.println("in update loop for auto turn action.");
     TargetInfo ti = mVisionManager.getSelectedTarget(Constants.Vision.kAllowedSecondsThreshold);
     double errorAngle = 0;
     if(ti != null && ti.isValid()){
         // has valid error
         errorAngle = ti.getErrorAngle();
         System.out.println("error angle "+ errorAngle);
+    }
+    else {
+      System.out.println("we didn't get anything");
     }
     // turn in place to errorAngle
     mDrive.autoSteer(0, errorAngle);
