@@ -92,9 +92,9 @@ if __name__ == "__main__":
     imgForm = np.zeros(shape=(240, 320, 3), dtype=np.uint8)
 
     #Blue ball
-    blueHue = [85, 122]
-    blueSat = [119, 255]
-    blueVal = [41, 255]  
+    blueHue = [83, 122]
+    blueSat = [85, 255]
+    blueVal = [69, 255]  
 
     #Creating settings for blur filter. Radius should be figured out by testing in GRIP
     radius = 2.83
@@ -156,7 +156,7 @@ if __name__ == "__main__":
 
             PacketValue = {}
             PacketValue['cameraid'] = 0
-            PacketValue['ballColor'] = 'blue'
+            PacketValue['ballColor'] = 'Blue'
             
             #start_time = time.time() #Use this to get FPS below
             frame_time, input_img = input_stream.grabFrame(imgForm)
@@ -227,16 +227,17 @@ if __name__ == "__main__":
                     validCnt &= (len(approximateShape) >= 8)
                     validCnt &= (ratio >= rat_low) and (ratio < rat_high)
 
-                    '''
+                    
                     #List of prints for debugging
-                    print('Hullarea: ' , hullArea)
+                    
                     print('Perimeter:', perimeter)
                     print('Width:', w)
                     print('Height:', h)
                     print('Solid:', solid)
                     print('Approximate Shape:', approximateShape)
                     print('Ratio:', ratio)
-                    '''
+                    print('Vetices', )
+                    
 
                     validCnt &= (cv2.arcLength(cnt, True) < 10000)
                     

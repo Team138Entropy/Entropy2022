@@ -101,12 +101,12 @@ if __name__ == "__main__":
     ksize = (2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
-    cnt_area_low = 500
+    cnt_area_low = 800
     #cnt_area_high = 7500
     minimum_perimeter = 10
-    width_minimum = 10
+    width_minimum = 15
     width_maximum = 300
-    height_minimum = 10
+    height_minimum = 15
     height_maximum = 300
     solid_Low = 94
     solid_High = 100
@@ -141,7 +141,7 @@ if __name__ == "__main__":
     
     black_mask = cv2.imread('/home/pi/black_mask.png')
 
-    print('Red ball vision setup complete')
+    print('Blue ball vision setup complete')
 
     while True:
         #Try covers the following code to make sure we never fail during a match.
@@ -184,23 +184,29 @@ if __name__ == "__main__":
             for cnt in cntsSorted:
                 # Calculate Contour area early as a way to eliminate unnecesarily processing contours that arent viable
                 cntArea = cv2.contourArea(cnt)
-                if (cntArea > cnt_area_low):# and (cntArea < cnt_area_high)
+                print('Spot 1')
+                if (cntArea > cnt_area_low):
                     # Get moments of contour; mainly for centroid
+                    print('Spot 13')
                     M = cv2.moments(cnt)
                     # Get convex hull (bounding polygon on contour)
                     hull = cv2.convexHull(cnt)
-                    
+                    print('Spot 14')
                     # calculate area of convex hull
                     #hullArea = cv2.contourArea(hull)
                         
                     # Approximate shape - Approximates a polygonal curve(s) with the specified precision.
                     approximateShape = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
+                    print('Spot 15')
 
                     x, y, w, h = cv2.boundingRect(cnt)
                     #Check what amount of the bounding rectangle is filled by the detected object.
                     ratio = float(w) / h
+                    print('Spot 16')
 
                     perimeter = cv2.arcLength(cnt, True)
+
+                    print('Spot 2')
                     
 
                     # finding center point of shape
@@ -217,15 +223,21 @@ if __name__ == "__main__":
 
                     #Filtering out the contours based on tuned values we are looking for
                     validCnt = True 
+                    print('Spot 3')
                     validCnt &= (perimeter > minimum_perimeter)
+                    print('Spot 4')
                     validCnt &= (w >= width_minimum) and (w <= width_maximum)
+                    print('Spot 5')
                     validCnt &= (h >= height_minimum) and (h <= height_maximum)
+                    print('Spot 6')
                     '''
                     if solid != 0:
                         validCnt &= (solid > solid_Low) and (solid <= solid_High)
                     '''
                     validCnt &= (len(approximateShape) >= 8)
+                    print('Spot 7')
                     validCnt &= (ratio >= rat_low) and (ratio < rat_high)
+                    print('Spot 8')
 
                     '''
                     #List of prints for debugging
@@ -239,17 +251,23 @@ if __name__ == "__main__":
                     '''
                     
                     validCnt &= (cv2.arcLength(cnt, True) < 10000)
+                    print('Spot 9')
                     
+                    '''
                     circularity = 0
                     if(perimeter == 0):
                         validCnt = False 
+                        print('Spot 9')
                     else:
                         circularity = 4*math.pi*(cntArea/(perimeter*perimeter))
                         validCnt &= (.5 < circularity < 1.5)
-                    
+                        print('Spot 10')
+                    '''
+                    validCnt = True
                     if(validCnt) and y < lowest_y :
                         myDistFeet = calculateDistanceFeet(w)
                         #print(cntArea, circularity, ratio)
+                        print('Spot 11')
                         cnt_to_process = cnt
 
             x, y, w, h = cv2.boundingRect(cnt_to_process)
@@ -266,6 +284,7 @@ if __name__ == "__main__":
                 printCount += 1
 
             #The /2 and -.6 are entirely arbitrary values. If re-using this code in the future, you will need to re-sample to find those valvues.
+            print('Spot 12')
             dist = (myDistFeet/2)-.6
             print(dist)
             
