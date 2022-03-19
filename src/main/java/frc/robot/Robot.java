@@ -150,7 +150,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     updateRobotSmartDashboard();
-    NetworkTable table = inst.getTable("datatable");
+    NetworkTable table = inst.getTable("SmartDashboard");
     ballColorEntry = table.getEntry("selectedColor");
     if (getBallColor() == false) {
       selectedColor = false;
@@ -159,6 +159,7 @@ public class Robot extends TimedRobot {
       selectedColor = true;
     } 
     ballColorEntry.setBoolean(selectedColor);
+    mVisionManager.setSelectedTarget(selectedColor ? Constants.TargetType.CAMERA_1_RED_CARGO : Constants.TargetType.CAMERA_1_BLUE_CARGO);
   }
   
   //Updates SmartDashboard ;3
@@ -506,42 +507,27 @@ public class Robot extends TimedRobot {
       }
     }
   }
-  /*
-  public static TargetType getBallColor() {
-    if (mBallColorSelctor.getSelected() == 1) {
-      return Constants.TargetType.CAMERA_1_BLUE_CARGO;
-    }
-    if (mBallColorSelctor.getSelected() == 2) {
-      return Constants.TargetType.CAMERA_1_RED_CARGO;
-    }
-    if (mBallColorSelctor.getSelected() == 0 && DriverStation.getAlliance() == Alliance.Blue) {
-      return Constants.TargetType.CAMERA_1_BLUE_CARGO;
-    }
-    if (mBallColorSelctor.getSelected() == 0 && DriverStation.getAlliance() == Alliance.Red) {
-      return Constants.TargetType.CAMERA_1_RED_CARGO;
-    }
-    else {
-      return Constants.TargetType.CAMERA_1_BLUE_CARGO;
-    }
-  }
-  */
   public static boolean getBallColor() {
-    if (mBallColorSelctor.getSelected() == 1) {
-      return false;
+    boolean result =  false;
+    switch (mBallColorSelctor.getSelected()) {
+      case 1: 
+        result = false;
+      break;
+      case 2:
+        result = true;
+      break;
+      case 0:
+        if (DriverStation.getAlliance() == Alliance.Blue) {
+          result = false;
+        }
+        else {
+          result = true;
+        }
+      break;
+      default:
+        result = false;
+      break;
     }
-    if (mBallColorSelctor.getSelected() == 2) {
-      return true;
-    }
-    if (mBallColorSelctor.getSelected() == 0 && DriverStation.getAlliance() == Alliance.Blue) {
-      return false;
-    }
-    if (mBallColorSelctor.getSelected() == 0 && DriverStation.getAlliance() == Alliance.Red) {
-      return true;
-    }
-    else {
-      return false;
-    }
+    return result;
   }
-
-
 }
