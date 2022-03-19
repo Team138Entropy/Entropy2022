@@ -66,8 +66,9 @@ public class DriveGeneratedAction implements Action {
 
   @Override
   public void done() {
-    System.out.println("DriveTrajectoryAction Complete!");
+    System.out.println("DriveGeneratedAction Complete!");
     if (mStopWhenDone) {
+      System.out.println("george :3");
         mTrajectoryFollower.StopDrive();
     }
   }

@@ -405,7 +405,7 @@ public class Robot extends TimedRobot {
       mClimber.update(manualStop, mOperatorInterface.getOperatorClimbStageApprovePress());
 
       // Drive with Precision Steer Automatically Enabled, no auto steer
-      DriveLoop(true, false);
+      DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), false);
     }
   }
 

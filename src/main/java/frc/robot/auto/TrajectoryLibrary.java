@@ -259,6 +259,17 @@ public class TrajectoryLibrary {
       }
       return traj;
      }
+     public Trajectory get_C_Turn(){
+      Trajectory traj = null;
+      String fileName = "C-Turn.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
 }
 
 
