@@ -70,6 +70,8 @@ def calculateDistanceFeet(targetPixelWidth):
 
 if __name__ == "__main__":
     #Avoid touching camera server settings
+    print('Sleepig')
+    time.sleep(10)
     print('2022 Ball Vision FMS Starting')
     
     cameraConfig = ''
@@ -103,14 +105,17 @@ if __name__ == "__main__":
         if not notified[0]:
             cond.wait()
 
+    print('Notified')
 
     table = NetworkTables.getTable('SmartDashboard')
+    
 
     #Red is true, blue is false for the selectedColor boolean
     try:
-        teamColor = table.getBoolean('selectedColor')
+        teamColor = table.getBoolean('selectedColor', False)
 
         print(teamColor)
+
     except Exception as e:
         print('Likely couldnt get color of ball from network table. Exception:', e)
 
@@ -123,29 +128,30 @@ if __name__ == "__main__":
     cameraSat = [85, 255]
     cameraVal = [69, 255]  
     
-    while teamColor != True or teamColor != False:
-        try:
-            if teamColor == True:
-                #Red
-                cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":-40},{"name":"hue","value":0},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":1},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":150},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
+    
+    try:
+        if teamColor == True:
+            #Red
+            cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":-40},{"name":"hue","value":0},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":1},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":150},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
 
-                cameraHue = [128, 168]
-                cameraSat = [0, 255]
-                cameraVal = [80, 255]  
-                ballColor = 'Red'
+            cameraHue = [128, 168]
+            cameraSat = [0, 255]
+            cameraVal = [80, 255]  
+            ballColor = 'Red'
 
-            else:
-                #Blue
-                cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":0},{"name":"hue","value":50},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":2},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":157},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
+        else:
+            #Blue
+            cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":0},{"name":"hue","value":50},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":2},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":157},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
 
-                cameraHue = [85, 122]
-                cameraSat = [85, 255]
-                cameraVal = [69, 255]  
+            cameraHue = [85, 122]
+            cameraSat = [85, 255]
+            cameraVal = [69, 255]  
 
-        except Exception as e:
-            print('Exception:', e)
+    except Exception as e:
+        print('Exception:', e)
 
 
+    print('Color from table:' ,ballColor)
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
 
@@ -329,7 +335,7 @@ if __name__ == "__main__":
 
             #The /2 and -.6 are entirely arbitrary values. If re-using this code in the future, you will need to re-sample to find those valvues.
             dist = (myDistFeet/2)-.6
-            print(dist)
+            #print(dist)
             
             PacketValue['BallX'] = cy
             PacketValue['BallY'] = cx
