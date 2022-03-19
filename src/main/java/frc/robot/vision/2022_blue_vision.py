@@ -97,8 +97,8 @@ if __name__ == "__main__":
     blueVal = [69, 255]  
 
     #Creating settings for blur filter. Radius should be figured out by testing in GRIP
-    radius = 2.83
-    ksize = (2 * round(radius) + 1)
+    radius = 8
+    ksize = int(2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
     cnt_area_low = 500
@@ -167,8 +167,10 @@ if __name__ == "__main__":
                 continue
 
             #Change inmage colorspace to HSV, blur it, and for the 2022 robot we flip the image due to the camera being upside down.
-            input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             input_img = cv2.blur(input_img, (ksize, ksize))
+            input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
+            
+            input_img[0:30, 0:320] = (0,0,0)
             input_img = cv2.flip(input_img, 1)
 
             #Mask out colors that dont fall in the range we'd find the blue ball in
@@ -229,7 +231,7 @@ if __name__ == "__main__":
 
                     
                     #List of prints for debugging
-                    
+                    '''
                     print('Perimeter:', perimeter)
                     print('Width:', w)
                     print('Height:', h)
@@ -237,7 +239,7 @@ if __name__ == "__main__":
                     print('Approximate Shape:', approximateShape)
                     print('Ratio:', ratio)
                     print('Vetices', )
-                    
+                    '''
 
                     validCnt &= (cv2.arcLength(cnt, True) < 10000)
                     
@@ -268,7 +270,7 @@ if __name__ == "__main__":
 
             #The /2 and -.6 are entirely arbitrary values. If re-using this code in the future, you will need to re-sample to find those valvues.
             dist = (myDistFeet/2)-.6
-            print(dist)
+            #print(dist)
             
             PacketValue['BallX'] = cy
             PacketValue['BallY'] = cx

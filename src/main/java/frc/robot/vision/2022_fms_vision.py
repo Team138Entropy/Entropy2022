@@ -134,9 +134,9 @@ if __name__ == "__main__":
             #Red
             cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":-40},{"name":"hue","value":0},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":1},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":150},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
 
-            cameraHue = [128, 168]
+            cameraHue = [115, 163]
             cameraSat = [0, 255]
-            cameraVal = [80, 255]  
+            cameraVal = [115, 255]  
             ballColor = 'Red'
 
         else:
@@ -165,8 +165,8 @@ if __name__ == "__main__":
     #Note that the order is (height, width) in shape
     imgForm = np.zeros(shape=(240, 320, 3), dtype=np.uint8)
     #Creating settings for blur filter
-    radius = 2.83
-    ksize = (2 * round(radius) + 1)
+    radius = 8
+    ksize = int(2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
     cnt_area_low = 500
@@ -235,8 +235,10 @@ if __name__ == "__main__":
                 continue
 
             #Change inmage colorspace to HSV, blur it, and for the 2022 robot we flip the image due to the camera being upside down.
-            input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             input_img = cv2.blur(input_img, (ksize, ksize))
+            input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
+            
+            input_img[0:30, 0:320] = (0,0,0)
             input_img = cv2.flip(input_img, 1)
 
             #Mask out colors that dont fall in the range we'd find the blue ball in
