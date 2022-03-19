@@ -23,7 +23,7 @@ public class VisionManager {
     private ConcurrentHashMap<Constants.TargetType, TargetInfo> mTargetData;
 
     // Current Selected Target
-    private Constants.TargetType mSelectedTarget = Constants.TargetType.CAMERA_1_BLUE_CARGO;
+    private Constants.TargetType mSelectedTarget = Constants.TargetType.CAMERA_1_RED_CARGO;
 
     private static VisionManager mInstance;
 

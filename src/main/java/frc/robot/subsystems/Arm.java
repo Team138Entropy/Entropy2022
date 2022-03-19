@@ -7,11 +7,13 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
+
 /**
  * Arm subsystem comprised of a rotating shoulder and extending forearm.
  */
 public class Arm extends Subsystem {
   private static Arm mInstance;
+
 
   // Some constants
   private final double kShoulderJogSpeed = .35;
@@ -67,6 +69,9 @@ public class Arm extends Subsystem {
 
 
   public Arm() {
+
+
+
     mShoulder = new TalonSRX(Constants.Talons.Arm.shoulder);
     mShoulder.setNeutralMode(NeutralMode.Brake);
     mForearm = new TalonSRX(Constants.Talons.Arm.forearm);
@@ -81,7 +86,7 @@ public class Arm extends Subsystem {
     // Old constants are 1, 33, .01, 330
     mShoulder.config_kF(0, 1, 10);
     mShoulder.config_kP(0, 30, 10);
-		mShoulder.config_kI(0, 0, 10);
+		mShoulder.config_kI(0, .01, 10);
     mShoulder.config_kD(0, 300, 10);
     
     mShoulder.configSelectedFeedbackCoefficient(360d / Constants.Arm.shoulderTicksPerRotation);

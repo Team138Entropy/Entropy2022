@@ -170,7 +170,7 @@ public class Climber extends Subsystem {
                     return isAtPosition(ClimberTarget.MID.ticks);
                 }
             }, 
-            true,3
+            false,3
        );
       mClimberExecutor.registerStage("Rotate to 67", 
         new Callable<Boolean>() {
@@ -185,7 +185,7 @@ public class Climber extends Subsystem {
                 return mArm.isAtPosition(67);
             }
         }, 
-      true,0
+      false,0
      );
         /*
      mClimberExecutor.registerStage("Pull Climber to Mid and Retract Arm", 

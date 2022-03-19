@@ -315,7 +315,7 @@ public class Drive extends Subsystem {
     double curvature = (towards_goal ? 1.0 : 0.0) * heading_error_rad * kAutosteerKp;
     double DY = throttle;
     if (throttle == 0) {
-      throttle = -.26;
+      throttle = -.18;
     }
     double dtheta = curvature * throttle * (reverse ? -1.0 : 1.0);
     setOpenLoop(Kinematics.inverseKinematics(new Twist2d(DY, 0.0, dtheta)));
