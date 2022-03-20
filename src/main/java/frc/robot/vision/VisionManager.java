@@ -11,6 +11,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.networking.UDPReciever;
+import frc.robot.Robot;
+
 
 
 import frc.robot.Constants;
@@ -23,7 +25,10 @@ public class VisionManager {
     private ConcurrentHashMap<Constants.TargetType, TargetInfo> mTargetData;
 
     // Current Selected Target
-    private Constants.TargetType mSelectedTarget = Constants.TargetType.CAMERA_1_RED_CARGO;
+    private Constants.TargetType mSelectedTarget = Constants.TargetType.CAMERA_1_BLUE_CARGO;
+    //private Constants.TargetType mSelectedTarget = Robot.getBallColor();
+    
+
 
     private static VisionManager mInstance;
 

@@ -5,8 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.TargetType;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Arm.ArmTarget;
@@ -21,7 +23,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 
 /**
@@ -31,7 +37,8 @@ import edu.wpi.first.wpilibj.PowerDistribution;
  * project.
  */
 public class Robot extends TimedRobot {  
-
+  NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  NetworkTableEntry ballColorEntry;
   // Controllers Reference
   private final OperatorInterface mOperatorInterface = OperatorInterface.getInstance();
 
@@ -53,6 +60,8 @@ public class Robot extends TimedRobot {
   // Autonomous Modes
   private SendableChooser<AutoModeBase> mAutoModes;
 
+  private static SendableChooser<Integer> mBallColorSelctor;
+
   // Booleans for Test Modes
   private boolean mTest_ArmJogging = true;
   private boolean mTest_ClimberJogging = true;
@@ -61,6 +70,14 @@ public class Robot extends TimedRobot {
   private boolean inAutoMode = false;
   private boolean inTeleop = false;
   private Accelerometer accelerometer = new BuiltInAccelerometer();
+
+  //boolean for color of ball selected, red is true and blue is false
+  public Boolean selectedColor = false;
+
+  public int ballColor = 0;
+
+  
+  
 
   // Mode
   public enum RobotMode {
@@ -111,6 +128,11 @@ public class Robot extends TimedRobot {
     */
 
     SmartDashboard.putData(mAutoModes);
+    mBallColorSelctor = new SendableChooser<Integer>();
+    mBallColorSelctor.setDefaultOption("Blue Ball", 1);
+    mBallColorSelctor.addOption("FMS" , 0);
+    mBallColorSelctor.addOption("Red Ball", 2);
+    SmartDashboard.putData(mBallColorSelctor);
   }
 
   private boolean robotTippingCheck(){
@@ -130,6 +152,16 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     updateRobotSmartDashboard();
+    NetworkTable table = inst.getTable("SmartDashboard");
+    ballColorEntry = table.getEntry("selectedColor");
+    if (getBallColor() == false) {
+      selectedColor = false;
+    }
+    if (getBallColor() == true) {
+      selectedColor = true;
+    } 
+    ballColorEntry.setBoolean(selectedColor);
+    mVisionManager.setSelectedTarget(selectedColor ? Constants.TargetType.CAMERA_1_RED_CARGO : Constants.TargetType.CAMERA_1_BLUE_CARGO);
   }
   
   //Updates SmartDashboard ;3
@@ -142,8 +174,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("isTipping", robotTippingCheck());
     SmartDashboard.putNumber("drive throttle", mOperatorInterface.getDriveThrottle());
     SmartDashboard.putNumber("drive turn", mOperatorInterface.getDriveTurn());
+    SmartDashboard.putBoolean("ball color", getBallColor());
+    
     mSubsystemManager.updateSmartdashboard();
   }
+
 
 
   /** Called at the Start of Autonomous **/
@@ -487,6 +522,27 @@ public class Robot extends TimedRobot {
       }
     }
   }
-
-
+  public static boolean getBallColor() {
+    boolean result =  false;
+    switch (mBallColorSelctor.getSelected()) {
+      case 1: 
+        result = false;
+      break;
+      case 2:
+        result = true;
+      break;
+      case 0:
+        if (DriverStation.getAlliance() == Alliance.Blue) {
+          result = false;
+        }
+        else {
+          result = true;
+        }
+      break;
+      default:
+        result = false;
+      break;
+    }
+    return result;
+  }
 }
