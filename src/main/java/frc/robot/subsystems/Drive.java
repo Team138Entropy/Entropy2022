@@ -413,6 +413,34 @@ public class Drive extends Subsystem {
     System.out.println(gyroAngleSetpoint - (m_gyro.getAngle()*-1));
   }
 
+  /**
+   * driveErrorAngle
+   * 
+   */
+  public synchronized void driveErrorAngle(double throttle, double error){
+    final double kP = 0.018;
+    final double minOutput = .13;
+    final double maxOutput = .45; 
+    double turningValue = error * kP;
+
+    // Constrain to min output
+    if(turningValue < minOutput && turningValue >= 0){
+      turningValue = minOutput;
+    }else if(turningValue > -minOutput && turningValue <= 0){
+      turningValue = -minOutput;
+    }
+
+    // Constrain to max output
+    if(turningValue > maxOutput){
+      turningValue = maxOutput;
+    }else if(turningValue < -maxOutput){
+      turningValue = -maxOutput;
+    }
+
+    // set into drive with no ramp
+    setUnrampedDrive(throttle, turningValue, true);
+  }
+
   /** Updates the field-relative position. */
   public void updateOdometry() {
     mOdometry.update(

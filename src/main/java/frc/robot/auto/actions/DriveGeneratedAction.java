@@ -23,7 +23,7 @@ public class DriveGeneratedAction implements Action {
 
 
   public DriveGeneratedAction(boolean reverse, boolean stopWhenDone) {
-    mStopWhenDone = stopWhenDone;
+    mStopWhenDone = true;
     mReverse = reverse;
   }
 
@@ -36,6 +36,10 @@ public class DriveGeneratedAction implements Action {
     // generate trajectory
     Pose2d StartPose = mDrive.getStoredPose();
     Pose2d EndPose = mDrive.getPose();
+
+    System.out.println("Generating Drive Action");
+    System.out.println("Starting Pose: " + StartPose.toString());
+    System.out.println("Ending Pose: " + EndPose.toString());
 
     // Generate trajectory
     TrajectoryConfig trajConfig = new TrajectoryConfig(Constants.Drive.Auto.MaxVelocityMetersPerSecond, 
@@ -68,7 +72,7 @@ public class DriveGeneratedAction implements Action {
   public void done() {
     System.out.println("DriveGeneratedAction Complete!");
     if (mStopWhenDone) {
-      System.out.println("george :3");
+      System.out.println("Stop!");
         mTrajectoryFollower.StopDrive();
     }
   }
