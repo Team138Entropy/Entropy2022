@@ -3,13 +3,6 @@ package frc.robot.auto.modes;
 import frc.robot.auto.AutoModeEndedException;
 import frc.robot.auto.actions.*;
 import frc.robot.auto.TrajectoryLibrary;
-
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -20,8 +13,13 @@ public class TEST extends AutoModeBase {
     public TEST(){
         // add multiple actions to drive trajectorys, these will run one after another
         //driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_C_Turn())));
+        // driveActionList.add(new StoreDrivePositionAction());
+        // driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_C_Turn())));
+        // driveActionList.add(new WaitAction(2));
+        // driveActionList.add(new DriveGeneratedAction(false));
+
         driveActionList.add(new StoreDrivePositionAction());
-        driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_New_T35_B5())));
+        driveActionList.add(new DriveUntilPickupAction());
         driveActionList.add(new WaitAction(2));
         driveActionList.add(new DriveGeneratedAction(false));
     }

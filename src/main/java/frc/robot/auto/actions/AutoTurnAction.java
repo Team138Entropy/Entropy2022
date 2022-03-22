@@ -36,7 +36,7 @@ public class AutoTurnAction implements Action {
       System.out.println("we didn't get anything");
     }
     // turn in place to errorAngle
-    mDrive.autoSteer(0, errorAngle);
+    mDrive.driveErrorAngle(0, errorAngle);
     if(Math.abs(errorAngle) <= 4) {
       mComplete = true;
       System.out.println("Done!");

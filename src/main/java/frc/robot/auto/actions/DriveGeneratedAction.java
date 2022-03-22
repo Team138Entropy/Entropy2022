@@ -8,6 +8,7 @@ import frc.robot.Constants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import java.util.ArrayList;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 
 /**
  * Stores the Initial Drive Position Action
@@ -34,8 +35,8 @@ public class DriveGeneratedAction implements Action {
   @Override
   public void start() {
     // generate trajectory
-    Pose2d StartPose = mDrive.getStoredPose();
-    Pose2d EndPose = mDrive.getPose();
+    Pose2d StartPose = mDrive.getPose();
+    Pose2d EndPose = mDrive.getStoredPose();
 
     System.out.println("Generating Drive Action");
     System.out.println("Starting Pose: " + StartPose.toString());
@@ -44,9 +45,10 @@ public class DriveGeneratedAction implements Action {
     // Generate trajectory
     TrajectoryConfig trajConfig = new TrajectoryConfig(Constants.Drive.Auto.MaxVelocityMetersPerSecond, 
                                   Constants.Drive.Auto.MaxAccelerationMetersPerSecondSq);
+    trajConfig.setKinematics(mDrive.getKinematics());
     mTrajectory = TrajectoryGenerator.generateTrajectory(StartPose, new ArrayList<Translation2d>(), 
                                                                     EndPose, trajConfig);
-
+    
     // reverse trajectory (if applicable)
     if(mReverse) mTrajectory = mTrajectoryLibrary.getReversedTrajectory(mTrajectory);
 
@@ -61,6 +63,7 @@ public class DriveGeneratedAction implements Action {
   public void update() {
     // update trajectory
     mTrajectoryFollower.Update();
+    SmartDashboard.putString("pose", mDrive.getPose().toString());
   }
 
   @Override

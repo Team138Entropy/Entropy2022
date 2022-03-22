@@ -18,7 +18,7 @@ public class DriveUntilPickupAction implements Action {
     private double mThrottleSpeed = -.13;
     private double mStartingGyroErrorAngle;
     private Timer mTimer;
-    private double mTimeoutSeconds = 8;
+    private double mTimeoutSeconds = 5;
     private int mContinueDrivingTime = 0;
     private int mDriveTime = 10;
 
@@ -55,7 +55,7 @@ public class DriveUntilPickupAction implements Action {
             // TODO: This might be the wrong offset 
             double offsetGyro = mStartingGyroErrorAngle - mDrive.getGyro().getAngle();
             SmartDashboard.putNumber("Gyro Straight Offset", offsetGyro);
-            mDrive.autoSteer(mThrottleSpeed, offsetGyro);
+            mDrive.driveErrorAngle(mThrottleSpeed, offsetGyro);
             //mDrive.driveGyroSetpoint(mThrottleSpeed, mStartingGyroErrorAngle);
 
             mDrive.updateOdometry();

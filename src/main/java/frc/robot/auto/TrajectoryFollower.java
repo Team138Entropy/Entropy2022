@@ -93,6 +93,8 @@ public class TrajectoryFollower {
 
         // Reset the drivetrain's odometry to the starting pose of the trajectory.
         mDrive.resetOdometry(mTrajectory.getInitialPose());
+
+        mDrive.storeCurrentPose();
     }
 
     public void Update(){

@@ -74,7 +74,7 @@ public class AutoSteerAction implements Action {
           }
         }else{
           // continue driving
-          mDrive.autoSteer(mThrottleSpeed, errorAngle);
+          mDrive.driveErrorAngle(mThrottleSpeed, errorAngle);
           System.out.println("still driving " + errorAngle);
         }
         break;
