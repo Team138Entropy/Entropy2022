@@ -79,11 +79,7 @@ if __name__ == "__main__":
         mycamera = json.load(f)
         cameraConfig = mycamera
         camera = cameraConfig['cameras'][0]
-        '''
-        Create this list by going to wpilibpi.local, vision settings, open stream, change settings to whats needed, open "source config JSON",
-        then paste it into "Custom Properties Json" in Vision Settings, Save it, then copy the list created, and replace whatevers set in the cameraConfig variable
-        Dont try to create this manually, its extremely picky on formatting.
-        '''
+
         
 
     
@@ -119,9 +115,13 @@ if __name__ == "__main__":
     except Exception as e:
         print('Likely couldnt get color of ball from network table. Exception:', e)
 
-    #Preconfigure to blue
-
+    #Preconfigure to blue to 50/50 our chances if something went wrong with the color picker
     ballColor = 'Blue'
+    '''
+    Create this list by going to wpilibpi.local, vision settings, open stream, change settings to whats needed, open "source config JSON",
+    then paste it into "Custom Properties Json" in Vision Settings, Save it, then copy the list created, and replace whatevers set in the cameraConfig variable
+    Dont try to create this manually, its extremely picky on formatting.
+    '''
     cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":-40},{"name":"hue","value":0},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":1},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":150},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
 
     cameraHue = [83, 122]
@@ -151,7 +151,7 @@ if __name__ == "__main__":
         print('Exception:', e)
 
 
-    print('Color from table:' ,ballColor)
+    print('Color from network-table:' ,ballColor)
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
 
@@ -169,16 +169,20 @@ if __name__ == "__main__":
     ksize = int(2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
-    cnt_area_low = 500
+    #500
+    cnt_area_low = 450
     #cnt_area_high = 7500
     minimum_perimeter = 10
     width_minimum = 10
-    width_maximum = 300
+    #300
+    width_maximum = 500
     height_minimum = 10
-    height_maximum = 300
+    #300
+    height_maximum = 500
     solid_Low = 94
     solid_High = 100
-    min_vertices = 18
+    #18
+    min_vertices = 0
     max_vertices = 100
     rat_low = 0
     rat_high = 3
@@ -206,8 +210,6 @@ if __name__ == "__main__":
     '''
     printCount = 1
     myDistFeet = 0
-
-    black_mask = cv2.imread('/home/pi/black_mask.png')
 
     print('FMS ball vision setup complete')
 
