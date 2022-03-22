@@ -71,7 +71,7 @@ if __name__ == "__main__":
         cameraConfig = mycamera
         camera = cameraConfig['cameras'][0]
         '''
-        Create this list by going to wpilibpi.local, vision settings, open stream, change settings to whats needed, open "source config JSON",
+        Create this list of values by going to wpilibpi.local, vision settings, open stream, change settings to whats needed, open "source config JSON",
         then paste it into "Custom Properties Json" in Vision Settings, Save it, then copy the list created, and replace whatevers set in the cameraConfig variable
         Dont try to create this manually, its extremely picky on formatting.
         '''
@@ -101,16 +101,20 @@ if __name__ == "__main__":
     ksize = int(2 * round(radius) + 1)
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
-    cnt_area_low = 500
+    #500
+    cnt_area_low = 450
     #cnt_area_high = 7500
     minimum_perimeter = 10
     width_minimum = 10
-    width_maximum = 300
+    #300
+    width_maximum = 500
     height_minimum = 10
-    height_maximum = 300
+    #300
+    height_maximum = 500
     solid_Low = 94
     solid_High = 100
-    min_vertices = 18
+    #18
+    min_vertices = 0
     max_vertices = 100
     rat_low = 0
     rat_high = 3
@@ -138,8 +142,6 @@ if __name__ == "__main__":
     '''
     printCount = 1
     myDistFeet = 0
- 
-    black_mask = cv2.imread('/home/pi/black_mask.png')
     
     print('Blue ball vision setup complete')
 
@@ -166,21 +168,28 @@ if __name__ == "__main__":
                 output_stream.notifyError(input_stream.getError())
                 continue
 
-            #Change inmage colorspace to HSV, blur it, and for the 2022 robot we flip the image due to the camera being upside down.
+            #Blur image, change image colorspace to HSV, blur it, and for the 2022 robot we flip the image due to the camera being upside down.
+            #cv2.imwrite('original.jpeg', input_img)
+            #You have to blur before converting color space!! If you don't, the output will be messed up.
             input_img = cv2.blur(input_img, (ksize, ksize))
+            #cv2.imwrite('blur.jpeg', input_img)
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
-            
+            #cv2.imwrite('2hsv.jpeg', input_img)
+            #Color bumper area to black
             input_img[0:30, 0:320] = (0,0,0)
             input_img = cv2.flip(input_img, 1)
 
             #Mask out colors that dont fall in the range we'd find the blue ball in
             mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
                                 (blueHue[1], blueSat[1], blueVal[1]))
+            #cv2.imwrite('masked.jpeg', mask)
 
             _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
             # Sort contours by area size (biggest to smallest)
             cntsSorted = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
+            #cv2.drawContours(mask, cntsSorted, -1, (0,255,0), 3)
+            #cv2.imwrite('contours.jpeg', mask)
 
             con = []
             for cnt in cntsSorted:
@@ -229,7 +238,6 @@ if __name__ == "__main__":
                     validCnt &= (len(approximateShape) >= 8)
                     validCnt &= (ratio >= rat_low) and (ratio < rat_high)
 
-                    
                     #List of prints for debugging
                     '''
                     print('Perimeter:', perimeter)
