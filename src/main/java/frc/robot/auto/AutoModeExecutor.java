@@ -62,7 +62,7 @@ public class AutoModeExecutor {
         if (mAutoMode != null) {
             mAutoMode.stop();
         }
-
+        
         mThread = null;
     }
 

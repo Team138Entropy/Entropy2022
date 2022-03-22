@@ -17,8 +17,6 @@ import frc.robot.vision.TargetInfo;
 import frc.robot.vision.VisionManager;
 import frc.robot.auto.AutoModeExecutor;
 import frc.robot.auto.modes.*;
-import frc.robot.auto.modes.DoNothingMode;
-import frc.robot.auto.modes.TestDriveMode;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -114,6 +112,8 @@ public class Robot extends TimedRobot {
     mAutoModes = new SendableChooser<AutoModeBase>();
     mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
     mAutoModes.addOption("One Ball", new OneBall());
+    mAutoModes.addOption("Two Ball", new TwoOrThreeBall(false));
+    mAutoModes.addOption("Three Ball", new TwoOrThreeBall(true));
     mAutoModes.addOption("T3.5_B5", new T35_B5());
     mAutoModes.addOption("TEST", new TEST());
    /* mAutoModes.addOption("Test Drive", new TestDriveMode());
@@ -477,7 +477,8 @@ public class Robot extends TimedRobot {
       if(ti.isValid()){ //only allow if valud packet
         // autonomously steering robot towards cargo
         // todo: only allow drive in a certain direction? 
-       mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
+       //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
+       mDrive.driveErrorAngle(driveThrottle * .4, ti.getErrorAngle());
       }else{
         System.out.println("Invalid Packet!");
       }
