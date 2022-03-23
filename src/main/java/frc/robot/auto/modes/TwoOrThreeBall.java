@@ -21,7 +21,7 @@ import java.util.ArrayList;
     public TwoOrThreeBall(boolean threeBall){
         // Score Ball 1
         AutoActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
-        AutoActionList.add(new WaitAction(.15));
+        AutoActionList.add(new WaitAction(.35));
         AutoActionList.add(new EjectAction());
         AutoActionList.add(new StoreDrivePositionAction());
         AutoActionList.add(new AutoTurnAction()); // Aim for Ball 2

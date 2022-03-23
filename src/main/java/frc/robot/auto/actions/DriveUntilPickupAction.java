@@ -15,10 +15,10 @@ public class DriveUntilPickupAction implements Action {
     private Drive mDrive = Drive.getInstance();
     private Grasper mGrasper = Grasper.getInstance();
     private boolean mComplete;
-    private double mThrottleSpeed = -.13;
+    private double mThrottleSpeed = -.16;
     private double mStartingGyroErrorAngle;
     private Timer mTimer;
-    private double mTimeoutSeconds = 5;
+    private double mTimeoutSeconds = 6;
     private int mContinueDrivingTime = 0;
     private int mDriveTime = 10;
 
@@ -29,6 +29,7 @@ public class DriveUntilPickupAction implements Action {
 
     @Override
     public void start() {
+        System.out.println("drive until pickup start!");
       mTimer.start();
       mStartingGyroErrorAngle = mDrive.getGyro().getAngle();
       mArm.rotateToPosition(ArmTarget.INTAKE.degrees);
@@ -37,9 +38,8 @@ public class DriveUntilPickupAction implements Action {
 
     @Override 
     public void update(){
-        System.out.println("in update loop");
         mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
-
+        //System.out.println("DRIVE DRIVE DRIVE!");
         if(mGrasper.getBallsStored() > 0){
             System.out.println("got the ball");
             // Ball is stored!
@@ -51,6 +51,7 @@ public class DriveUntilPickupAction implements Action {
             mDrive.setDrive(0, 0, false);
            }
         }else{
+            System.out.println("drive drive drive!");
             // continue driving forward
             // TODO: This might be the wrong offset 
             double offsetGyro = mStartingGyroErrorAngle - mDrive.getGyro().getAngle();

@@ -43,8 +43,8 @@ public class DriveGeneratedAction implements Action {
     System.out.println("Ending Pose: " + EndPose.toString());
 
     // Generate trajectory
-    TrajectoryConfig trajConfig = new TrajectoryConfig(Constants.Drive.Auto.MaxVelocityMetersPerSecond, 
-                                  Constants.Drive.Auto.MaxAccelerationMetersPerSecondSq);
+    TrajectoryConfig trajConfig = new TrajectoryConfig(2.5, 
+                                  2);
     trajConfig.setKinematics(mDrive.getKinematics());
     mTrajectory = TrajectoryGenerator.generateTrajectory(StartPose, new ArrayList<Translation2d>(), 
                                                                     EndPose, trajConfig);
