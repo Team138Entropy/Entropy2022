@@ -104,7 +104,7 @@ public class StageExecutor {
         mStages.add(new Stage(Name, stageWorkerFunction, stageCompleteFunction, ReqUserInputStart));
     }
 
-    public synchronized void registerStage(String Name, Callable<Boolean> stageWorkerFunction, Callable<Boolean> stageCompleteFunction, boolean ReqUserInputStart, int seconds){
+    public synchronized void registerStage(String Name, Callable<Boolean> stageWorkerFunction, Callable<Boolean> stageCompleteFunction, boolean ReqUserInputStart, double seconds){
         mStages.add(new Stage(Name, stageWorkerFunction, stageCompleteFunction, ReqUserInputStart, seconds));
     }
 

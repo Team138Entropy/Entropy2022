@@ -3,6 +3,7 @@ package frc.robot.auto.actions;
 import frc.robot.subsystems.Drive;
 import frc.robot.auto.TrajectoryFollower;
 import frc.robot.auto.TrajectoryLibrary;
+import frc.robot.auto.TrajectoryGeneratorHelper;
 import edu.wpi.first.math.trajectory.*;
 import frc.robot.Constants;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -43,11 +44,14 @@ public class DriveGeneratedAction implements Action {
     System.out.println("Ending Pose: " + EndPose.toString());
 
     // Generate trajectory
+    mTrajectory = TrajectoryGeneratorHelper.generateTrajectory(StartPose, EndPose);
+    /*
     TrajectoryConfig trajConfig = new TrajectoryConfig(2.5, 
                                   2);
     trajConfig.setKinematics(mDrive.getKinematics());
     mTrajectory = TrajectoryGenerator.generateTrajectory(StartPose, new ArrayList<Translation2d>(), 
                                                                     EndPose, trajConfig);
+    */
     
     // reverse trajectory (if applicable)
     if(mReverse) mTrajectory = mTrajectoryLibrary.getReversedTrajectory(mTrajectory);

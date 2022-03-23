@@ -16,6 +16,7 @@ import frc.robot.subsystems.Climber.ClimberTarget;
 import frc.robot.vision.TargetInfo;
 import frc.robot.vision.VisionManager;
 import frc.robot.auto.AutoModeExecutor;
+import frc.robot.auto.TrajectoryGeneratorHelper;
 import frc.robot.auto.modes.*;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
@@ -105,10 +106,14 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // populate autonomous list
     populateAutonomousModes();
+
+    // generate generic auto modes to load into JIT
+    TrajectoryGeneratorHelper.generateExampleTrajectories();
   }
   
   // Fill Autonomous Modes List
   private void populateAutonomousModes(){
+    // Auto Mode
     mAutoModes = new SendableChooser<AutoModeBase>();
     mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
     mAutoModes.addOption("One Ball", new OneBall());
@@ -116,18 +121,9 @@ public class Robot extends TimedRobot {
     mAutoModes.addOption("Three Ball", new TwoOrThreeBall(true));
     mAutoModes.addOption("T3.5_B5", new T35_B5());
     mAutoModes.addOption("TEST", new TEST());
-   /* mAutoModes.addOption("Test Drive", new TestDriveMode());
-    mAutoModes.addOption("Tarmac1_B2_B3_Tarmac2", new Tarmac1_B2_B3_Tarmac2());
-    mAutoModes.addOption("DEMO", new DEMO());
-    
-    mAutoModes.addOption("T2_B3_B2_T1", new T2_B3_B2_T1());
-    mAutoModes.addOption("T2_B3_T2", new T2_B3_T2());
-    mAutoModes.addOption("T1_B2_T1_B3_T2", new T1_B2_T1_B3_T2());
-    mAutoModes.addOption("T2_Terminal", new T2_terminal());
-    mAutoModes.addOption("T4_Terminal", new T4_terminal());
-    */
-
     SmartDashboard.putData(mAutoModes);
+
+    // Ball Selector
     mBallColorSelctor = new SendableChooser<Integer>();
     mBallColorSelctor.setDefaultOption("Blue Ball", 1);
     mBallColorSelctor.addOption("FMS" , 0);
@@ -190,6 +186,7 @@ public class Robot extends TimedRobot {
     // Default Robot Mode to CargoScorer
     mCurrentMode = RobotMode.CargoScorer;
     
+    // Disable Operator Rumble
     mOperatorInterface.setOperatorRumble(false);
 
     // zero sensors (if not zero'ed prior on this powerup)
@@ -197,6 +194,9 @@ public class Robot extends TimedRobot {
 
     // Get Selected AutoMode
     mAutoModeExecutor.setAutoMode(mAutoModes.getSelected());
+
+    // Configure Constants
+    mArm.configureArmForAuto();
 
     // Start Autonomous Thread
     // This thread will run until disabled
@@ -224,6 +224,9 @@ public class Robot extends TimedRobot {
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();
     }
+
+    // Configure Constants
+    mArm.configureArmForTeleop();
 
     // Zero Drive Sensors
     mDrive.zeroSensors();

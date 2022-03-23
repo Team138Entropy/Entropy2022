@@ -69,9 +69,6 @@ public class Arm extends Subsystem {
 
 
   public Arm() {
-
-
-
     mShoulder = new TalonSRX(Constants.Talons.Arm.shoulder);
     mShoulder.setNeutralMode(NeutralMode.Brake);
     mForearm = new TalonSRX(Constants.Talons.Arm.forearm);
@@ -114,6 +111,14 @@ public class Arm extends Subsystem {
   public synchronized void configArmVelocityAndAcceleration(double velocity, double acceleration){
     mShoulder.configMotionAcceleration(acceleration);
     mShoulder.configMotionCruiseVelocity(velocity, 10); // originally accel 5 veloc 10
+  }
+
+  public synchronized void configureArmForAuto(){
+    configArmVelocityAndAcceleration(30, 25);
+  }
+
+  public synchronized void configureArmForTeleop(){
+    configArmVelocityAndAcceleration(25, 20);
   }
 
   /**
