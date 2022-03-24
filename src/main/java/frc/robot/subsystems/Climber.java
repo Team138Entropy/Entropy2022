@@ -177,10 +177,11 @@ public class Climber extends Subsystem {
         },
         new Callable<Boolean>() {
             public Boolean call(){
-                return mArm.isAtPosition(67);
+                System.out.println("Stage 5 Tough Case: " + mArm.getRotation());
+                return mArm.isAtPosition(59);
             }
         }, 
-      false, 3 //this is likely too long
+      false, 1 //this is likely too long
      );
 
     
@@ -199,7 +200,7 @@ public class Climber extends Subsystem {
                 return isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
             }
         }, 
-        false, .3
+        false, 2
     );
 
     // Allow Arm to go limp
@@ -219,7 +220,7 @@ public class Climber extends Subsystem {
                 return true;
             }
         }, 
-        false, 1.2
+        true, 1.2
    );
 
    // Save Limp Value

@@ -19,17 +19,20 @@ import frc.robot.subsystems.Drive;
 public class TurnInPlaceAction implements Action {
     private boolean mComplete;
     private double mDegrees;
+    private double mGyroStart;
     private double mError;
     private Drive mDrive = Drive.getInstance();
 
     public TurnInPlaceAction(double degrees) {
         mComplete = false;
         mDegrees = degrees;
+
     }
 
     @Override
     public void start() {
         System.out.println("TurnInPlaceAction - Target Degrees" + mDegrees);
+        mGyroStart = mDrive.getGyro().getAngle();
     }
 
     @Override
@@ -49,7 +52,8 @@ public class TurnInPlaceAction implements Action {
 
     // Update the Error
     private void updateError() {
-        mError = mDegrees - mDrive.getGyro().getAngle();
+
+        mError = (mDegrees - mGyroStart ) - mDrive.getGyro().getAngle();
     }
 
     // if trajectory is done

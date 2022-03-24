@@ -27,23 +27,29 @@ public class TrajectoryGeneratorHelper {
     // Generate Example Trajectories
     // This is to get the JIT loaded to speed up dynamic trajectory
     public static void generateExampleTrajectories(){
-        for(int i = 0; i < 3; i++){
-            Trajectory traj = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
-                new Pose2d(10, 12, new Rotation2d(12))
-            );
-            Trajectory traj1 = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
-                new Pose2d(100, 100, new Rotation2d(100))
-            );
-            Trajectory traj2 = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
-                new Pose2d(20, 20, new Rotation2d(20))
-            );
-            Trajectory traj3 = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
-                new Pose2d(0, 0, new Rotation2d(0))
-            );
-            Trajectory traj4 = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
-                new Pose2d(29, 20, new Rotation2d(0))
-            );
+        try {
+            for(int i = 0; i < 3; i++){
+                Trajectory traj = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
+                    new Pose2d(10, 12, new Rotation2d(12))
+                );
+                Trajectory traj1 = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
+                    new Pose2d(100, 100, new Rotation2d(100))
+                );
+                Trajectory traj2 = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
+                    new Pose2d(20, 20, new Rotation2d(20))
+                );
+                Trajectory traj3 = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
+                    new Pose2d(0, 0, new Rotation2d(0))
+                );
+                Trajectory traj4 = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
+                    new Pose2d(29, 20, new Rotation2d(0))
+                );
+            }
         }
+        catch (Exception e) {
+            //System.out.println();
+        }
+        
     }
 
     // getStraightTrajectory

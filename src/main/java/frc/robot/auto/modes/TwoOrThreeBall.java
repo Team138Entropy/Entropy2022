@@ -10,6 +10,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.auto.TrajectoryGeneratorHelper;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -19,6 +20,8 @@ import java.util.ArrayList;
     // If Argument is false, only 2 Balls
     // if Argument is true, 3 balls
     public TwoOrThreeBall(boolean threeBall){
+        //AutoActionList.add(new TurnInPlaceAction(45));
+        
         // Score Ball 1
         AutoActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
         AutoActionList.add(new WaitAction(.35));
@@ -38,21 +41,24 @@ import java.util.ArrayList;
 
  
         if(threeBall){
+            
             // 3 Balls
-            AutoActionList.add(new StoreDrivePositionAction());
             // C Turn to get in range of next ball
-            AutoActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_C_Turn())));
-            AutoActionList.add(new AutoTurnAction()); // Aim for Ball 3
+            //AutoActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_C_Turn())));
+            AutoActionList.add(new TurnInPlaceAction(60));
+            AutoActionList.add(new StoreDrivePositionAction());
+            AutoActionList.add(new AutoTurnAction(4)); // Aim for Ball 3
             AutoActionList.add(new DriveUntilPickupAction());
 
             // got the ball, now go back to score it
             List<Action> Ball3Score = new ArrayList<>();
             Ball3Score.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
             //Ball3Score.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5())); //old style
-            Ball3Score.add(new DriveGeneratedAction(false));
-            AutoActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_C_Turn()));
-
+            //Ball3Score.add(new DriveGeneratedAction(false));
+            Ball3Score.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5_mod()));
             AutoActionList.add(new ParallelAction(Ball3Score));
+            AutoActionList.add(new TurnInPlaceAction(-47));
+            AutoActionList.add(new DriveTrajectoryAction(TrajectoryGeneratorHelper.getStraightTrajectory(.35)));
             AutoActionList.add(new EjectAction());
         }else{
             // 2 Balls

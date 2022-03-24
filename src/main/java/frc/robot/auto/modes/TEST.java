@@ -3,6 +3,7 @@ package frc.robot.auto.modes;
 import frc.robot.auto.AutoModeEndedException;
 import frc.robot.auto.actions.*;
 import frc.robot.auto.TrajectoryLibrary;
+import frc.robot.auto.TrajectoryGeneratorHelper;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -17,11 +18,7 @@ public class TEST extends AutoModeBase {
         // driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_C_Turn())));
         // driveActionList.add(new WaitAction(2));
         // driveActionList.add(new DriveGeneratedAction(false));
-
-        driveActionList.add(new StoreDrivePositionAction());
-        driveActionList.add(new DriveUntilPickupAction());
-        driveActionList.add(new WaitAction(2));
-        driveActionList.add(new DriveGeneratedAction(false));
+        driveActionList.add(new DriveTrajectoryAction(TrajectoryGeneratorHelper.getStraightTrajectory(5)));
     }
 
     @Override
