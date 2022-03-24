@@ -87,8 +87,6 @@ public class Climber extends Subsystem {
         // Initialize the Climber Executor
         mClimberExecutor.setVerboseMode();
         initBasicClimbSequence(); // basic climb instance, less agressive
-        // initAdvancedClimbSequence();
-
     }
 
     // Load the Climber Stage Functions into Climber Executor
@@ -167,6 +165,7 @@ public class Climber extends Subsystem {
        );
 
       // Off Mid Bar - Swing to Other Side of High Bar
+      // Once this gets less than 67 we are good to go (based on arm orientation should be going down)
       mClimberExecutor.registerStage("Rotate to 67", 
         new Callable<Boolean>() {
             public Boolean call(){
@@ -178,10 +177,11 @@ public class Climber extends Subsystem {
         new Callable<Boolean>() {
             public Boolean call(){
                 System.out.println("Stage 5 Tough Case: " + mArm.getRotation());
-                return mArm.isAtPosition(59);
+                //return mArm.isAtPosition(59);
+                return mArm.getRotation() < 69;
             }
         }, 
-      false, 1 //this is likely too long
+      false, .25 //this is likely too long
      );
 
     
@@ -197,10 +197,10 @@ public class Climber extends Subsystem {
         },
         new Callable<Boolean>() {
             public Boolean call(){
-                return isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
+                return isAtPosition(ClimberTarget.ABOVE_BAR.ticks) && mArm.isAtExtension(ArmExtensionTarget.FULLY_EXTENDED.ticks - 10000);
             }
         }, 
-        false, 2
+        false, .35
     );
 
     // Allow Arm to go limp
@@ -220,7 +220,7 @@ public class Climber extends Subsystem {
                 return true;
             }
         }, 
-        true, 1.2
+        false, 1.4
    );
 
    // Save Limp Value
@@ -295,7 +295,7 @@ false,0
                 return mArm.isAtExtension(ArmExtensionTarget.UNDER_HIGH_BAR.ticks);
             }
         }, 
-        true
+        false
    );
    mClimberExecutor.registerStage("Rotate to 102", 
         new Callable<Boolean>() {
@@ -309,7 +309,7 @@ false,0
                 return mArm.isAtPosition(102);
             }
         }, 
-        true,0
+        false,0
    );
    mClimberExecutor.registerStage("Extend arm + goto 50", 
         new Callable<Boolean>() {
