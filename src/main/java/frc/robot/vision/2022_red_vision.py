@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
     #500
-    cnt_area_low = 450
+    cnt_area_low = 350
     #cnt_area_high = 7500
     minimum_perimeter = 10
     width_minimum = 10

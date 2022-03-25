@@ -72,7 +72,7 @@ if __name__ == "__main__":
         camera = cameraConfig['cameras'][0]
         '''
         Create this list of values by going to wpilibpi.local, vision settings, open stream, change settings to whats needed, open "source config JSON",
-        then paste it into "Custom Properties Json" in Vision Settings, Save it, then copy the list created, and replace whatevers set in the cameraConfig variable
+        then paste it into "Custom Properties Json" in Vision Settings. Save it, then copy the list created, and replace whatevers set in the cameraConfig variable
         Dont try to create this manually, its extremely picky on formatting.
         '''
         cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":0},{"name":"hue","value":50},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":2},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":157},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
@@ -92,9 +92,19 @@ if __name__ == "__main__":
     imgForm = np.zeros(shape=(240, 320, 3), dtype=np.uint8)
 
     #Blue ball
+    #81,168
+    #0,255
+    #96,255
+
+    '''
+    #old
     blueHue = [83, 122]
     blueSat = [85, 255]
-    blueVal = [69, 255]  
+    blueVal = [69, 255] 
+    '''
+    blueHue = [81, 122]
+    blueSat = [0, 255]
+    blueVal = [76, 255]  
 
     #Creating settings for blur filter. Radius should be figured out by testing in GRIP
     radius = 8
@@ -102,7 +112,7 @@ if __name__ == "__main__":
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
     #500
-    cnt_area_low = 450
+    cnt_area_low = 350
     #cnt_area_high = 7500
     minimum_perimeter = 10
     width_minimum = 10

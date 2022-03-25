@@ -79,9 +79,6 @@ if __name__ == "__main__":
         mycamera = json.load(f)
         cameraConfig = mycamera
         camera = cameraConfig['cameras'][0]
-
-        
-
     
     server = False
     team = 138
@@ -116,18 +113,17 @@ if __name__ == "__main__":
         print('Likely couldnt get color of ball from network table. Exception:', e)
 
     #Preconfigure to blue to 50/50 our chances if something went wrong with the color picker
-    ballColor = 'Blue'
     '''
-    Create this list by going to wpilibpi.local, vision settings, open stream, change settings to whats needed, open "source config JSON",
-    then paste it into "Custom Properties Json" in Vision Settings, Save it, then copy the list created, and replace whatevers set in the cameraConfig variable
-    Dont try to create this manually, its extremely picky on formatting.
+    Create this list of values by going to wpilibpi.local, vision settings, open stream, change settings to whats needed, open "source config JSON",
+        then paste it into "Custom Properties Json" in Vision Settings. Save it, then copy the list created, and replace whatevers set in the cameraConfig variable
+        Dont try to create this manually, its extremely picky on formatting.
     '''
     cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":-40},{"name":"hue","value":0},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":1},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":150},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
 
-    cameraHue = [83, 122]
-    cameraSat = [85, 255]
-    cameraVal = [69, 255]  
-    
+    cameraHue = [81, 122]
+    cameraSat = [0, 255]
+    cameraVal = [76, 255]
+    ballColor = 'Blue'
     
     try:
         if teamColor == True:
@@ -143,9 +139,9 @@ if __name__ == "__main__":
             #Blue
             cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":0},{"name":"hue","value":50},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":2},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":157},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
 
-            cameraHue = [85, 122]
-            cameraSat = [85, 255]
-            cameraVal = [69, 255]  
+            cameraHue = [81, 122]
+            cameraSat = [0, 255]
+            cameraVal = [76, 255] 
 
     except Exception as e:
         print('Exception:', e)
@@ -170,7 +166,7 @@ if __name__ == "__main__":
 
     #Parameters for targeting, I set these all up here because its easier to go through and change them when tuning with grip
     #500
-    cnt_area_low = 450
+    cnt_area_low = 350
     #cnt_area_high = 7500
     minimum_perimeter = 10
     width_minimum = 10
@@ -299,15 +295,15 @@ if __name__ == "__main__":
                     validCnt &= (len(approximateShape) >= 8)
                     validCnt &= (ratio >= rat_low) and (ratio < rat_high)
 
-                    '''
                     #List of prints for debugging
-                    print('Hullarea: ' , hullArea)
+                    '''
                     print('Perimeter:', perimeter)
                     print('Width:', w)
                     print('Height:', h)
                     print('Solid:', solid)
                     print('Approximate Shape:', approximateShape)
                     print('Ratio:', ratio)
+                    print('Vetices', )
                     '''
 
                     validCnt &= (cv2.arcLength(cnt, True) < 10000)
