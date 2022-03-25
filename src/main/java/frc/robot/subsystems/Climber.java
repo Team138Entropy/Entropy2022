@@ -158,10 +158,11 @@ public class Climber extends Subsystem {
             },
             new Callable<Boolean>() {
                 public Boolean call(){
+                    System.out.println("Get off mid checking");
                     return isAtPosition(ClimberTarget.MID.ticks);
                 }
             }, 
-            false, 3
+            true, 3
        );
 
       // Off Mid Bar - Swing to Other Side of High Bar
@@ -169,6 +170,7 @@ public class Climber extends Subsystem {
       mClimberExecutor.registerStage("Rotate to 67", 
         new Callable<Boolean>() {
             public Boolean call(){
+                System.out.println("Rotating to position 67");
                 // set climber position to climb position
                 mArm.rotateToPosition(56);
                 return false;
@@ -197,10 +199,11 @@ public class Climber extends Subsystem {
         },
         new Callable<Boolean>() {
             public Boolean call(){
-                return isAtPosition(ClimberTarget.ABOVE_BAR.ticks) && mArm.isAtExtension(ArmExtensionTarget.FULLY_EXTENDED.ticks - 10000);
+                System.out.println("Climber stage 6");
+                return isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
             }
         }, 
-        false, .35
+        false, 1.1
     );
 
     // Allow Arm to go limp
@@ -220,7 +223,7 @@ public class Climber extends Subsystem {
                 return true;
             }
         }, 
-        false, 1.4
+        false, 1
    );
 
    // Save Limp Value
@@ -256,7 +259,7 @@ new Callable<Boolean>() {
         return true;
     }
 }, 
-false,0
+true,0
 );
    mClimberExecutor.registerStage("Pull Climber to Mid and Retract Arm", 
     new Callable<Boolean>() {
@@ -295,7 +298,7 @@ false,0
                 return mArm.isAtExtension(ArmExtensionTarget.UNDER_HIGH_BAR.ticks);
             }
         }, 
-        false
+        true, .5
    );
    mClimberExecutor.registerStage("Rotate to 102", 
         new Callable<Boolean>() {
@@ -341,7 +344,7 @@ false,0
             return mArm.isAtPosition(117);
         }
     }, 
-    true
+    true, .15
     );
 
     mClimberExecutor.registerStage("Extend to 25000", 
@@ -358,7 +361,7 @@ false,0
             return isAtPosition(ClimberTarget.MID.ticks);
         }
     }, 
-    true,0
+    true,.15
     );
     mClimberExecutor.registerStage("Extend to 25000", 
     new Callable<Boolean>() {
@@ -507,7 +510,7 @@ false,0
                 return true;
             }
         }, 
-        false,1
+        false,.8
    );
    mClimberExecutor.registerStage("Extend arm out", 
         new Callable<Boolean>() {
@@ -575,7 +578,7 @@ false,0
     new Callable<Boolean>() {
         public Boolean call(){
             // set climber position to climb position
-            mArm.rotateToPosition(115);
+            mArm.rotateToPosition(116);
             return false;
         }
     },

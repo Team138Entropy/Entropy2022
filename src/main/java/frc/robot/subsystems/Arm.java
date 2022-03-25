@@ -238,7 +238,7 @@ public class Arm extends Subsystem {
    * Stop the forearm.
    */
   public void stopForearm() {
-    System.out.println("STOP!");
+    //System.out.println("STOP!");
     extend(0);
   }
 
@@ -315,7 +315,7 @@ public class Arm extends Subsystem {
 
   public boolean isAtExtension(double extPos){
     double extensionPosition = getExtensionPosition();
-    return (extensionPosition <= extPos + 300) && (extensionPosition >= extPos - 300);
+    return (extensionPosition <= extPos + 600) && (extensionPosition >= extPos - 600);
   }
 
   
