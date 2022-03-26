@@ -281,6 +281,17 @@ public class TrajectoryLibrary {
       }
       return traj;
      }
+     public Trajectory get_New_T35_B5_mod2(){
+      Trajectory traj = null;
+      String fileName = "New-T35_B5_mod2.wpilib.json";
+      try {
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+          System.out.println("Unable to open trajectory: " + fileName);
+      }
+      return traj;
+     }
 }
 
 

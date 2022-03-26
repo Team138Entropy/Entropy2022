@@ -40,26 +40,13 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Autosteer",
-              "_title": "Auto steer",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "8,5": {
-            "size": [
-              16,
-              3
-            ],
-            "content": {
-              "_type": "Boolean Box",
               "_source0": "network_table:///SmartDashboard/Valid Target",
               "_title": "Ball in sight",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "8,2": {
+          "8,5": {
             "size": [
               16,
               3
@@ -81,6 +68,17 @@
               "_type": "ComboBox Chooser",
               "_source0": "network_table:///SmartDashboard/SendableChooser[1]",
               "_title": "/SmartDashboard/SendableChooser[1]"
+            }
+          },
+          "8,2": {
+            "size": [
+              16,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Match Time",
+              "_title": "MATCH TIME"
             }
           }
         }
