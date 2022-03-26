@@ -27,6 +27,12 @@ public class DriveUntilPickupAction implements Action {
         mTimer = new Timer();
     }
 
+    public DriveUntilPickupAction(double throttleSpeed){
+        mComplete = false;
+        mTimer = new Timer();
+        mThrottleSpeed = throttleSpeed;
+    }
+
     @Override
     public void start() {
         System.out.println("drive until pickup start!");

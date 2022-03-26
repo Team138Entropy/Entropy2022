@@ -49,8 +49,8 @@ import java.util.ArrayList;
             AutoActionList.add(new TurnInPlaceAction(67));
             AutoActionList.add(new StoreDrivePositionAction());
             AutoActionList.add(new AutoTurnAction(1, 4.5)); // Aim for Ball 3
-            AutoActionList.add(new DriveUntilPickupAction());
-            AutoActionList.add(new WaitAction(.25));
+            AutoActionList.add(new DriveUntilPickupAction(-.24));
+            AutoActionList.add(new WaitAction(.10));
 
             // got the ball, now go back to score it
             List<Action> Ball3Score = new ArrayList<>();
