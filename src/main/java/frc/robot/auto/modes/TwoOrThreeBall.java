@@ -45,9 +45,10 @@ import java.util.ArrayList;
             // 3 Balls
             // C Turn to get in range of next ball
             //AutoActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_C_Turn())));
-            AutoActionList.add(new TurnInPlaceAction(60));
+            AutoActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryGeneratorHelper.getStraightTrajectory(.35))));
+            AutoActionList.add(new TurnInPlaceAction(70));
             AutoActionList.add(new StoreDrivePositionAction());
-            AutoActionList.add(new AutoTurnAction(1, 6)); // Aim for Ball 3
+            AutoActionList.add(new AutoTurnAction(1, 4.5)); // Aim for Ball 3
             AutoActionList.add(new DriveUntilPickupAction());
 
             // got the ball, now go back to score it
@@ -58,7 +59,7 @@ import java.util.ArrayList;
             Ball3Score.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5_mod()));
             AutoActionList.add(new ParallelAction(Ball3Score));
             AutoActionList.add(new TurnInPlaceAction(-47));
-            AutoActionList.add(new DriveTrajectoryAction(TrajectoryGeneratorHelper.getStraightTrajectory(.35)));
+            AutoActionList.add(new DriveTrajectoryAction(TrajectoryGeneratorHelper.getStraightTrajectory(.5)));
             AutoActionList.add(new EjectAction());
         }else{
             // 2 Balls
