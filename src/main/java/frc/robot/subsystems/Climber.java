@@ -606,6 +606,7 @@ true,0
     }, 
     true,4
     );
+    
     mClimberExecutor.registerStage("Extend to 25000", 
     new Callable<Boolean>() {
         public Boolean call(){
@@ -623,7 +624,8 @@ true,0
     }, 
     false
     );
-
+    
+    
         
     }
 

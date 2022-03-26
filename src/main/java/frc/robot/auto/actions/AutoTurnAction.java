@@ -13,6 +13,7 @@ public class AutoTurnAction implements Action {
   private VisionManager mVisionManager = VisionManager.getInstance();
   private boolean mComplete;
   private double mNicksHelpingHand;
+  private double mDeadband = 3.5;
 
   public AutoTurnAction(){
     mComplete = false;
@@ -21,6 +22,13 @@ public class AutoTurnAction implements Action {
   public AutoTurnAction(double nicksHelpingHand){
     mComplete = false;
     mNicksHelpingHand = nicksHelpingHand;
+    
+  }
+
+  public AutoTurnAction(double nicksHelpingHand, double db){
+    mComplete = false;
+    mNicksHelpingHand = nicksHelpingHand;
+    mDeadband = db;
   }
 
   @Override
@@ -43,7 +51,7 @@ public class AutoTurnAction implements Action {
     }
     // turn in place to errorAngle
     mDrive.driveErrorAngle(0, errorAngle);
-    if(Math.abs(errorAngle - mNicksHelpingHand) <= 3.5) {
+    if(Math.abs(errorAngle - mNicksHelpingHand) <= mDeadband) {
       mComplete = true;
       System.out.println("Done!");
     }

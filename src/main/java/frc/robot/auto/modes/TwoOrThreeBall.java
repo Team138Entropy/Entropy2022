@@ -47,7 +47,7 @@ import java.util.ArrayList;
             //AutoActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_C_Turn())));
             AutoActionList.add(new TurnInPlaceAction(60));
             AutoActionList.add(new StoreDrivePositionAction());
-            AutoActionList.add(new AutoTurnAction(4)); // Aim for Ball 3
+            AutoActionList.add(new AutoTurnAction(1, 6)); // Aim for Ball 3
             AutoActionList.add(new DriveUntilPickupAction());
 
             // got the ball, now go back to score it
