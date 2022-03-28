@@ -70,7 +70,7 @@ def calculateDistanceFeet(targetPixelWidth):
 
 if __name__ == "__main__":
     #Avoid touching camera server settings
-    print('Sleepig')
+    print('Sleeping')
     time.sleep(10)
     print('2022 Ball Vision FMS Starting')
     
@@ -86,6 +86,7 @@ if __name__ == "__main__":
     cond = threading.Condition()
     notified = [False]
     teamColor = ''
+    table = ''
 
     
     #Network table setup stuff
@@ -100,17 +101,21 @@ if __name__ == "__main__":
 
     print('Notified')
 
-    table = NetworkTables.getTable('SmartDashboard')
     
+    while table == '':
+        try:
+            table = NetworkTables.getTable('SmartDashboard')
+        except Exception:
+            pass
 
-    #Red is true, blue is false for the selectedColor boolean
-    try:
-        teamColor = table.getBoolean('selectedColor', False)
+    while teamColor != 'Red' or teamColor != 'Blue':
+        try:
+            #Red is true, blue is false for the selectedColor boolean
+            teamColor = table.getBoolean('selectedColor', False)
 
-        print(teamColor)
-
-    except Exception as e:
-        print('Likely couldnt get color of ball from network table. Exception:', e)
+            print(teamColor)
+        except Exception as e:
+            print('Likely couldnt get color of ball from network table. Exception:', e)
 
     #Preconfigure to blue to 50/50 our chances if something went wrong with the color picker
     '''
@@ -118,12 +123,12 @@ if __name__ == "__main__":
         then paste it into "Custom Properties Json" in Vision Settings. Save it, then copy the list created, and replace whatevers set in the cameraConfig variable
         Dont try to create this manually, its extremely picky on formatting.
     '''
-    cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":-40},{"name":"hue","value":0},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":1},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":150},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
+    cameraConfig = ''
 
-    cameraHue = [81, 122]
-    cameraSat = [0, 255]
-    cameraVal = [76, 255]
-    ballColor = 'Blue'
+    cameraHue = ''
+    cameraSat = ''
+    cameraVal = ''
+    ballColor = ''
     
     try:
         if teamColor == True:
@@ -142,6 +147,7 @@ if __name__ == "__main__":
             cameraHue = [81, 122]
             cameraSat = [0, 255]
             cameraVal = [76, 255] 
+            ballColor = 'Blue'
 
     except Exception as e:
         print('Exception:', e)
@@ -232,16 +238,24 @@ if __name__ == "__main__":
                 output_stream.notifyError(input_stream.getError())
                 continue
 
+            if current_frame == 1000:
+                cv2.imwrite('fmsorig.jpeg', input_img)
+
             #Change inmage colorspace to HSV, blur it, and for the 2022 robot we flip the image due to the camera being upside down.
             input_img = cv2.blur(input_img, (ksize, ksize))
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             
-            input_img[0:30, 0:320] = (0,0,0)
-            input_img = cv2.flip(input_img, 1)
+            #input_img[0:30, 0:320] = (0,0,0)
+            input_img[210:240, 0:320] = (0,0,0)
+            #input_img = cv2.flip(input_img, 1)
 
             #Mask out colors that dont fall in the range we'd find the blue ball in
             mask = cv2.inRange(input_img, (cameraHue[0], cameraSat[0], cameraVal[0]),
                                 (cameraHue[1], cameraSat[1], cameraVal[1]))
+
+            if current_frame == 1000:
+                cv2.imwrite('fmsthresh.jpeg', mask)
+
 
             _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
