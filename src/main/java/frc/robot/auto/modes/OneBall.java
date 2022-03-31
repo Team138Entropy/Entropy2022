@@ -25,7 +25,7 @@ public class OneBall extends AutoModeBase {
         driveActionList.add(new WaitAction(.5));
         driveActionList.add(new EjectAction());
         driveActionList.add(new WaitAction(.5));
-        driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_New_T1_B2())));
+        driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_New_T35_B5_mod())));
         driveActionList.add(new ArmRotateAction(Arm.ArmTarget.HOME.degrees));
     }
 

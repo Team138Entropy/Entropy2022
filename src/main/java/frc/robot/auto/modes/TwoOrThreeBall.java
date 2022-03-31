@@ -24,6 +24,9 @@ import java.util.ArrayList;
         
         // Score Ball 1
         AutoActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
+        if (!threeBall){
+            AutoActionList.add(new WaitAction(.15));
+        }
         AutoActionList.add(new WaitAction(.35));
         AutoActionList.add(new EjectAction());
         AutoActionList.add(new StoreDrivePositionAction());
