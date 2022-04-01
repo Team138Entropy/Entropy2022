@@ -246,11 +246,13 @@ if __name__ == "__main__":
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             
             #If camera is flipped
+            '''
             input_img[0:30, 0:320] = (0,0,0)
             input_img = cv2.flip(input_img, 1)
-            
+            '''
+
             #If camera is not flipped
-            #input_img[210:240, 0:320] = (0,0,0)
+            input_img[210:240, 0:320] = (0,0,0)
 
             #Mask out colors that dont fall in the range we'd find the blue ball in
             mask = cv2.inRange(input_img, (cameraHue[0], cameraSat[0], cameraVal[0]),

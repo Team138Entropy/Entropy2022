@@ -92,16 +92,6 @@ if __name__ == "__main__":
     imgForm = np.zeros(shape=(240, 320, 3), dtype=np.uint8)
 
     #Blue ball
-    #81,168
-    #0,255
-    #96,255
-
-    '''
-    #old
-    blueHue = [83, 122]
-    blueSat = [85, 255]
-    blueVal = [69, 255] 
-    '''
     blueHue = [81, 122]
     blueSat = [0, 255]
     blueVal = [76, 255]  
@@ -178,6 +168,9 @@ if __name__ == "__main__":
                 output_stream.notifyError(input_stream.getError())
                 continue
 
+            if current_frame == 1000:
+                cv2.imwrite('blueoriginal.jpeg', input_img)
+
             #Blur image, change image colorspace to HSV, blur it, and for the 2022 robot we flip the image due to the camera being upside down.
             #cv2.imwrite('original.jpeg', input_img)
             #You have to blur before converting color space!! If you don't, the output will be messed up.
@@ -186,14 +179,22 @@ if __name__ == "__main__":
             input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
             #cv2.imwrite('2hsv.jpeg', input_img)
             #Color bumper area to black
+            #If camera is flipped
+            '''
             input_img[0:30, 0:320] = (0,0,0)
             input_img = cv2.flip(input_img, 1)
+            '''
+
+            #If camera is not flipped
+            input_img[210:240, 0:320] = (0,0,0)
 
             #Mask out colors that dont fall in the range we'd find the blue ball in
             mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
                                 (blueHue[1], blueSat[1], blueVal[1]))
             #cv2.imwrite('masked.jpeg', mask)
 
+            if current_frame == 1000:
+                cv2.imwrite('bluethresh.jpeg', input_img)
             _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_KCOS)
 
             # Sort contours by area size (biggest to smallest)
