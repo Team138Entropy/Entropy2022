@@ -175,6 +175,14 @@ public class OperatorInterface {
         return mOperatorController.getButton(Button.L_JOYSTICK);
     }
 
+    public boolean getTeleopArmExtend(){
+        return mOperatorController.getDPad() == 0;
+    }
+
+    public boolean getTeleopArmRetract(){
+        return mOperatorController.getDPad() == 180;
+    }
+
     public boolean getSwitchExtensionMode(){
         return mExtensionSwitchMode.update(mOperatorController.getButton(Button.R_JOYSTICK));
     }

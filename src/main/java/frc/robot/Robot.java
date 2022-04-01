@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.TargetType;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Arm.ArmExtensionTarget;
 import frc.robot.subsystems.Arm.ArmTarget;
 import frc.robot.subsystems.Climber.ClimberTarget;
 import frc.robot.vision.TargetInfo;
@@ -401,6 +402,13 @@ public class Robot extends TimedRobot {
     if(mCurrentMode == RobotMode.CargoScorer){
       // Objective is to Score Cargo
       // Allow Driver and Operator to control arm and grasper
+
+      if (mOperatorInterface.getTeleopArmExtend()) {
+        mArm.extendToPosition(ArmExtensionTarget.MIDWAY.ticks); 
+      }
+      if (mOperatorInterface.getTeleopArmRetract()) {
+        mArm.extendToPosition(ArmExtensionTarget.FULLY_RETRACTED.ticks);
+      }
 
       ArmTarget target = mOperatorInterface.getArmPos();
 
