@@ -43,7 +43,7 @@ public class AutoTurnAction implements Action {
     double errorAngle = 0;
     if(ti != null && ti.isValid()){
         // has valid error
-        errorAngle = ti.getErrorAngle();
+        errorAngle = ti.getErrorAngle() - mNicksHelpingHand;
         System.out.println("error angle "+ errorAngle);
     }
     else {

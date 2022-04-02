@@ -15,7 +15,7 @@ public class TrajectoryGeneratorHelper {
         // Generate Trajectory Config
         if(mTrajectoryConfig == null){
             // VelocityMetersPerSec, AccelerationMetersPerSec2
-            mTrajectoryConfig = new TrajectoryConfig(2.65, 2.3);
+            mTrajectoryConfig = new TrajectoryConfig(2, 1);
             mTrajectoryConfig.setKinematics(Drive.getInstance().getKinematics());
         }
 
@@ -28,7 +28,7 @@ public class TrajectoryGeneratorHelper {
     // This is to get the JIT loaded to speed up dynamic trajectory
     public static void generateExampleTrajectories(){
         try {
-            for(int i = 0; i < 3; i++){
+            for(int i = 0; i < 5; i++){
                 Trajectory traj = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
                     new Pose2d(10, 12, new Rotation2d(12))
                 );
@@ -44,6 +44,12 @@ public class TrajectoryGeneratorHelper {
                 Trajectory traj4 = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
                     new Pose2d(29, 20, new Rotation2d(0))
                 );
+                Trajectory traj5 = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
+                new Pose2d(29, 20, new Rotation2d(0))
+            );
+                Trajectory traj6 = generateTrajectory(new Pose2d(10, 12, new Rotation2d(12)), 
+                new Pose2d(29, 20, new Rotation2d(0))
+            );
             }
         }
         catch (Exception e) {
@@ -58,5 +64,10 @@ public class TrajectoryGeneratorHelper {
     public static Trajectory getStraightTrajectory(double MeterUnits){
         return generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), 
                  new Pose2d(MeterUnits, 0, new Rotation2d(0)));
+    }
+
+    public static Trajectory testTrajectory(){
+        return generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), 
+                 new Pose2d(.3, 1, new Rotation2d(.69)));
     }
 }

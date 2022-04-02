@@ -18,7 +18,8 @@ public class TEST extends AutoModeBase {
         // driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_C_Turn())));
         // driveActionList.add(new WaitAction(2));
         // driveActionList.add(new DriveGeneratedAction(false));
-        driveActionList.add(new DriveTrajectoryAction(TrajectoryGeneratorHelper.getStraightTrajectory(5)));
+        //driveActionList.add(new DriveTrajectoryAction(TrajectoryGeneratorHelper.getStraightTrajectory(5)));
+        driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryGeneratorHelper.testTrajectory())));
     }
 
     @Override
