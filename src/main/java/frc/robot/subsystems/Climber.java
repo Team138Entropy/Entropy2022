@@ -510,7 +510,7 @@ true,0
                 return true;
             }
         }, 
-        false,.8
+        false,.1
    );
    mClimberExecutor.registerStage("Extend arm out", 
         new Callable<Boolean>() {
