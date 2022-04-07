@@ -418,9 +418,9 @@ public class Drive extends Subsystem {
    * 
    */
   public synchronized void driveErrorAngle(double throttle, double error){
-    final double kP = 0.185;
+    final double kP = 0.187;
     final double minOutput = 0;
-    final double maxOutput = .6;
+    final double maxOutput = .6155;
     double turningValue = error * kP;
 
     // Constrain to min output

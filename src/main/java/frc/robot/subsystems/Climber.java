@@ -97,7 +97,7 @@ public class Climber extends Subsystem {
                 public Boolean call(){
                     System.out.println("PREPARE CLIMBER WORK!");
                     // set arm to its starting position for climbing
-                    mArm.rotateToPosition(100);
+                    mArm.rotateToPosition(102);
                     mArm.extend();
 
                     // set climber position to 0
@@ -108,7 +108,7 @@ public class Climber extends Subsystem {
             new Callable<Boolean>() {
                 public Boolean call(){
                     // arm is in position and climber is in position
-                    return mArm.isAtPosition(100) && isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
+                    return mArm.isAtPosition(102) && isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
                 }
             },
             true

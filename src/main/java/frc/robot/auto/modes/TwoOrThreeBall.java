@@ -24,10 +24,10 @@ import java.util.ArrayList;
         
         // Score Ball 1
         AutoActionList.add(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
-        if (!threeBall){
-            AutoActionList.add(new WaitAction(.15));
+        if (!threeBall){ //extra timing for 2 ball.. just in case
+            AutoActionList.add(new WaitAction(.20));
         }
-        AutoActionList.add(new WaitAction(.35));
+        AutoActionList.add(new WaitAction(.28));
         AutoActionList.add(new EjectAction());
         AutoActionList.add(new StoreDrivePositionAction());
         AutoActionList.add(new AutoTurnAction()); // Aim for Ball 2
@@ -52,16 +52,18 @@ import java.util.ArrayList;
             // drive straight and move arm
             List<Action> DriveAndMoveArm = new ArrayList();
             DriveAndMoveArm.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryGeneratorHelper.getStraightTrajectory(.35))));
-            DriveAndMoveArm.add(new ArmRotateAction(Arm.ArmTarget.SCORE_BACK.degrees));
+            DriveAndMoveArm.add(new ArmRotateAction(Arm.ArmTarget.PRE_INTAKE.degrees)); //put arm just 
+            
+            
+            
             AutoActionList.add(new ParallelAction(DriveAndMoveArm));
-
             AutoActionList.add(new TurnInPlaceAction(58));
 
             AutoActionList.add(new StoreDrivePositionAction());
             AutoActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryGeneratorHelper.getStraightTrajectory(.35))));
             AutoActionList.add(new AutoTurnAction(1, 3.5)); // Aim for Ball 3 with wider deadband
-            AutoActionList.add(new DriveUntilPickupAction(-.185));
-            AutoActionList.add(new WaitAction(.10));
+            AutoActionList.add(new DriveUntilPickupAction(-.2)); //previously was -.185
+            AutoActionList.add(new WaitAction(.08));
 
             // got the ball, now go back to score it
             List<Action> Ball3Score = new ArrayList<>();

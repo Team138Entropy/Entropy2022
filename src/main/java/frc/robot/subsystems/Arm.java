@@ -37,6 +37,7 @@ public class Arm extends Subsystem {
   public static enum ArmTarget {
     SCORE_FRONT(115, false),
     SCORE_BACK(65, false),
+    PRE_INTAKE(-5, false),
     INTAKE(-30, false),
     HOME(90, false),
     FLAT_FRONT(180, false),
@@ -114,7 +115,7 @@ public class Arm extends Subsystem {
   }
 
   public synchronized void configureArmForAuto(){
-    configArmVelocityAndAcceleration(33, 30);
+    configArmVelocityAndAcceleration(35, 31);
   }
 
   public synchronized void configureArmForTeleop(){
