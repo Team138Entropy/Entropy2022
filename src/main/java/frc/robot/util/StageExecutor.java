@@ -215,6 +215,7 @@ public class StageExecutor {
         stage -= 1; //convert stage to zero based
         if(stage >= 0 && stage < mStages.size()){
             reset();
+            mCurrentStage = stage;
         }
     }
 

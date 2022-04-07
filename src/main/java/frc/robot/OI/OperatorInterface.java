@@ -184,5 +184,7 @@ public class OperatorInterface {
         return mOperatorClimbApprovePress.update(mOperatorController.getButton(Button.A));
     }
 
-
+    public boolean getClimbCancel() {
+        return mOperatorController.getButton(Button.B);
+    }
 }

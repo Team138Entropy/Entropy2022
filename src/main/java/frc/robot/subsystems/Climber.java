@@ -700,6 +700,12 @@ true,0
         */
     }
 
+    /**
+     * Sets climb back to stage 1 with hooks extended
+     */
+    public synchronized void resetClimb() {
+        mClimberExecutor.resetToStage(1);
+    }
 
     // Set Position into logic
     public synchronized void setPosition(int pos){
