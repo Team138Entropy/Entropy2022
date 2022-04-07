@@ -13,7 +13,7 @@ public class AutoTurnAction implements Action {
   private VisionManager mVisionManager = VisionManager.getInstance();
   private boolean mComplete;
   private double mNicksHelpingHand;
-  private double mDeadband = 3.5;
+  private double mDeadband = 3;
 
   public AutoTurnAction(){
     mComplete = false;

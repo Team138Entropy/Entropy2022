@@ -15,7 +15,7 @@ public class TrajectoryGeneratorHelper {
     public static void initTrajectoryConfig(){
         if(mTrajectoryConfig == null){
          // VelocityMetersPerSec, AccelerationMetersPerSec2
-         mTrajectoryConfig = new TrajectoryConfig(3.10, 2.4);
+         mTrajectoryConfig = new TrajectoryConfig(4, 3.7);
          mTrajectoryConfig.setKinematics(Drive.getInstance().getKinematics());
         }
     }

@@ -52,7 +52,7 @@ import java.util.ArrayList;
             // drive straight and move arm
             List<Action> DriveAndMoveArm = new ArrayList();
             DriveAndMoveArm.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryGeneratorHelper.getStraightTrajectory(.35))));
-            DriveAndMoveArm.add(new ArmRotateAction(Arm.ArmTarget.PRE_INTAKE.degrees)); //put arm just 
+            DriveAndMoveArm.add(new ArmRotateAction(Arm.ArmTarget.SCORE_BACK.degrees)); //put arm just 
             
             
             
@@ -61,9 +61,9 @@ import java.util.ArrayList;
 
             AutoActionList.add(new StoreDrivePositionAction());
             AutoActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryGeneratorHelper.getStraightTrajectory(.35))));
-            AutoActionList.add(new AutoTurnAction(1, 3.5)); // Aim for Ball 3 with wider deadband
-            AutoActionList.add(new DriveUntilPickupAction(-.2)); //previously was -.185
-            AutoActionList.add(new WaitAction(.08));
+            AutoActionList.add(new AutoTurnAction(2, 3.5)); // Aim for Ball 3 with wider deadband
+            AutoActionList.add(new DriveUntilPickupAction(-.19)); //previously was -.185
+            AutoActionList.add(new WaitAction(.1));
 
             // got the ball, now go back to score it
             List<Action> Ball3Score = new ArrayList<>();
@@ -71,11 +71,12 @@ import java.util.ArrayList;
             //Ball3Score.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5())); //old style
             //Ball3Score.add(new DriveGeneratedAction(false));
 
-            Ball3Score.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5_mod2()));
+            //Ball3Score.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().get_New_T35_B5_mod2()));
+            Ball3Score.add(new DriveTrajectoryAction(TrajectoryGeneratorHelper.getStraightTrajectory(1.1)));
 
             AutoActionList.add(new ParallelAction(Ball3Score));
             AutoActionList.add(new TurnInPlaceAction(-47));
-            AutoActionList.add(new DriveTrajectoryAction(TrajectoryGeneratorHelper.getStraightTrajectory(.8)));
+            AutoActionList.add(new DriveTrajectoryAction(TrajectoryGeneratorHelper.getStraightTrajectory(.74)));
             AutoActionList.add(new EjectAction());
         }else{
             // 2 Balls
