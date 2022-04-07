@@ -1,6 +1,7 @@
 import json
 import logging
 import math
+from pickle import TRUE
 import queue
 import socket
 import sys
@@ -48,6 +49,27 @@ class SocketWorker(threading.Thread):
             except Exception as e1:
                 pass
 
+def setBlue():
+    cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":0},{"name":"hue","value":50},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":2},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":157},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
+
+    cameraHue = [81, 122]
+    cameraSat = [0, 255]
+    cameraVal = [76, 255] 
+    ballColor = 'Blue'
+    
+    cameraSettings.setConfigJson(json.dumps(cameraConfig))
+    return cameraHue, cameraSat, cameraVal, ballColor
+
+def setRed():
+    cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":-40},{"name":"hue","value":0},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":1},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":150},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
+
+    cameraHue = [115, 163]
+    cameraSat = [0, 255]
+    cameraVal = [115, 255]  
+    
+    cameraSettings.setConfigJson(json.dumps(cameraConfig))
+    return cameraHue, cameraSat, cameraVal, ballColor
+
 
 def connectionListener(connected, info):
     print(info, '; Connected=%s' % connected)
@@ -71,7 +93,7 @@ def calculateDistanceFeet(targetPixelWidth):
 if __name__ == "__main__":
     #Avoid touching camera server settings
     print('Sleeping')
-    time.sleep(10)
+    time.sleep(1)
     print('2022 Ball Vision FMS Starting')
     
     cameraConfig = ''
@@ -102,11 +124,14 @@ if __name__ == "__main__":
     print('Notified')
 
     
+    
     while table == '':
         try:
             table = NetworkTables.getTable('SmartDashboard')
         except Exception:
             pass
+
+    ballColor = ''
 
     while teamColor != 'Red' or teamColor != 'Blue':
         try:
@@ -114,8 +139,15 @@ if __name__ == "__main__":
             teamColor = table.getBoolean('selectedColor', False)
 
             print(teamColor)
+            if teamColor == False:
+                ballColor = 'Blue'
+            if teamColor == True:
+                ballColor = 'Red'
         except Exception as e:
             print('Likely couldnt get color of ball from network table. Exception:', e)
+
+
+
 
     #Preconfigure to blue to 50/50 our chances if something went wrong with the color picker
     '''
@@ -148,6 +180,7 @@ if __name__ == "__main__":
             cameraSat = [0, 255]
             cameraVal = [76, 255] 
             ballColor = 'Blue'
+            
 
     except Exception as e:
         print('Exception:', e)
@@ -216,6 +249,9 @@ if __name__ == "__main__":
 
     print('FMS ball vision setup complete')
 
+    print('before vision loop')
+    time.sleep(10)
+
     while True:
         #Try covers the following code to make sure we never fail during a match.
         try:
@@ -226,6 +262,15 @@ if __name__ == "__main__":
                 curTime = time.time()
                 print(curTime - oldTime)
             '''
+            '''
+            if current_frame % 400 == 0:
+                teamColor = table.getBoolean('selectedColor', False)
+                if(ballColor != teamColor):
+                    if teamColor == False:
+                        cameraHue, cameraSat, cameraVal, ballColor = setBlue()
+                    if teamColor == True:
+                        cameraHue, cameraSat, cameraVal, ballColor = setRed()                
+            ''' 
 
             PacketValue = {}
             PacketValue['cameraid'] = 0
