@@ -441,6 +441,7 @@ public class Robot extends TimedRobot {
 
       if (mOperatorInterface.getClimbCancel()) {
         mClimber.resetClimb();
+        mClimber.TestStop();
       }
 
       // Update the Climber, manual stop and climber press
