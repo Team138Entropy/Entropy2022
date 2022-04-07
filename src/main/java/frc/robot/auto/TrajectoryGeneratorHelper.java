@@ -70,6 +70,14 @@ public class TrajectoryGeneratorHelper {
         return generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), 
                  new Pose2d(MeterUnits, 0, new Rotation2d(0)));
     }
+    public static Trajectory getStraightTrajectory2(double MeterUnits){
+        //return generateTrajectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), 
+                 //new Pose2d(MeterUnits, -0.9, Rotation2d.fromDegrees(0)));
+                 ArrayList<Translation2d> Translations = new ArrayList<>();
+                 //Translations.add(new Translation2d(.6, 0));
+                 return TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), Translations, 
+                 new Pose2d(MeterUnits, -0.9, Rotation2d.fromDegrees(2)), mTrajectoryConfig); 
+    }
 
 
     // x (straight of robot)
