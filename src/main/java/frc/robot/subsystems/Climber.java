@@ -162,7 +162,7 @@ public class Climber extends Subsystem {
                     return isAtPosition(ClimberTarget.MID.ticks);
                 }
             }, 
-            true, 3
+            true, 2.75
        );
 
       // Off Mid Bar - Swing to Other Side of High Bar
@@ -510,7 +510,7 @@ true,0
                 return true;
             }
         }, 
-        false,.8
+        false,.1
    );
    mClimberExecutor.registerStage("Extend arm out", 
         new Callable<Boolean>() {

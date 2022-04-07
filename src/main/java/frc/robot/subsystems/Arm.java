@@ -114,7 +114,7 @@ public class Arm extends Subsystem {
   }
 
   public synchronized void configureArmForAuto(){
-    configArmVelocityAndAcceleration(30, 25);
+    configArmVelocityAndAcceleration(33, 30);
   }
 
   public synchronized void configureArmForTeleop(){

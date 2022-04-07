@@ -162,6 +162,7 @@ public class Robot extends TimedRobot {
   
   //Updates SmartDashboard ;3
   private void updateRobotSmartDashboard() {
+    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
     SmartDashboard.putData("power panel",Constants.Grasper.globelPowerDistribution);
     SmartDashboard.putNumber("accel X", accelerometer.getX());
     SmartDashboard.putNumber("accel Y", accelerometer.getY());
@@ -460,6 +461,7 @@ public class Robot extends TimedRobot {
   private void DriveLoop(boolean precisionSteer, boolean allowAutoSteer){
     double driveThrottle = mOperatorInterface.getDriveThrottle()*-1;
     double driveTurn = mOperatorInterface.getDriveTurn();
+
 
     // precision steer (slow down throttle if left trigger is held)
    if(precisionSteer) driveThrottle *= .3;

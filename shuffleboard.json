@@ -9,6 +9,7 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
+        "titleType": 0,
         "tiles": {
           "0,2": {
             "size": [
@@ -32,31 +33,7 @@
               "_title": "Drive Controller"
             }
           },
-          "0,8": {
-            "size": [
-              8,
-              3
-            ],
-            "content": {
-              "_type": "ComboBox Chooser",
-              "_source0": "network_table:///SmartDashboard/SendableChooser[5]",
-              "_title": "Operator Controller"
-            }
-          },
           "8,8": {
-            "size": [
-              16,
-              3
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Autosteer",
-              "_title": "Auto steer",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "8,5": {
             "size": [
               16,
               3
@@ -69,7 +46,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "8,2": {
+          "8,5": {
             "size": [
               16,
               3
@@ -80,6 +57,28 @@
               "_title": "Climbing conplete",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "0,8": {
+            "size": [
+              8,
+              3
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/SendableChooser[1]",
+              "_title": "/SmartDashboard/SendableChooser[1]"
+            }
+          },
+          "8,2": {
+            "size": [
+              16,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Match Time",
+              "_title": "MATCH TIME"
             }
           }
         }
@@ -94,6 +93,7 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
+        "titleType": 0,
         "tiles": {
           "0,2": {
             "size": [
@@ -293,6 +293,7 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
+        "titleType": 0,
         "tiles": {
           "3,1": {
             "size": [
@@ -361,6 +362,7 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
+        "titleType": 0,
         "tiles": {
           "3,1": {
             "size": [
@@ -387,8 +389,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "ul",
-              "Visible data/SmartDashboard/Graspercurrent": true
+              "Y-axis/Unit": "ul"
             }
           },
           "3,2": {
@@ -425,6 +426,7 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
+        "titleType": 0,
         "tiles": {
           "6,2": {
             "size": [
@@ -440,8 +442,7 @@
               "Y-axis/Automatic bounds": true,
               "Y-axis/Upper bound": 1.0,
               "Y-axis/Lower bound": -1.0,
-              "Y-axis/Unit": "ul",
-              "Visible data/SmartDashboard/Climber Winch Voltage": true
+              "Y-axis/Unit": "ul"
             }
           },
           "3,5": {
