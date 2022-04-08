@@ -133,7 +133,9 @@ if __name__ == "__main__":
 
     ballColor = ''
 
-    while teamColor != 'Red' or teamColor != 'Blue':
+    while teamColor == '':
+        time.sleep(1)
+        print('Check if we find a color')
         try:
             #Red is true, blue is false for the selectedColor boolean
             teamColor = table.getBoolean('selectedColor', False)
@@ -249,7 +251,7 @@ if __name__ == "__main__":
     print('FMS ball vision setup complete')
 
     print('before vision loop')
-    time.sleep(10)
+    time.sleep(2)
 
     while True:
         #Try covers the following code to make sure we never fail during a match.
@@ -261,15 +263,17 @@ if __name__ == "__main__":
                 curTime = time.time()
                 print(curTime - oldTime)
             '''
-            '''
+            
             if current_frame % 400 == 0:
                 teamColor = table.getBoolean('selectedColor', False)
                 if(ballColor != teamColor):
                     if teamColor == False:
                         cameraHue, cameraSat, cameraVal, ballColor = setBlue()
+                        print('Camera set to blue')
                     if teamColor == True:
-                        cameraHue, cameraSat, cameraVal, ballColor = setRed()                
-            ''' 
+                        cameraHue, cameraSat, cameraVal, ballColor = setRed()
+                        print('Camera set to red')      
+            
 
             PacketValue = {}
             PacketValue['cameraid'] = 0
