@@ -160,7 +160,6 @@ if __name__ == "__main__":
     cameraHue = ''
     cameraSat = ''
     cameraVal = ''
-    ballColor = ''
     
     try:
         if teamColor == True:
