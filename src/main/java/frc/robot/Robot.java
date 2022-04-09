@@ -440,6 +440,11 @@ public class Robot extends TimedRobot {
       // first stage might require manual control
       boolean manualStop = false;
 
+      if (mOperatorInterface.getClimbCancel()) {
+        mClimber.resetClimb();
+        mClimber.TestStop();
+      }
+
       // Update the Climber, manual stop and climber press
       mClimber.update(manualStop, mOperatorInterface.getOperatorClimbStageApprovePress());
 
