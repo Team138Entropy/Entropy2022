@@ -116,7 +116,8 @@ public class Robot extends TimedRobot {
     // Auto Mode
     mAutoModes = new SendableChooser<AutoModeBase>();
     mAutoModes.setDefaultOption("Nothing", new DoNothingMode());
-    mAutoModes.addOption("One Ball", new OneBall());
+    mAutoModes.addOption("One Ball", new OneBall(true));
+    mAutoModes.addOption("TAXI", new OneBall(false));
     mAutoModes.addOption("Two Ball", new TwoOrThreeBall(false));
     mAutoModes.addOption("Three Ball", new TwoOrThreeBall(true));
     mAutoModes.addOption("T3.5_B5", new T35_B5());
