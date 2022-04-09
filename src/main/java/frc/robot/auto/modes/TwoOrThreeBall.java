@@ -27,7 +27,7 @@ import java.util.ArrayList;
         if (!threeBall){ //extra timing for 2 ball.. just in case
             AutoActionList.add(new WaitAction(.20));
         }
-        AutoActionList.add(new WaitAction(.28));
+        AutoActionList.add(new WaitAction(.45));
         AutoActionList.add(new EjectAction());
         AutoActionList.add(new StoreDrivePositionAction());
         AutoActionList.add(new AutoTurnAction()); // Aim for Ball 2

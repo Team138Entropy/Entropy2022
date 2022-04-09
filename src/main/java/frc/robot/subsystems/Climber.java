@@ -303,13 +303,13 @@ true,0
    mClimberExecutor.registerStage("Rotate to 102", 
         new Callable<Boolean>() {
             public Boolean call(){
-                mArm.rotateToPosition(102);
+                mArm.rotateToPosition(101); //originally was 102
                 return false;
             }
         },
         new Callable<Boolean>() {
             public Boolean call(){
-                return mArm.isAtPosition(102);
+                return mArm.isAtPosition(101);
             }
         }, 
         false,0

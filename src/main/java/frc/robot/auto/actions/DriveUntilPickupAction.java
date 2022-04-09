@@ -19,7 +19,7 @@ public class DriveUntilPickupAction implements Action {
     private double mStartingGyroErrorAngle;
     private Timer mTimer;
     private double mTimeoutSeconds = 6;
-    private int mContinueDrivingTime = 0;
+    private int mContinueDrivingTime = 15;
     private int mDriveTime = 10;
 
     public DriveUntilPickupAction(){
