@@ -1,3 +1,4 @@
+from concurrent.futures import thread
 import json
 import logging
 import math
@@ -5,6 +6,7 @@ import queue
 import socket
 import sys
 import threading
+from threading import Thread
 import time
 from multiprocessing.sharedctypes import Value
 from sqlite3 import Time
@@ -48,6 +50,31 @@ class SocketWorker(threading.Thread):
             except Exception as e1:
                 pass
 
+# class that runs separate thread for showing video,
+class VideoShow():
+    """
+    Class that continuously shows a frame using a dedicated thread.
+    """
+
+    def __init__(self, imgWidth, imgHeight, cameraServer, frame=None, name='stream'):
+        self.outputStream = cameraServer.putVideo(name, imgWidth, imgHeight)
+        self.frame = frame
+        self.stopped = False
+
+    def start(self):
+        Thread(target=self.show, args=()).start()
+        return self
+
+    def show(self):
+        while not self.stopped:
+            self.outputStream.putFrame(self.frame)
+
+    def stop(self):
+        self.stopped = True
+
+    def notifyError(self, error):
+        self.outputStream.notifyError(error)
+
 def calculateDistanceFeet(targetPixelWidth):
     # d = Tft*FOVpixel/(2*Tpixel*tanΘ)
     
@@ -64,6 +91,8 @@ def calculateDistanceFeet(targetPixelWidth):
 if __name__ == "__main__":
     #Avoid touching camera server settings
     print('2022 Ball Vision Blue Starting')
+
+    CameraServer.enableLogging()
     
     cameraConfig = ''
     with open('/boot/frc.json', 'r') as f:
@@ -77,19 +106,23 @@ if __name__ == "__main__":
         '''
         cameraConfig = {"fps":120,"height":240,"pixel format":"mjpeg","properties":[{"name":"connect_verbose","value":1},{"name":"raw_brightness","value":-8},{"name":"brightness","value":43},{"name":"raw_contrast","value":0},{"name":"contrast","value":0},{"name":"raw_saturation","value":128},{"name":"saturation","value":100},{"name":"raw_hue","value":0},{"name":"hue","value":50},{"name":"white_balance_temperature_auto","value":True},{"name":"gamma","value":100},{"name":"raw_gain","value":0},{"name":"gain","value":0},{"name":"power_line_frequency","value":1},{"name":"white_balance_temperature","value":4600},{"name":"raw_sharpness","value":2},{"name":"sharpness","value":33},{"name":"backlight_compensation","value":1},{"name":"exposure_auto","value":3},{"name":"raw_exposure_absolute","value":157},{"name":"exposure_absolute","value":3},{"name":"exposure_auto_priority","value":True}],"width":320}
         
+    imwidth = 320
+    imheight = 240
 
     cs = CameraServer.getInstance()
     cameraSettings = cs.startAutomaticCapture()
 
     cameraSettings.setConfigJson(json.dumps(cameraConfig))
     input_stream = cs.getVideo()
-    output_stream = cs.putVideo('Processed', 320, 240)
+    output_stream = cs.putVideo('Processed', imwidth, imheight)
 
     SocketThread = SocketWorker(PacketQueue).start()
 
+    VidStream = VideoShow(imwidth, imheight, cs, frame=None, name='pistream' ).start()
+
     #Numpy creates an array of zeros in the size of the image width/height. Its mentioned in documentation this can be performance intensive, and to do it outside the loop
     #Note that the order is (height, width) in shape
-    imgForm = np.zeros(shape=(240, 320, 3), dtype=np.uint8)
+    imgForm = np.zeros(shape=(imheight, imwidth, 3), dtype=np.uint8)
 
     #Blue ball
     blueHue = [81, 122]
@@ -182,12 +215,12 @@ if __name__ == "__main__":
             #Color bumper area to black
             #If camera is flipped
             '''
-            input_img[0:30, 0:320] = (0,0,0)
+            input_img[0:30, 0:imwidth] = (0,0,0)
             input_img = cv2.flip(input_img, 1)
             '''
 
             #If camera is not flipped
-            input_img[210:240, 0:320] = (0,0,0)
+            input_img[210:imheight, 0:imwidth] = (0,0,0)
 
             #Mask out colors that dont fall in the range we'd find the blue ball in
             mask = cv2.inRange(input_img, (blueHue[0], blueSat[0], blueVal[0]),
