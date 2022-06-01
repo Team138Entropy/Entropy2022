@@ -97,7 +97,7 @@ public class Climber extends Subsystem {
                 public Boolean call(){
                     System.out.println("PREPARE CLIMBER WORK!");
                     // set arm to its starting position for climbing
-                    mArm.rotateToPosition(100);
+                    mArm.rotateToPosition(105);
                     mArm.extend();
 
                     // set climber position to 0
@@ -108,7 +108,7 @@ public class Climber extends Subsystem {
             new Callable<Boolean>() {
                 public Boolean call(){
                     // arm is in position and climber is in position
-                    return mArm.isAtPosition(100) && isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
+                    return mArm.isAtPosition(105) && isAtPosition(ClimberTarget.ABOVE_BAR.ticks);
                 }
             },
             true
@@ -120,6 +120,7 @@ public class Climber extends Subsystem {
                 public Boolean call(){
                     // set climber position to climb position
                     setPosition(ClimberTarget.LOW.ticks);
+                    mArm.rotateToPosition(100);
                     return false;
                 }
             },
@@ -135,18 +136,18 @@ public class Climber extends Subsystem {
         mClimberExecutor.registerStage("Move Arm onto High Bar", 
             new Callable<Boolean>() {
                 public Boolean call(){
-                    mArm.rotateToPosition(95);
+                    mArm.rotateToPosition(112);
                     return false;
                 }
             },
             new Callable<Boolean>() {
                 public Boolean call(){
-                    return mArm.isAtPosition(95);
+                    return mArm.isAtPosition(112);
                 }
             }, 
             true
         );
-        
+        /*
         
         // Move Arm onto High Bar - Requires Operator Blessing
         mClimberExecutor.registerStage("Move Arm onto High Bar", 
@@ -163,6 +164,7 @@ public class Climber extends Subsystem {
             }, 
             true
         );
+        */
 
         // Get Off the Mid Bar and Onto High Bar
         mClimberExecutor.registerStage("Get off mid bar", 
@@ -320,13 +322,13 @@ true,0
    mClimberExecutor.registerStage("Rotate to 102", 
         new Callable<Boolean>() {
             public Boolean call(){
-                mArm.rotateToPosition(101); //originally was 102
+                mArm.rotateToPosition(106); //originally was 102
                 return false;
             }
         },
         new Callable<Boolean>() {
             public Boolean call(){
-                return mArm.isAtPosition(101);
+                return mArm.isAtPosition(106);
             }
         }, 
         false,0
