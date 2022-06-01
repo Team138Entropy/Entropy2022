@@ -135,18 +135,35 @@ public class Climber extends Subsystem {
         mClimberExecutor.registerStage("Move Arm onto High Bar", 
             new Callable<Boolean>() {
                 public Boolean call(){
-                    mArm.rotateToPosition(120);
+                    mArm.rotateToPosition(95);
                     return false;
                 }
             },
             new Callable<Boolean>() {
                 public Boolean call(){
-                    return mArm.isAtPosition(113);
+                    return mArm.isAtPosition(95);
                 }
             }, 
             true
         );
         
+        
+        // Move Arm onto High Bar - Requires Operator Blessing
+        mClimberExecutor.registerStage("Move Arm onto High Bar", 
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    mArm.rotateToPosition(88);
+                    return false;
+                }
+            },
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    return mArm.isAtPosition(88);
+                }
+            }, 
+            true
+        );
+
         // Get Off the Mid Bar and Onto High Bar
         mClimberExecutor.registerStage("Get off mid bar", 
             new Callable<Boolean>() {

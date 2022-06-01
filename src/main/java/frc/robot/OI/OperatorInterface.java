@@ -187,4 +187,9 @@ public class OperatorInterface {
     public boolean getClimbCancel() {
         return mOperatorController.getButton(Button.BACK);
     }
+
+    public boolean getGrasperCancelIntake() {
+        return mOperatorController.getButton(Button.A);
+    }
+
 }

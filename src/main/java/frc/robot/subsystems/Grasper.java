@@ -88,6 +88,7 @@ public class Grasper extends Subsystem {
         if (mBallsStored >= Constants.Grasper.maxBallsStored) {
           stop();
           mIntakeStatus = IntakeStatus.IDLE;
+          System.out.println("AT MAX, STOP!");
         }
 
         // If the current exceeds the normal level then we have a ball
@@ -99,11 +100,13 @@ public class Grasper extends Subsystem {
 
         // If the current exceeds a set value for a set time and stop intaking
         if (mThresholdExceedCount > mMinThresholdExceedCount) {
-          stop();
+          System.out.println("EXCEEDS! INCRIMENTING BALL COUNT AND RESETING!");
+          //stop();
           mBallsStored++;
-          mIntakeStatus = IntakeStatus.IDLE;
+         // mIntakeStatus = IntakeStatus.IDLE;
           mPulseCounter = 0;
           mPulseExecutor.reset();
+          mThresholdExceedCount = 0;
         }
         break;
       case EJECT:
