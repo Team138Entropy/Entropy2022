@@ -191,7 +191,7 @@ public class Climber extends Subsystem {
             public Boolean call(){
                 System.out.println("Rotating to position 67");
                 // set climber position to climb position
-                mArm.rotateToPosition(56);
+                mArm.rotateToPosition(50);
                 return false;
             }
         },
@@ -199,7 +199,7 @@ public class Climber extends Subsystem {
             public Boolean call(){
                 System.out.println("Stage 5 Tough Case: " + mArm.getRotation());
                 //return mArm.isAtPosition(59);
-                return mArm.getRotation() < 69;
+                return mArm.getRotation() < 65;
             }
         }, 
       false, .25 //this is likely too long
