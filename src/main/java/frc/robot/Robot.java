@@ -173,6 +173,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("drive throttle", mOperatorInterface.getDriveThrottle());
     SmartDashboard.putNumber("drive turn", mOperatorInterface.getDriveTurn());
     SmartDashboard.putBoolean("ball color", getBallColor());
+    SmartDashboard.putNumber("GrasperCurrent", Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
     
     mSubsystemManager.updateSmartdashboard();
   }
@@ -401,33 +402,47 @@ public class Robot extends TimedRobot {
 
     if(mCurrentMode == RobotMode.CargoScorer){
       // Objective is to Score Cargo
-      // Allow Driver and Operator to control arm and grasper
+      // Allow Driver and Operator to control arm and grpasper
 
       ArmTarget target = mOperatorInterface.getArmPos();
 
       if (target == null) {
         target = lastTarget;
       }
-
+      /*
       if (mGrasper.getBallsStored() < Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         mGrasper.intake();
       } else if (mGrasper.getBallsStored() == Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         target = ArmTarget.SCORE_BACK;
       }
+      */
+      double grasperCurrent = Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber);
+
+      if (mOperatorInterface.intakeTeleop() && grasperCurrent <35) {
+        mGrasper.intakeManual();
+        target = ArmTarget.INTAKE;
+      }
+      else if (mOperatorInterface.getArmEject() && grasperCurrent <35) {
+        mGrasper.ejectManual();
+      }
+      else {
+        mGrasper.stop();
+      }
 
       lastTarget = target;
+     // System.out.println("Target: " + target.degrees);
       mArm.rotateToPosition(target.degrees);
       /*
       if (target.isExtended) mArm.extend();
       else mArm.retract();
       */
       
-      if (mOperatorInterface.getArmEject()) mGrasper.eject();
+      //if (mOperatorInterface.getArmEject()) mGrasper.eject();
       if (mOperatorInterface.getGrasperCancelIntake()) mGrasper.stop();
 
       // TODO: check for press of A button on Operator Controller to Cancel Intake
       
-      mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
+     // mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
 
       // Drive with Precision Steer and Auto Steer
       DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);

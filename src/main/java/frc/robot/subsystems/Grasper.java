@@ -12,7 +12,7 @@ import frc.robot.Constants;
 public class Grasper extends Subsystem {
   private static Grasper mInstance;
   
-  private final double kJogSpeed = .8;
+  private final double kJogSpeed = 1;
 
   private PWMTalonSRX mTalon;
   
@@ -67,6 +67,7 @@ public class Grasper extends Subsystem {
   private Grasper(){
     mTalon = new PWMTalonSRX(Constants.Grasper.pwmChannel);
     mTalon.setInverted(true);
+    
 
     mIntakeStatus = IntakeStatus.IDLE;
     mThresholdExceedCount = 0;

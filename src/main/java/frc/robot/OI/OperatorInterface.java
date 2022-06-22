@@ -100,6 +100,10 @@ public class OperatorInterface {
         return mLeftBumper.update(mOperatorController.getTrigger(Side.RIGHT));
     }
 
+    public boolean intakeTeleop() {
+        return mOperatorController.getTrigger(Side.RIGHT);
+    }
+
     /**
      * Switches the Robot Mode
      * On the Start Button of the Operator Controller

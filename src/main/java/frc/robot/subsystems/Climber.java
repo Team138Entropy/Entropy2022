@@ -76,11 +76,11 @@ public class Climber extends Subsystem {
 
         // Make a Rotate to Position which is given an encoder position
         
-        mClimber.configMotionAcceleration(2800);
-        mClimber.configMotionCruiseVelocity(2000, 10);
-        
+        mClimber.configMotionAcceleration(6000);
+        mClimber.configMotionCruiseVelocity(6000, 10);
+        mClimber.configAllowableClosedloopError(0, 300, 10);
         mClimber.config_kF(0, 0, 10);
-        mClimber.config_kP(0, .8, 10);
+        mClimber.config_kP(0, 1, 10);
         mClimber.config_kI(0, 0, 10);
         mClimber.config_kD(0, 10, 10);
 
@@ -120,7 +120,7 @@ public class Climber extends Subsystem {
                 public Boolean call(){
                     // set climber position to climb position
                     setPosition(ClimberTarget.LOW.ticks);
-                    mArm.rotateToPosition(100);
+                    mArm.rotateToPosition(98);
                     return false;
                 }
             },
@@ -131,21 +131,38 @@ public class Climber extends Subsystem {
             }, 
             true
         );
-        
-        // Move Arm onto High Bar - Requires Operator Blessing
-        mClimberExecutor.registerStage("Move Arm onto High Bar", 
+
+
+            // Move Arm onto High Bar - Requires Operator Blessing
+            mClimberExecutor.registerStage("swing back", 
             new Callable<Boolean>() {
                 public Boolean call(){
-                    mArm.rotateToPosition(112);
+                    mArm.rotateToPosition(91);
                     return false;
                 }
             },
             new Callable<Boolean>() {
                 public Boolean call(){
-                    return mArm.isAtPosition(112);
+                    return mArm.isAtPosition(91);
                 }
             }, 
             true
+        );
+        
+        // Move Arm onto High Bar - Requires Operator Blessing
+        mClimberExecutor.registerStage("Move Arm onto High Bar", 
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    mArm.rotateToPosition(118);
+                    return false;
+                }
+            },
+            new Callable<Boolean>() {
+                public Boolean call(){
+                    return mArm.isAtPosition(116);
+                }
+            }, 
+            false
         );
         /*
         
@@ -322,13 +339,13 @@ true,0
    mClimberExecutor.registerStage("Rotate to 102", 
         new Callable<Boolean>() {
             public Boolean call(){
-                mArm.rotateToPosition(106); //originally was 102
+                mArm.rotateToPosition(98); //originally was 102
                 return false;
             }
         },
         new Callable<Boolean>() {
             public Boolean call(){
-                return mArm.isAtPosition(106);
+                return mArm.isAtPosition(98);
             }
         }, 
         false,0
@@ -354,13 +371,13 @@ true,0
     new Callable<Boolean>() {
         public Boolean call(){
             // set climber position to climb position
-            mArm.rotateToPosition(117);
+            mArm.rotateToPosition(116);
             return false;
         }
     },
     new Callable<Boolean>() {
         public Boolean call(){
-            return mArm.isAtPosition(117);
+            return mArm.isAtPosition(113);
         }
     }, 
     true, .15
