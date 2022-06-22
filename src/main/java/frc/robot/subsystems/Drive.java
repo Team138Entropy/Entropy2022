@@ -29,6 +29,10 @@ import frc.robot.util.drivers.MotorConfigUtils;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
+
+
+
 public class Drive extends Subsystem {
   private static Drive mInstance;
 
@@ -55,8 +59,6 @@ public class Drive extends Subsystem {
   private static final double kTrackWidth = 0.3; // meters (23.5 inches)
   private final DifferentialDriveKinematics mKinematics = 
     new DifferentialDriveKinematics(kTrackWidth);
-
-  private Pose2d mStoredPose;
 
   // FeedForwardController for Autonomous Use
   // ks = static gain
@@ -203,10 +205,6 @@ public class Drive extends Subsystem {
     setOpenLoop(s);    
   }
 
-  public synchronized void setUnrampedDrive(double throttle, double wheel, boolean quickTurn) {
-    DriveSignal s = getCheesyDrive(throttle, wheel, quickTurn);
-    setOpenLoop(s);    
-  }
   // Original Cheesy Drive Equation
   // Depcreated for memory system
   public DriveSignal getCheesyDrive(double throttle, double wheel, boolean quickTurn) {
@@ -255,8 +253,7 @@ public class Drive extends Subsystem {
   // if this is not the first loop,  we will consider the previous loop
   // returns a drive signal
   public DriveSignal getCheesyBrianDrive(double throttle, double wheel, boolean quickTurn) {
-    double DeltaVelocityLimit = 0.02;
-    throttle = throttle*0.85;
+    double DeltaVelocityLimit = 0.015;
     wheel = wheel * -1; //invert wheel
     if (Util.epsilonEquals(throttle, 0.0, 0.05)) {
         throttle = 0.0;
@@ -306,23 +303,21 @@ public class Drive extends Subsystem {
     return currentCommand;
   }
 
-  public synchronized void autoSteer(double throttle, double angle){
-    double radians = (0.0174) * angle;
+  public synchronized void 
+  autoSteer(double throttle, double angle){
+    double radians = (0.0174533) * angle;
     double heading_error_rad = radians;
     final double kAutosteerKp = 0.1;
     boolean towards_goal = true;
     boolean reverse = false;
     double curvature = (towards_goal ? 1.0 : 0.0) * heading_error_rad * kAutosteerKp;
-    double DY = throttle;
-    if (throttle == 0) {
-      throttle = -.18;
-    }
-    double dtheta = curvature * throttle * (reverse ? -1.0 : 1.0);
-    setOpenLoop(Kinematics.inverseKinematics(new Twist2d(DY, 0.0, dtheta)));
+    setOpenLoop(Kinematics.inverseKinematics(new Twist2d(throttle, 0.0, curvature * throttle * (reverse ? -1.0 : 1.0))));
   }
 
   // periodic update 
   public void periodic() {
+    // Update the odometry in the periodic block
+    //m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
 
   }
 
@@ -336,7 +331,6 @@ public class Drive extends Subsystem {
   public void updateSmartDashBoard() {
     SmartDashboard.putNumber("encoder_left", getLeftEncoderPosition());
     SmartDashboard.putNumber("encoder_right", getRightEncoderPosition());
-    SmartDashboard.putNumber("gyro", getHeading());
   }
 
   // Zero Encoder of Each Falcon500
@@ -395,51 +389,6 @@ public class Drive extends Subsystem {
     setAutoSpeeds(wheelSpeeds);
   }
 
-  public synchronized void setPercentOutputDrive(double left, double right){
-    mLeftMaster.set(ControlMode.PercentOutput, left);
-    mRightMaster.set(ControlMode.PercentOutput, right);
-  } 
-
-  //setUnrampedDrive
-  // Drives Gyro at a setpoint
-  // This function is used to keep the robot straight
-  public synchronized void driveGyroSetpoint(double throttle, double gyroAngleSetpoint){
-    final double kP = 0.018;
-		double turningValue = (gyroAngleSetpoint - (m_gyro.getAngle()*-1)) * kP;
-		//turningValue = Math.copySign(turningValue, throttle);
-    setUnrampedDrive(throttle, turningValue*-1, true);
-    SmartDashboard.putNumber("turn value", turningValue);
-    SmartDashboard.putNumber("turn error", gyroAngleSetpoint - (m_gyro.getAngle()*-1));
-    System.out.println(gyroAngleSetpoint - (m_gyro.getAngle()*-1));
-  }
-
-  /**
-   * driveErrorAngle
-   * 
-   */
-  public synchronized void driveErrorAngle(double throttle, double error){
-    final double kP = 0.187;
-    final double minOutput = 0;
-    final double maxOutput = .6155;
-    double turningValue = error * kP;
-
-    // Constrain to min output
-    if(turningValue < minOutput && turningValue >= 0){
-      turningValue = minOutput;
-    }else if(turningValue > -minOutput && turningValue <= 0){
-      turningValue = -minOutput;
-    }
-
-    // Constrain to max output
-    if(turningValue > maxOutput){
-      turningValue = maxOutput;
-    }else if(turningValue < -maxOutput){
-      turningValue = -maxOutput;
-    }
-
-    // set into drive with no ramp
-    setUnrampedDrive(throttle, turningValue, true);
-  }
 
   /** Updates the field-relative position. */
   public void updateOdometry() {
@@ -462,24 +411,8 @@ public class Drive extends Subsystem {
    *
    * @return The pose.
    */
-  public synchronized Pose2d getPose() {
+  public Pose2d getPose() {
     return mOdometry.getPoseMeters();
-  }
-
-  /**
-   * Stores the Pose of the Robot
-   * Useful for generating a backtracked robot path
-   */
-  public synchronized void storeCurrentPose(){
-    mStoredPose = getPose();
-  }
-
-  /**
-   * Get Stored Pose of RObot
-   * @return
-   */
-  public synchronized Pose2d getStoredPose(){
-    return mStoredPose;
   }
 
   /**
@@ -524,9 +457,5 @@ public class Drive extends Subsystem {
 
   public Gyro getGyro(){
     return m_gyro;
-  }
-
-  public DifferentialDriveKinematics getKinematics() {
-    return mKinematics;
   }
 }
