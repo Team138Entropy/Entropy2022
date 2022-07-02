@@ -429,6 +429,16 @@ public class Robot extends TimedRobot {
         mGrasper.stop();
       }
 
+      if (mOperatorInterface.getTeleopArmExtend()){
+        mArm.extend();
+      }
+      else if (mOperatorInterface.getTeleopArmRetract()){
+        mArm.retract();
+      }
+      else {
+        mArm.stopForearm();
+      }
+
       lastTarget = target;
      // System.out.println("Target: " + target.degrees);
       mArm.rotateToPosition(target.degrees);

@@ -196,4 +196,12 @@ public class OperatorInterface {
         return mOperatorController.getButton(Button.A);
     }
 
+    public boolean getTeleopArmExtend() {
+        return mOperatorController.getButton(Button.L_JOYSTICK);
+    }
+
+    public boolean getTeleopArmRetract() {
+        return mOperatorController.getButton(Button.R_JOYSTICK);
+    }
+
 }
