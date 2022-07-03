@@ -275,6 +275,7 @@ public class Robot extends TimedRobot {
     extensionTargetPosition = 0;
   }
   double extensionTargetPosition = 0;
+  int climbingTargetPosition = 0;
 
   private boolean mIsShoulderJogging = false;
   private boolean mIsForearmJogging = false;
@@ -409,6 +410,8 @@ public class Robot extends TimedRobot {
       if (target == null) {
         target = lastTarget;
       }
+
+      
       /*
       if (mGrasper.getBallsStored() < Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
         mGrasper.intake();
@@ -429,19 +432,28 @@ public class Robot extends TimedRobot {
         mGrasper.stop();
       }
 
-      if (mOperatorInterface.getTeleopArmExtend()){
-        mArm.extend();
+      //4th of july stuff to give operator the ability to extend the arm when in the cargo scoring mode
+      if (mOperatorInterface.getTeleopArmExtend() > .3 && mArm.getExtensionPosition() < 180000){
+        extensionTargetPosition += 1000*mOperatorInterface.getTeleopArmExtend();
       }
-      else if (mOperatorInterface.getTeleopArmRetract()){
-        mArm.retract();
+      else if (mOperatorInterface.getTeleopArmExtend() < -.3 && mArm.getExtensionPosition() > 0){
+        extensionTargetPosition -= 1000*mOperatorInterface.getTeleopArmExtend();
       }
-      else {
-        mArm.stopForearm();
+
+      //4th of july stuff to give operator the ability to extend the climber when in the cargo scoring mode
+      if (mOperatorInterface.getTeleopClimberExtend() > .3 && mClimber.getClimberPosition() < 33000){
+        climbingTargetPosition += 1000*mOperatorInterface.getTeleopClimberExtend();
       }
+      else if (mOperatorInterface.getTeleopClimberExtend() < -.3 && mClimber.getClimberPosition() > 0){
+        climbingTargetPosition -= 1000*mOperatorInterface.getTeleopClimberExtend();
+      }
+      
 
       lastTarget = target;
      // System.out.println("Target: " + target.degrees);
       mArm.rotateToPosition(target.degrees);
+      mArm.extendToPosition(extensionTargetPosition);
+      mClimber.setPosition(climbingTargetPosition);
       /*
       if (target.isExtended) mArm.extend();
       else mArm.retract();

@@ -38,7 +38,7 @@ public class Arm extends Subsystem {
     SCORE_FRONT(115, false),
     SCORE_BACK(65, false),
     PRE_INTAKE(-5, false),
-    INTAKE(-30, false),
+    INTAKE(30, false),
     HOME(90, false),
     FLAT_FRONT(180, false),
     FLAT_BACK(0, false),
