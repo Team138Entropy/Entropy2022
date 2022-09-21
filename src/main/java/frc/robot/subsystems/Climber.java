@@ -745,8 +745,10 @@ true,0
 
     // Set Position into logic
     public synchronized void setPosition(int pos){
-        mClimber.set(ControlMode.MotionMagic, pos, DemandType.ArbitraryFeedForward, 0.1);
-        SmartDashboard.putNumber("Climber Target", pos);
+        if (pos >= 0 && pos <= 33700){
+            mClimber.set(ControlMode.MotionMagic, pos, DemandType.ArbitraryFeedForward, 0.1);
+            SmartDashboard.putNumber("Climber Target", pos);
+        }
     }
 
     // Extends the Climber Slowly

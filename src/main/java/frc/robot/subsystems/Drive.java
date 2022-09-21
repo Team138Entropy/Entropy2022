@@ -248,7 +248,19 @@ public class Drive extends Subsystem {
     double scaling_factor = Math.max(1.0, Math.max(Math.abs(signal.getLeft()), Math.abs(signal.getRight())));
     return new DriveSignal(signal.getLeft() / scaling_factor, signal.getRight() / scaling_factor);
   }
+    public void setBreak() {
+      mLeftMaster.setNeutralMode(NeutralMode.Brake);
+mLeftSlave.setNeutralMode(NeutralMode.Brake);
+mRightMaster.setNeutralMode(NeutralMode.Brake);
+mRightSlave.setNeutralMode(NeutralMode.Brake);  
+    }
 
+    public void setCoast() {
+      mLeftMaster.setNeutralMode(NeutralMode.Coast);
+mLeftSlave.setNeutralMode(NeutralMode.Coast);
+mRightMaster.setNeutralMode(NeutralMode.Coast);
+mRightSlave.setNeutralMode(NeutralMode.Coast);
+    }
 
   // Cheesy Drive with a memory system
   // This loop will calculate the value for the NEXT loop

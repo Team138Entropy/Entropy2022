@@ -214,7 +214,8 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {    
+  public void teleopInit() {  
+    mDrive.setBreak();  
     // Default Robot Mode to CargoScorer
     mCurrentMode = RobotMode.CargoScorer;
     
@@ -244,6 +245,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
+    mDrive.setCoast();
     // Reset all auto mode state.
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();
@@ -433,19 +435,19 @@ public class Robot extends TimedRobot {
       }
 
       //4th of july stuff to give operator the ability to extend the arm when in the cargo scoring mode
-      if (mOperatorInterface.getTeleopArmExtend() > .3 && mArm.getExtensionPosition() < 180000){
-        extensionTargetPosition += 1000*mOperatorInterface.getTeleopArmExtend();
+      if (mOperatorInterface.getTeleopArmExtend() > .3 && mArm.getExtensionPosition() < 184453){
+        extensionTargetPosition += 2000*mOperatorInterface.getTeleopArmExtend();
       }
       else if (mOperatorInterface.getTeleopArmExtend() < -.3 && mArm.getExtensionPosition() > 0){
-        extensionTargetPosition -= 1000*mOperatorInterface.getTeleopArmExtend();
+        extensionTargetPosition += 2000*mOperatorInterface.getTeleopArmExtend();
       }
 
       //4th of july stuff to give operator the ability to extend the climber when in the cargo scoring mode
-      if (mOperatorInterface.getTeleopClimberExtend() > .3 && mClimber.getClimberPosition() < 33000){
-        climbingTargetPosition += 1000*mOperatorInterface.getTeleopClimberExtend();
+      if (mOperatorInterface.getTeleopClimberExtend() > .3 && mClimber.getClimberPosition() < 33700){
+        climbingTargetPosition += 300*mOperatorInterface.getTeleopClimberExtend();
       }
       else if (mOperatorInterface.getTeleopClimberExtend() < -.3 && mClimber.getClimberPosition() > 0){
-        climbingTargetPosition -= 1000*mOperatorInterface.getTeleopClimberExtend();
+        climbingTargetPosition += 300*mOperatorInterface.getTeleopClimberExtend();
       }
       
 
@@ -454,6 +456,8 @@ public class Robot extends TimedRobot {
       mArm.rotateToPosition(target.degrees);
       mArm.extendToPosition(extensionTargetPosition);
       mClimber.setPosition(climbingTargetPosition);
+      SmartDashboard.putNumber("climb target", climbingTargetPosition);
+      SmartDashboard.putNumber("extend target", extensionTargetPosition);
       /*
       if (target.isExtended) mArm.extend();
       else mArm.retract();

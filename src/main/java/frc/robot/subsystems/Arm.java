@@ -232,7 +232,9 @@ public class Arm extends Subsystem {
   }
 
   public void extendToPosition(double ticks) {
-    mForearm.set(ControlMode.MotionMagic, ticks, DemandType.ArbitraryFeedForward, .3);
+    if(ticks >= 0 && ticks <= ArmExtensionTarget.FULLY_EXTENDED.ticks){
+      mForearm.set(ControlMode.MotionMagic, ticks, DemandType.ArbitraryFeedForward, .3);
+    }
   }
   
   /**
