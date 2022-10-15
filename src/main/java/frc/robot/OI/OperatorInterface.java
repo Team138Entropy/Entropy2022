@@ -14,6 +14,8 @@ public class OperatorInterface {
     private XboxController mDriverController;
     private XboxController mOperatorController;
 
+    private DroneController mDroneController;
+
     // Latched Booleans
     private LatchedBoolean mOperatorSelectButton = new LatchedBoolean();
     private LatchedBoolean mOperatorStartButton = new LatchedBoolean();
@@ -35,8 +37,9 @@ public class OperatorInterface {
     }
     
     private OperatorInterface() {
-        mDriverController = new XboxController(Constants.Controllers.Driver.port);
+       // mDriverController = new XboxController(Constants.Controllers.Driver.port);
         mOperatorController = new XboxController(Constants.Controllers.Operator.port);
+        mDroneController = new DroneController(0);
     }
 
     public boolean getClimberTest(){
@@ -48,15 +51,18 @@ public class OperatorInterface {
     }
 
     public double getDriveThrottle() {
-        return mDriverController.getJoystick(Side.LEFT, Axis.Y);
+        //return mDriverController.getJoystick(Side.LEFT, Axis.Y);
+        return mDroneController.getJoystick(frc.robot.OI.DroneController.Side.RIGHT, frc.robot.OI.DroneController.Axis.Y);
     }
     
     public double getDriveTurn() {
-        return mDriverController.getJoystick(Side.RIGHT, Axis.X);
+        //return mDriverController.getJoystick(Side.RIGHT, Axis.X);
+        return mDroneController.getJoystick(frc.robot.OI.DroneController.Side.LEFT, frc.robot.OI.DroneController.Axis.X);
     }
 
     public boolean getDriveAutoSteer(){
-        return mDriverController.getTrigger(Side.RIGHT);
+      //  return mDriverController.getTrigger(Side.RIGHT);
+      return false;
     }
 
     public boolean getDrivePrecisionSteer(){
