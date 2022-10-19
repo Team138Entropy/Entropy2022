@@ -24,6 +24,11 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+
+import java.util.List;
+
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -46,6 +51,8 @@ public class Robot extends TimedRobot {
 
   // Subsystem Manager
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
+
+  private final photoVision mpPhotoVision = photoVision.getInstance();
   
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
@@ -148,6 +155,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    mpPhotoVision.getTargetList().forEach(System.out::println);
     updateRobotSmartDashboard();
     NetworkTable table = inst.getTable("SmartDashboard");
     ballColorEntry = table.getEntry("selectedColor");
