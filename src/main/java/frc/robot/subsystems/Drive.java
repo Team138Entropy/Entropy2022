@@ -202,6 +202,10 @@ public class Drive extends Subsystem {
     DriveSignal s = getCheesyBrianDrive(throttle, wheel, quickTurn);
     setOpenLoop(s);    
   }
+public synchronized void setTankDrive(double LeftPower, double RightPower) {
+  DriveSignal s = new DriveSignal(LeftPower, RightPower);
+  setOpenLoop(s);    
+}
 
   public synchronized void setUnrampedDrive(double throttle, double wheel, boolean quickTurn) {
     DriveSignal s = getCheesyDrive(throttle, wheel, quickTurn);

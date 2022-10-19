@@ -6,6 +6,7 @@ import frc.robot.OI.XboxController.Button;
 import frc.robot.OI.XboxController.Side;
 import frc.robot.subsystems.Arm.ArmTarget;
 import frc.robot.util.LatchedBoolean;
+import edu.wpi.first.wpilibj.Joystick;
 
 public class OperatorInterface {
     private static OperatorInterface mInstance;
@@ -13,6 +14,10 @@ public class OperatorInterface {
     // Instances of the Driver and Operator Controller
     private XboxController mDriverController;
     private XboxController mOperatorController;
+    private Joystick mLJoystick;
+    private Joystick mRJoystick;
+
+
 
     // Latched Booleans
     private LatchedBoolean mOperatorSelectButton = new LatchedBoolean();
@@ -35,8 +40,9 @@ public class OperatorInterface {
     }
     
     private OperatorInterface() {
-        mDriverController = new XboxController(Constants.Controllers.Driver.port);
-        mOperatorController = new XboxController(Constants.Controllers.Operator.port);
+    
+        mLJoystick = new Joystick(Constants.Controllers.Driver.port);
+        mRJoystick = new Joystick(Constants.Controllers.Operator.port);
     }
 
     public boolean getClimberTest(){
@@ -50,7 +56,12 @@ public class OperatorInterface {
     public double getDriveThrottle() {
         return mDriverController.getJoystick(Side.LEFT, Axis.Y);
     }
-    
+    public double LeftJoystickControll() {
+        return mLJoystick.getY();
+    }
+    public double RightJoystickControll() {
+    return mRJoystick.getY();
+    }
     public double getDriveTurn() {
         return mDriverController.getJoystick(Side.RIGHT, Axis.X);
     }
