@@ -250,7 +250,7 @@ public class Robot extends TimedRobot {
     // precision steer (slow down throttle if left trigger is held)
    if(precisionSteer) driveThrottle *= .3;
 
-    boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
+    boolean wantsAutoSteer = false;
     wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed
     SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 

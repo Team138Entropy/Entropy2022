@@ -7,12 +7,17 @@ import frc.robot.OI.XboxController.Side;
 import frc.robot.subsystems.Arm.ArmTarget;
 import frc.robot.util.LatchedBoolean;
 
+import com.ctre.phoenix.motorcontrol.can.MotControllerJNI;
+
+import edu.wpi.first.wpilibj.Joystick;
+
 public class OperatorInterface {
     private static OperatorInterface mInstance;
 
     // Instances of the Driver and Operator Controller
     private XboxController mDriverController;
     private XboxController mOperatorController;
+    private Joystick mJoystick;
 
     // Latched Booleans
     private LatchedBoolean mOperatorSelectButton = new LatchedBoolean();
@@ -35,8 +40,7 @@ public class OperatorInterface {
     }
     
     private OperatorInterface() {
-        mDriverController = new XboxController(Constants.Controllers.Driver.port);
-        mOperatorController = new XboxController(Constants.Controllers.Operator.port);
+        mJoystick = new Joystick(Constants.Controllers.Driver.port);
     }
 
     public boolean getClimberTest(){
@@ -48,12 +52,15 @@ public class OperatorInterface {
     }
 
     public double getDriveThrottle() {
-        return mDriverController.getJoystick(Side.LEFT, Axis.Y);
+        double result = 0;
+       // mJoystick.getY();
+        result = -1 * mJoystick.getY();
+        return result;
+    
     }
     
     public double getDriveTurn() {
-        return mDriverController.getJoystick(Side.RIGHT, Axis.X);
-    }
+        return mJoystick.getX();    }
 
     public boolean getDriveAutoSteer(){
         return mDriverController.getTrigger(Side.RIGHT);
@@ -64,11 +71,11 @@ public class OperatorInterface {
     }
 
     public void setOperatorRumble(boolean a){ 
-        mOperatorController.setRumble(a);
+       // mOperatorController.setRumble(a);
     }
 
     public void setDriverRumble(boolean a){ 
-        mDriverController.setRumble(a);
+       // mDriverController.setRumble(a);
     }
 
     /**
