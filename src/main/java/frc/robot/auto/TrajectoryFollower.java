@@ -68,6 +68,7 @@ public class TrajectoryFollower {
     }
     
     private void init(){
+        System.out.println("TrajectorFollower::Init");
         // Create and push Field2d to SmartDashboard.
         mField = new Field2d();
         SmartDashboard.putData("Autonomous Field", mField);
@@ -75,6 +76,7 @@ public class TrajectoryFollower {
 
     // Called Once at the Start of following the Path
     public void Start(){
+        System.out.println("TrajectoryFollower::Start");
         // Mark Trajectory as Incomplete
         mComplete = false;
 
@@ -94,6 +96,7 @@ public class TrajectoryFollower {
         // Reset the drivetrain's odometry to the starting pose of the trajectory.
         mDrive.resetOdometry(mTrajectory.getInitialPose());
 
+        // Store the Current Pose of the Drive
         mDrive.storeCurrentPose();
     }
 
@@ -113,18 +116,22 @@ public class TrajectoryFollower {
             var refChassisSpeeds = mRamseteController.calculate(mDrive.getPose(), desiredPose);
             
             // Set the linear and angular speeds.
-            mDrive.autoomousDrive(refChassisSpeeds.vxMetersPerSecond, refChassisSpeeds.omegaRadiansPerSecond);
+            mDrive.automousDrive(refChassisSpeeds.vxMetersPerSecond, refChassisSpeeds.omegaRadiansPerSecond);
           } else {
+            // Log the Trajectory Follower Completeing the Path
+            System.out.println("TrajectoryFollower::PathComplete");
+            
             // mark path as complete
             mComplete = true;
 
             // set drive to do nothing
-            mDrive.autoomousDrive(0, 0);
+            mDrive.automousDrive(0, 0);
           }
     }
 
     // Stop Drivetrain from moving
     public void StopDrive(){
+        System.out.println("TrajectoryFollower::StopDrive");
         mRun = false;
         mDrive.setDrive(0, 0, false);
     }

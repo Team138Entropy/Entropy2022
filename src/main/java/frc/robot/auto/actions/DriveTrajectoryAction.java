@@ -25,6 +25,8 @@ public class DriveTrajectoryAction implements Action {
 
     @Override
     public void start() {
+        System.out.println("DriveTrajectoryAction::Start");
+
         // set Trajectory into TrajectoryFollower
         mTrajectoryFollower.setTrajectory(mTrajectory);
 
@@ -46,7 +48,7 @@ public class DriveTrajectoryAction implements Action {
 
     @Override
     public void done() {
-        System.out.println("DriveTrajectoryAction Complete!");
+        System.out.println("DriveTrajectoryAction::Done");
         if (mStopWhenDone) {
             mTrajectoryFollower.StopDrive();
         }

@@ -41,6 +41,7 @@ public class AutoModeExecutor {
     }
 
     public void start() {
+        System.out.println("AutoModeExecutor::Start");
         if (mThread != null) {
             mThread.start();
         }
@@ -51,6 +52,7 @@ public class AutoModeExecutor {
     }
 
     public void reset() {
+        System.out.println("AutoModeExecutor::Reset");
         if (isStarted()) {
             stop();
         }
@@ -59,6 +61,7 @@ public class AutoModeExecutor {
     }
 
     public void stop() {
+        System.out.println("AutoModeExecutor::Stop");
         if (mAutoMode != null) {
             mAutoMode.stop();
         }

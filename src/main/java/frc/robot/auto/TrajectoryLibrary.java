@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.nio.file.Path;
 
 // Functions for Trajectories
@@ -23,6 +24,9 @@ public class TrajectoryLibrary {
 
     // Base Path of the Autonomous Paths
     public final String trajectoryJSONFolder = "trajectories";
+
+    // Base Path of Path Planner Autonomous Paths
+    public final String trajectoryPathPlannerJSONFolder = "pathPlanner";
 
 
     public static synchronized TrajectoryLibrary getInstance() {
@@ -51,6 +55,20 @@ public class TrajectoryLibrary {
      // Get Path of Trajectory File
      public Path getTrajectoryPath(String TrajectoryName){
        return Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSONFolder + "/" + TrajectoryName);
+     }
+
+     // Get Path of PathPlanner Trajectory
+     public Path getPathPlannerTrajectoryPath(String TrajectoryName){
+       return Filesystem.getDeployDirectory().toPath().resolve(trajectoryPathPlannerJSONFolder + "/" + TrajectoryName);
+     }
+
+     public Trajectory getPathPlannerTrajectory(String fileName){
+      Trajectory traj = null;
+
+        Path trajectoryPath = getTrajectoryPath(fileName);
+        traj = AutoUtil.parsePathPlannerTrajectory(trajectoryPath.toString(), 8, 5);
+  
+      return traj;
      }
 
      // Trajectories

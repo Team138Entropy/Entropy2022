@@ -35,7 +35,7 @@ public class DriveUntilPickupAction implements Action {
 
     @Override
     public void start() {
-        System.out.println("drive until pickup start!");
+      System.out.println("DriveUntilPickupAction::Start");
       mTimer.start();
       mStartingGyroErrorAngle = mDrive.getGyro().getAngle();
       mArm.rotateToPosition(ArmTarget.INTAKE.degrees);
@@ -84,8 +84,8 @@ public class DriveUntilPickupAction implements Action {
 
     @Override
     public void done() {
+      System.out.println("DriveUntilPickupAction::Done");
       // stop driving
       mDrive.setDrive(0, 0, false);
-      System.out.println("stop drving");
     }
 }

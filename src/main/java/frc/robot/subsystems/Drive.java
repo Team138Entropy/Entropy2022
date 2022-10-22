@@ -356,8 +356,9 @@ public class Drive extends Subsystem {
     final double leftFeedforward = mFeedForward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = mFeedForward.calculate(speeds.rightMetersPerSecond);
 
-    double leftEncoderRate = mLeftMaster.getRateMetersPerSecond();
-    double rightEncoderRate = mRightMaster.getRateMetersPerSecond();
+    // get Left and Right encoder rates
+    final double leftEncoderRate = mLeftMaster.getRateMetersPerSecond();
+    final double rightEncoderRate = mRightMaster.getRateMetersPerSecond();
 
     // calculate left and right outputs
     final double leftOutput =
@@ -390,7 +391,7 @@ public class Drive extends Subsystem {
    * @param xSpeed Linear velocity in m/s.
    * @param rot Angular velocity in rad/s.
    */
-  public void autoomousDrive(double xSpeed, double rot) {
+  public void automousDrive(double xSpeed, double rot) {
     var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
     setAutoSpeeds(wheelSpeeds);
   }

@@ -4,6 +4,9 @@ import edu.wpi.first.math.trajectory.*;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
 import java.util.List;
+
+import com.pathplanner.lib.PathPlanner;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -42,6 +45,19 @@ public class AutoUtil {
         List<State> reversedStates = getInvertedStates(t.getStates());
         Trajectory reversedTrajectory = new Trajectory(reversedStates);
         return reversedTrajectory;
+    }
+
+    /**
+     * Parses a Path Planner Style trajectory
+     * @param name
+     * @param maxVel
+     * @param maxAcce
+     * @return
+     */
+    public static Trajectory parsePathPlannerTrajectory(String name, double maxVel, double maxAcce)
+    {
+        Trajectory path = PathPlanner.loadPath(name, maxVel, maxAcce);
+        return path;
     }
     
 }
