@@ -176,14 +176,14 @@ public class Robot extends TimedRobot {
     
     mSubsystemManager.updateSmartdashboard();
   }
-
+  AutoModeBase mAutoModeBase = null;
 
 
   /** Called at the Start of Autonomous **/
   @Override
   public void autonomousInit() {
     // Reset AutoMode Executor
-    if(mAutoModeExecutor != null) mAutoModeExecutor.reset();
+    //if(mAutoModeExecutor != null) mAutoModeExecutor.reset();
 
     // Default Robot Mode to CargoScorer
     mCurrentMode = RobotMode.CargoScorer;
@@ -196,21 +196,26 @@ public class Robot extends TimedRobot {
 
     // Get Selected AutoMode
     mAutoModeExecutor.setAutoMode(mAutoModes.getSelected());
+    mAutoModeBase = mAutoModes.getSelected();
+    mAutoModeBase.reset();
+
 
     // Configure Constants
     mArm.configureArmForAuto();
 
     // Start Autonomous Thread
     // This thread will run until disabled
-    mAutoModeExecutor.start();
+    //mAutoModeExecutor.start();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
     // Autonomous is run through the AutoModeExecutor
+    if(!mAutoModeBase.isDone()){
+      mAutoModeBase.runner();
+    }
   }
-
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {    

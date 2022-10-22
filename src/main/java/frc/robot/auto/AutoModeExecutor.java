@@ -34,10 +34,12 @@ public class AutoModeExecutor {
             @Override
             public void runCrashTracked() {
                 if (mAutoMode != null) {
+                    System.out.println("AutoModeExecutor::runCrashTracked");
                     mAutoMode.run();
                 }
             }
         });
+        mThread.setPriority(6);
     }
 
     public void start() {
@@ -54,6 +56,7 @@ public class AutoModeExecutor {
     public void reset() {
         System.out.println("AutoModeExecutor::Reset");
         if (isStarted()) {
+            System.out.println("AutoModeExecutor::Reset::Stop!");
             stop();
         }
 
@@ -74,6 +77,7 @@ public class AutoModeExecutor {
     }
 
     public boolean isInterrupted() {
+        System.out.println("AutoModeExecutor::isInterrupted");
         if (mAutoMode == null) {
             return false;
         }
@@ -88,6 +92,7 @@ public class AutoModeExecutor {
     }
 
     public void resume() {
+        System.out.println("AutoModeExecutor::resume");
         if (mAutoMode == null) {
             return;
         }

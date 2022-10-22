@@ -101,14 +101,18 @@ public class TrajectoryFollower {
     }
 
     public void Update(){
+        System.out.println("TrajectoryFollower::Update");
         // Update the Drives Odometry
         mDrive.updateOdometry();
-
+        System.out.println("set robot pose");
         // Update the Robot Position on Field2D
         mField.setRobotPose(mDrive.getPose());
-
+        System.out.println("robot pose done");
         // if the time is within the total trajectory time
         if (mRun && mTimer.get() < mTrajectory.getTotalTimeSeconds()) {
+            System.out.println("Timer Seconds: " + mTimer.get());
+            System.out.println("Total Seconds: " + mTrajectory.getTotalTimeSeconds());
+
             // Get the desired pose from the trajectory.
             var desiredPose = mTrajectory.sample(mTimer.get());
                   

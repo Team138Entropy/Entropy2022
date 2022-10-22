@@ -47,10 +47,10 @@ public class Constants {
   // Talon Can IDs
   public static class Talons {
     public static class Drive {
-      public static final int leftMaster = 1;
-      public static final int leftSlave = 2;
-      public static final int rightMaster = 3;
-      public static final int rightSlave = 4;
+      public static final int leftMaster = 4;
+      public static final int leftSlave = 3;
+      public static final int rightMaster = 2;
+      public static final int rightSlave = 1;
     }
 
     public static class Arm {

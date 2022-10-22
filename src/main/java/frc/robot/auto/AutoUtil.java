@@ -56,7 +56,7 @@ public class AutoUtil {
      */
     public static Trajectory parsePathPlannerTrajectory(String name, double maxVel, double maxAcce)
     {
-        Trajectory path = PathPlanner.loadPath(name, maxVel, maxAcce);
+        Trajectory path = PathPlanner.loadPath(name, maxVel, maxAcce,false);
         return path;
     }
     

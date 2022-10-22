@@ -26,7 +26,7 @@ public class TrajectoryLibrary {
     public final String trajectoryJSONFolder = "trajectories";
 
     // Base Path of Path Planner Autonomous Paths
-    public final String trajectoryPathPlannerJSONFolder = "pathPlanner";
+    public final String trajectoryPathPlannerJSONFolder = "";
 
 
     public static synchronized TrajectoryLibrary getInstance() {
@@ -65,8 +65,8 @@ public class TrajectoryLibrary {
      public Trajectory getPathPlannerTrajectory(String fileName){
       Trajectory traj = null;
 
-        Path trajectoryPath = getTrajectoryPath(fileName);
-        traj = AutoUtil.parsePathPlannerTrajectory(trajectoryPath.toString(), 8, 5);
+        Path trajectoryPath = getPathPlannerTrajectoryPath(fileName);
+        traj = AutoUtil.parsePathPlannerTrajectory(trajectoryPath.toString(), 3, 1);
   
       return traj;
      }

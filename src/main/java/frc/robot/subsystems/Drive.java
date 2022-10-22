@@ -111,7 +111,9 @@ public class Drive extends Subsystem {
     MotorConfigUtils.setDefaultTalonFXConfig(mRightMaster);
 
     // Invert Right Encoder Value
-    mRightMaster.invertEncoder();
+    //mRightMaster.invertEncoder();
+    mRightMaster.setInverted(true);
+    mRightSlave.setInverted(true);
 
     // Configure Brake Modes
     mLeftMaster.setNeutralMode(NeutralMode.Brake);
@@ -194,11 +196,12 @@ public class Drive extends Subsystem {
       }
 
       mLeftMaster.set(ControlMode.PercentOutput, signal.getLeft());
-      mRightMaster.set(ControlMode.PercentOutput, signal.getRight() * -1);
+      mRightMaster.set(ControlMode.PercentOutput, signal.getRight());
   }
 
 
   public synchronized void setDrive(double throttle, double wheel, boolean quickTurn) {
+    throttle = throttle*-1;
     DriveSignal s = getCheesyBrianDrive(throttle, wheel, quickTurn);
     setOpenLoop(s);    
   }
@@ -378,7 +381,7 @@ public class Drive extends Subsystem {
     rightVoltage = rightVoltage/RobotController.getBatteryVoltage();
 
     // Invert Right Voltage (same as Teleop)
-    rightVoltage *= -1;
+    //rightVoltage *= -1;
 
     // set motor outputs
     mLeftMaster.set(ControlMode.PercentOutput, leftVoltage);
@@ -397,6 +400,7 @@ public class Drive extends Subsystem {
   }
 
   public synchronized void setPercentOutputDrive(double left, double right){
+
     mLeftMaster.set(ControlMode.PercentOutput, left);
     mRightMaster.set(ControlMode.PercentOutput, right);
   } 
@@ -444,9 +448,15 @@ public class Drive extends Subsystem {
 
   /** Updates the field-relative position. */
   public void updateOdometry() {
+    System.out.println("updating odometry");
+    System.out.println( m_gyro.getRotation2d());
+    System.out.println( mLeftMaster.getDistanceMeters());
+    System.out.println( mRightMaster.getDistanceMeters());
     mOdometry.update(
         m_gyro.getRotation2d(), mLeftMaster.getDistanceMeters(), mRightMaster.getDistanceMeters()
+
     );
+    System.out.println("complete odometry update");
   }
 
   /**
