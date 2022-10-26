@@ -1,5 +1,5 @@
 package frc.robot.auto.modes;
-
+import frc.robot.subsystems.Arm;
 import frc.robot.auto.AutoModeEndedException;
 import frc.robot.auto.actions.*;
 import frc.robot.auto.TrajectoryLibrary;
@@ -12,25 +12,40 @@ public class TEST extends AutoModeBase {
 
 
     public TEST(){
-        // add multiple actions to drive trajectorys, these will run one after another
-        //driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_C_Turn())));
-        // driveActionList.add(new StoreDrivePositionAction());
-        // driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().get_C_Turn())));
-        // driveActionList.add(new WaitAction(2));
-        // driveActionList.add(new DriveGeneratedAction(false));
-        //driveActionList.add(new DriveTrajectoryAction(TrajectoryGeneratorHelper.getStraightTrajectory(5)));
-        driveActionList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getPathPlannerTrajectory("George")));
 
-        //registerAction(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getPathPlannerTrajectory("George")));
+        // Score Ball 1
+        registerAction(new ArmRotateAction(Arm.ArmTarget.SCORE_FRONT.degrees));
+        registerAction(new WaitAction(.3));
+        registerAction(new EjectAction());
+        registerAction(new WaitAction(.3));
 
-        registerAction(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getPathPlannerTrajectory("George")));
-        registerAction(new WaitAction(.15));
+        // Drive to Ball 1 and begin pickup at the same time
+        List<Action> parallelList = new ArrayList<>();
+        parallelList.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getPathPlannerTrajectory("George")));
+        parallelList.add(new PickupAction(5));
+        registerAction(new ParallelAction(parallelList));
+
+        // Drive Back to Score
         registerAction(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().getPathPlannerTrajectory("George"))));
-        registerAction(new WaitAction(.15));
-        registerAction(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getPathPlannerTrajectory("george2")));
-        registerAction(new WaitAction(.15));
+
+        // Score Ball 2
+        registerAction(new WaitAction(.1));
+        registerAction(new EjectAction());
+        registerAction(new WaitAction(.3));
+
+        // Drive to Ball 3 and big pickup at the same time
+        List<Action> parallelList2 = new ArrayList<>();
+        parallelList2.add(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getPathPlannerTrajectory("george2")));
+        parallelList2.add(new PickupAction(5));
+        registerAction(new ParallelAction(parallelList2));
+
+        // Drive Back to the Hub
         registerAction(new DriveTrajectoryAction(TrajectoryLibrary.getInstance().getReversedTrajectory(TrajectoryLibrary.getInstance().getPathPlannerTrajectory("george2"))));
-        
+
+        // Score Ball 2
+        registerAction(new WaitAction(.1));
+        registerAction(new EjectAction());
+        registerAction(new WaitAction(.3));
     }
 
     @Override

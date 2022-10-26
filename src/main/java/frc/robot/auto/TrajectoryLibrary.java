@@ -64,12 +64,18 @@ public class TrajectoryLibrary {
 
      public Trajectory getPathPlannerTrajectory(String fileName){
       Trajectory traj = null;
-
-        Path trajectoryPath = getPathPlannerTrajectoryPath(fileName);
-        traj = AutoUtil.parsePathPlannerTrajectory(trajectoryPath.toString(), 3, 1);
-  
+      Path trajectoryPath = getPathPlannerTrajectoryPath(fileName);
+      traj = AutoUtil.parsePathPlannerTrajectory(trajectoryPath.toString(), 3, 1);
       return traj;
      }
+
+     public Trajectory getPathPlannerTrajectory(String fileName, double maxVel, double maxAccel){
+      Trajectory traj = null;
+      Path trajectoryPath = getPathPlannerTrajectoryPath(fileName);
+      traj = AutoUtil.parsePathPlannerTrajectory(trajectoryPath.toString(), maxVel, maxAccel);
+      return traj;
+     }
+
 
      // Trajectories
      public Trajectory getTrajectoryByName(String fileName){
