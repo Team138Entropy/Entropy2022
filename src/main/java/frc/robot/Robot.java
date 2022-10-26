@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
   // Subsystem Manager
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
 
-  private final photoVision mpPhotoVision = photoVision.getInstance();
+  private final photonVision mpPhotoVision = photonVision.getInstance();
   
   // Subsystems
   private final Drive mDrive = Drive.getInstance();

@@ -22,8 +22,8 @@ import frc.robot.Logger;
 
 
 /** Add your docs here. */
-public abstract class photoVision{
-  public static photoVision mInstance = null;
+public class photonVision{
+  public static photonVision mInstance = null;
 
   PhotonCamera camera = new PhotonCamera("photonvision");
   PhotonPipelineResult result = camera.getLatestResult();
@@ -38,9 +38,9 @@ public abstract class photoVision{
   //Transform2d pose = target.getCameraToTarget();
   //List<TargetCorner> corners = target.getCorners();
 
-  public static synchronized photoVision getInstance() {
+  public static synchronized photonVision getInstance() {
     if (mInstance == null) {
-      mInstance = new photoVision();
+      mInstance = new photonVision();
     }
     return mInstance;
   }
@@ -82,7 +82,7 @@ public abstract class photoVision{
   
   }
 
-
+/*
   @Override
   public void zeroSensors() {
     // TODO Auto-generated method stub
@@ -94,5 +94,5 @@ public abstract class photoVision{
     // TODO Auto-generated method stub
     
   }
-  
+  */
 }
