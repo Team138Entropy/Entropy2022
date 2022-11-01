@@ -1,4 +1,4 @@
-# Entropy 2022
+# Entropy 2023
 ![GitHub top language](https://img.shields.io/github/languages/top/Team138Entropy/Entropy2022)
 [![WPILib License](https://img.shields.io/badge/license-WPI_Lib-blue)](https://github.com/Team138Entropy/Entropy2022/blob/main/WPILib-License.md)
 ![GitHub contributors](https://img.shields.io/github/contributors/Team138Entropy/Entropy2022)
@@ -8,8 +8,7 @@
 ![GitHub followers](https://img.shields.io/github/followers/Team138Entropy?style=social)
 
 
-This is a baseline of the 2022 Robotics Code. This code seeks to provide the team with a strong baseline entering the 2022 Build season.
-This readme highlights portions of the architecture, ideas, and best practices.
+This is a baseline of the 2023 Robotics Code. This readme contains tutorials, highlights portions of the architecture, ideas, and best practices.
 
 ## Meta
 
@@ -20,6 +19,10 @@ This readme highlights portions of the architecture, ideas, and best practices.
 ### Code Formatting
 We have a git hook that will format your code according to Google's style guide whenever you commit. To enable it, you will need to run
 `update-hooks.bat` on Windows or `update-hooks.sh` on Linux and macOS.
+
+### Simulator
+WPILib has simulator capability. We should utilize this simulator to simulate controller input early/motor output on the build season to iron out any glaring issues.
+https://docs.wpilib.org/en/latest/docs/software/wpilib-tools/robot-simulation/introduction.html
 
 ### Architecture Highlights
 - Multithreading Support
@@ -46,16 +49,6 @@ We have a git hook that will format your code according to Google's style guide 
     - Likely not super useful, but we may find the need to perform periodic actions in a disabled state.
 - Path Planning
     - Found in the Utility Libaries, we inherit 254's path planning logic. Using this logic we can drive waypoints. This library does an excellent job at pushing the robot's capabilites through spines while maintaining accuracy.
-
-### Brainstorming Ideas
-- 'Playbook'
-    - Game permitting, we might find there are tasks that we will need to repeat often. For example, say if we are picking up a scoring object at a feeder station and want to make an immediate drive to a scoring station. A simple look at this would be:
-        - Load Game Object -> Driver triggers playbook -> Robot performs autonomous drive to location -> Trigger Camera or other sensor Feedback -> Score Object
-        - Directional Pad on controller could be a good control to do this.
-- Preset Control
-    - All Manipulators should have a 'state' based focus. With a state based system we should rely on PID Control to reach exact points
-- SmartNav
-    
 
 ### Concepts
 - Physics
@@ -93,10 +86,6 @@ We have a git hook that will format your code according to Google's style guide 
     - Follow the trajectory
         - Figure out where you should be right now
         - Feedforware control + Feedback control
-
-### Simulator
-WPILib has simulator capability. We should utilize this simulator to simulate controller input early/motor output on the build season to iron out any glaring issues.
-https://docs.wpilib.org/en/latest/docs/software/wpilib-tools/robot-simulation/introduction.html
 
 ### Code Housekeeping
 We want our code to execute as efficiently as possible. 
