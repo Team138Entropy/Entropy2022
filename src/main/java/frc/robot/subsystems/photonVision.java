@@ -13,6 +13,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
+
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,16 +26,13 @@ import frc.robot.Logger;
 public class photonVision{
   public static photonVision mInstance = null;
 
-  PhotonCamera camera = new PhotonCamera("photonvision");
-  PhotonPipelineResult result = camera.getLatestResult();
-  PhotonTrackedTarget target = result.getBestTarget();
+  static PhotonCamera camera = new PhotonCamera("camera138");
+
+    
+  
 
 
-  // Get information from target.
-  double yaw = target.getYaw();
-  double pitch = target.getPitch();
-  double area = target.getArea();
-  double skew = target.getSkew();
+  
   //Transform2d pose = target.getCameraToTarget();
   //List<TargetCorner> corners = target.getCorners();
 
@@ -43,6 +41,22 @@ public class photonVision{
       mInstance = new photonVision();
     }
     return mInstance;
+  }
+
+  public static synchronized void findingTargets(){
+    try{
+    PhotonPipelineResult result = camera.getLatestResult();
+    PhotonTrackedTarget target = result.getBestTarget();
+
+    // Get information from target.
+    double yaw = target.getYaw();
+    double pitch = target.getPitch();
+    double area = target.getArea();
+    double skew = target.getSkew();
+    }
+    finally{
+      
+    }
   }
 
   public synchronized PhotonPipelineResult getPipeLine() {
@@ -66,8 +80,8 @@ public class photonVision{
     double TARGET_HEIGHT_METERS = 0;
     double CAMERA_PITCH_RADIANS = 0;
     var result = camera.getLatestResult();
-
-    if (result.hasTargets()) {
+    try{
+      if (result.hasTargets()) {
         // First calculate range
         double range =
           PhotonUtils.calculateDistanceToTargetMeters(
@@ -76,9 +90,12 @@ public class photonVision{
                   CAMERA_PITCH_RADIANS,
                   Units.degreesToRadians(result.getBestTarget().getPitch()));
                   return range;}
-    else{
-      return 0.0;
-    }
+      else{
+        return 0.0;
+      }
+    }finally{}
+    
+    
   
   }
 
