@@ -20,6 +20,8 @@ This is a baseline of the 2023 Robotics Code. This readme contains tutorials, hi
 We have a git hook that will format your code according to Google's style guide whenever you commit. To enable it, you will need to run
 `update-hooks.bat` on Windows or `update-hooks.sh` on Linux and macOS.
 
+[a relative link](docs/simulator.md)
+
 ### Simulator
 WPILIB has simulator capability. We can simulate our all our code and drive it virtually!
 
