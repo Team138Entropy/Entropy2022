@@ -21,8 +21,7 @@ We have a git hook that will format your code according to Google's style guide 
 `update-hooks.bat` on Windows or `update-hooks.sh` on Linux and macOS.
 
 ### Simulator
-WPILib has simulator capability. We should utilize this simulator to simulate controller input early/motor output on the build season to iron out any glaring issues.
-https://docs.wpilib.org/en/latest/docs/software/wpilib-tools/robot-simulation/introduction.html
+WPILIB has simulator capability. We can simulate our all our code and drive it virtually!
 
 ### Architecture Highlights
 - Multithreading Support
