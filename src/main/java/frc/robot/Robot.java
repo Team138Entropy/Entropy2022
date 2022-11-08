@@ -228,8 +228,7 @@ public class Robot extends TimedRobot {
 
   /** This functon is called periodically during simulation */
   public void simulationPeriodic() {
-
-
+    mDrive.updateDriveSim();
   }
 
   /** This function is called once when the robot is disabled. */
@@ -267,183 +266,17 @@ public class Robot extends TimedRobot {
   }
   double extensionTargetPosition = 0;
 
-  private boolean mIsShoulderJogging = false;
-  private boolean mIsForearmJogging = false;
-  private boolean mIsExtensionJogging = false;
+
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    // Zero Sensors (left joystick press)
-    if(mOperatorInterface.getTestZeroPress()){
-      System.out.println("Zero Pressed!");
-      mSubsystemManager.zeroSensors();
-    }
     
-    // Climber and Jogging Mode Changes
-    // Start and Select of the Operator Controller
-    if(mOperatorInterface.getSelectButtonPress()){
-      mTest_ArmJogging = !mTest_ArmJogging;
-    }
-    if(mOperatorInterface.getSwitchModePress()){
-      mTest_ClimberJogging = !mTest_ClimberJogging;
-    }
-    if(mOperatorInterface.getSwitchExtensionMode()){
-      mTest_ExtensionJogging = !mTest_ExtensionJogging;
-    }
-    
-    // Arm is in Jogging Mode or Position Mode
-    if(mTest_ArmJogging){
-      // Arm Jogging
-      SmartDashboard.putString("Arm Test Mode", "Jogging");
-      if (mOperatorInterface.getArmJogUp()) {
-        mArm.jogRotateUp();
-        mIsShoulderJogging = true;
-      } else if (mOperatorInterface.getArmJogDown()) {
-        mArm.jogRotateDown();
-        mIsShoulderJogging = true;
-      } else {
-        mArm.jogStop();
-      }
-    }else{
-      // Arm Position
-      SmartDashboard.putString("Arm Test Mode", "Position");
-      double target = mArm.getRotationTarget();
-      target = target + (mOperatorInterface.getArmRotateUp() ? 5 : 0);
-      target = target - (mOperatorInterface.getArmRotateDown() ? 5 : 0);
-      mArm.rotateToPosition(target);
-    }
-    
-
-    // Climber is in Jogging Mode or Position Mode
-    if(mTest_ClimberJogging){
-      // Climb Jogging 
-      SmartDashboard.putString("Climber Test Mode", "Jogging");
-        
-      // climber test controls
-      if(mOperatorInterface.getClimberTestExtend()){
-        System.out.println("climber extend");
-        //extend the climber
-        mClimber.TestExtend();
-      }else if(mOperatorInterface.getClimberTestRetract()){
-        System.out.println("climber retract");
-        // retract the climber
-        mClimber.TestRetract();
-      }else{
-        // stop the climber
-        mClimber.TestStop();
-      }
-    }else{
-      // Climb Position
-      SmartDashboard.putString("Climber Test Mode", "Position");
-      
-      if (mOperatorInterface.getClimberTest()){
-        System.out.println("Climber: Go to " + Climber.ClimberTarget.LOW.ticks);
-        mClimber.setPosition(50);
-      }
-      if (mOperatorInterface.getClimberTest2()){
-        System.out.println("Climber: Go to " + Climber.ClimberTarget.ABOVE_BAR.ticks);
-        mClimber.setPosition(Climber.ClimberTarget.ABOVE_BAR.ticks);
-
-
-      }
-    }
-
-    // arm extension test controls
-
-    if(mTest_ExtensionJogging){
-      if (mOperatorInterface.getArmExtendManual()) {
-        mArm.extend();
-        mIsForearmJogging = true;
-      } else if (mOperatorInterface.getArmRetractManual()) {
-        mArm.retract();
-        mIsForearmJogging = true;
-      } else {
-        mArm.stopForearm();
-      }
-    }else{
-      extensionTargetPosition = mArm.getExtensionPosition();
-      if(mOperatorInterface.getArmExtendPress()){
-        extensionTargetPosition += 10000;
-      }else if(mOperatorInterface.getArmRetractPress()){
-        extensionTargetPosition -= 10000;
-      }
-      SmartDashboard.putNumber("ExtensionTargetPosTest", extensionTargetPosition);
-      mArm.extendToPosition(extensionTargetPosition);
-    }
-
-    // grapser test controls
-    if (mOperatorInterface.getArmEject()) {
-      mGrasper.eject();
-    } else if (mOperatorInterface.getGrasperIntakeManual()) {
-      mGrasper.intake();
-    } else {
-      //mGrasper.stop();
-    }
-    mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
-
-    // Run Drive Code! Allow Precision Steer and Auto Aim
-    DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
   }
 
-  private ArmTarget lastTarget = ArmTarget.HOME;
 
   private void RobotLoop(){
-    // check for change of mode
-    checkModeChange();
+    DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), false);
 
-    if(mCurrentMode == RobotMode.CargoScorer){
-      // Objective is to Score Cargo
-      // Allow Driver and Operator to control arm and grasper
-
-      ArmTarget target = mOperatorInterface.getArmPos();
-
-      if (target == null) {
-        target = lastTarget;
-      }
-
-      if (mGrasper.getBallsStored() < Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
-        mGrasper.intake();
-      } else if (mGrasper.getBallsStored() == Constants.Grasper.maxBallsStored && target == ArmTarget.INTAKE) {
-        target = ArmTarget.SCORE_BACK;
-      }
-
-      lastTarget = target;
-      mArm.rotateToPosition(target.degrees);
-      /*
-      if (target.isExtended) mArm.extend();
-      else mArm.retract();
-      */
-      
-      if (mOperatorInterface.getArmEject()) mGrasper.eject();
-
-      // TODO: check for press of A button on Operator Controller to Cancel Intake
-      
-      mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
-
-      // Drive with Precision Steer and Auto Steer
-      DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
-    } else if(mCurrentMode == RobotMode.Climber) {
-      // Objective is to Climb
-      // Do not allow manual control of arm and grasper
-
-      // grasper should be stopped, no need in climbing mode
-      mGrasper.stop();
-
-      // Allow Operator to stop
-      // first stage might require manual control
-      boolean manualStop = false;
-
-      if (mOperatorInterface.getClimbCancel()) {
-        mClimber.resetClimb();
-        mClimber.TestStop();
-      }
-
-      // Update the Climber, manual stop and climber press
-      mClimber.update(manualStop, mOperatorInterface.getOperatorClimbStageApprovePress());
-
-      // Drive with Precision Steer Automatically Enabled, no auto steer
-      DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), false);
-    }
   }
 
   /**

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.util.DriveSignal;
 
 //https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/drivetrain-model.html
@@ -28,6 +29,16 @@ public class DriveSimSystem {
     // Gyro Sim
     private final AnalogGyroSim mGyroSim;
 
+    /* Drive Sim Constructor */
+    public DriveSimSystem()
+    {
+        mLeftEncoderSim = null;
+        mRightEncoderSim = null;
+        mGyroSim = null;
+
+        //setup the drive sim
+        initDrivetrainSim();
+    }
 
     /* Drive Sim Constructor */
     public DriveSimSystem(AnalogGyro gyro, 
@@ -38,6 +49,13 @@ public class DriveSimSystem {
         mRightEncoderSim = new EncoderSim(rightEncoder);
         mGyroSim = new AnalogGyroSim(gyro);
 
+
+        // setup the drive sim
+        initDrivetrainSim();
+    }
+
+    private void initDrivetrainSim()
+    {
         // Create Drive Sim
         mDriveSim = new DifferentialDrivetrainSim(
             DCMotor.getFalcon500(2),       // 2 falcon500 motors on each side of the drivetrain.
@@ -66,12 +84,30 @@ public class DriveSimSystem {
         // of TimedRobot, this value needs to match it.
         mDriveSim.update(0.02);
 
-        // Update all of our sensors.
-        mLeftEncoderSim.setDistance(mDriveSim.getLeftPositionMeters());
-        mLeftEncoderSim.setRate(mDriveSim.getLeftVelocityMetersPerSecond());
-        mRightEncoderSim.setDistance(mDriveSim.getRightPositionMeters());
-        mRightEncoderSim.setRate(mDriveSim.getRightVelocityMetersPerSecond());
-        mGyroSim.setAngle(-mDriveSim.getHeading().getDegrees());
+        // Update all of our sensors. (if not null)
+        if(null != mLeftEncoderSim)
+        {
+            mLeftEncoderSim.setDistance(mDriveSim.getLeftPositionMeters());
+            mLeftEncoderSim.setRate(mDriveSim.getLeftVelocityMetersPerSecond());
+        }
+        if(null != mRightEncoderSim)
+        {
+            mRightEncoderSim.setDistance(mDriveSim.getRightPositionMeters());
+            mRightEncoderSim.setRate(mDriveSim.getRightVelocityMetersPerSecond());
+        }
+        if(null != mGyroSim)
+        {
+            mGyroSim.setAngle(-mDriveSim.getHeading().getDegrees());
+        }
+
+        // Update Smart Dashboard
+        SmartDashboard.putNumber("Drive Left Signal", ds.getLeft());
+        SmartDashboard.putNumber("Drive Right Signal", ds.getRight());
+        SmartDashboard.putNumber("Sim Drive Left Meters Per Second", mDriveSim.getLeftVelocityMetersPerSecond());
+        SmartDashboard.putNumber("Sim Drive Left Feet Per Second", mDriveSim.getLeftVelocityMetersPerSecond());
+        SmartDashboard.putNumber("Sim Drive Right Meters Per Second", mDriveSim.getRightVelocityMetersPerSecond());
+        SmartDashboard.putNumber("Sim Drive Right Feet Per Second", mDriveSim.getRightVelocityMetersPerSecond());    
+
     }
 
 

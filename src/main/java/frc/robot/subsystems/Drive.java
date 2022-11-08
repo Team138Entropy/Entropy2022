@@ -142,10 +142,7 @@ public class Drive extends Subsystem {
     setOpenLoop(DriveSignal.NEUTRAL);
 
     // Initialize Drive Simulation System
-    Encoder test = new Encoder(mRightMaster.getSensorCollection().getEn)
-    mDriveSimSystem = new DriveSimSystem(m_gyro, 
-    null, null);
-
+    mDriveSimSystem = new DriveSimSystem();
   }
 
   private void configTalon(EntropyTalonFX talon) {
@@ -454,6 +451,18 @@ public class Drive extends Subsystem {
 
     // set into drive with no ramp
     setUnrampedDrive(throttle, turningValue, true);
+  }
+
+  /** Return the last Drive Signal */
+  public synchronized DriveSignal getLastDriveSignal()
+  {
+    return previousDriveSignals[0];
+  }
+
+  /** Update Drivesim */
+  public synchronized void updateDriveSim()
+  {
+    mDriveSimSystem.updateDrive(getLastDriveSignal());
   }
 
   /** Updates the field-relative position. */
