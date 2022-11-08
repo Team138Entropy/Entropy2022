@@ -21,6 +21,7 @@ import frc.robot.util.Util;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.geometry.Rotation2d;
 import frc.robot.util.geometry.Twist2d;
+import frc.robot.util.simulation.DriveSimSystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.util.drivers.CTREUnits;
@@ -75,6 +76,9 @@ public class Drive extends Subsystem {
   // Autonomous PID Controllers
   private final PIDController mLeftPIDController = new PIDController(1, 0, 0);
   private final PIDController mRightPIDController = new PIDController(1, 0, 0);
+
+  // Drivetrain Simulation 
+  DriveSimSystem mDriveSimSystem;
 
   public static synchronized Drive getInstance() {
     if (mInstance == null) {
@@ -136,6 +140,12 @@ public class Drive extends Subsystem {
 
     // Default Robot into Open Loop
     setOpenLoop(DriveSignal.NEUTRAL);
+
+    // Initialize Drive Simulation System
+    Encoder test = new Encoder(mRightMaster.getSensorCollection().getEn)
+    mDriveSimSystem = new DriveSimSystem(m_gyro, 
+    null, null);
+
   }
 
   private void configTalon(EntropyTalonFX talon) {

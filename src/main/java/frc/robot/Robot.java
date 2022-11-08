@@ -226,6 +226,12 @@ public class Robot extends TimedRobot {
     RobotLoop();
   }
 
+  /** This functon is called periodically during simulation */
+  public void simulationPeriodic() {
+
+
+  }
+
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
