@@ -181,13 +181,7 @@ public class Robot extends TimedRobot {
 
   /** Called at the Start of Autonomous **/
   @Override
-  public void autonomousInit() {
-    // Reset AutoMode Executor
-    //if(mAutoModeExecutor != null) mAutoModeExecutor.reset();
-
-    // Default Robot Mode to CargoScorer
-    mCurrentMode = RobotMode.CargoScorer;
-    
+  public void autonomousInit() {    
     // Disable Operator Rumble
     mOperatorInterface.setOperatorRumble(false);
 
@@ -198,14 +192,6 @@ public class Robot extends TimedRobot {
     mAutoModeExecutor.setAutoMode(mAutoModes.getSelected());
     mAutoModeBase = mAutoModes.getSelected();
     mAutoModeBase.reset();
-
-
-    // Configure Constants
-    mArm.configureArmForAuto();
-
-    // Start Autonomous Thread
-    // This thread will run until disabled
-    //mAutoModeExecutor.start();
   }
 
   /** This function is called periodically during autonomous. */
@@ -219,9 +205,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {    
-    // Default Robot Mode to CargoScorer
-    mCurrentMode = RobotMode.CargoScorer;
-    
+    // dsable operator rumble    
     mOperatorInterface.setOperatorRumble(false);
         
     // zero sensors (if not zero'ed prior on this powerup)
@@ -231,9 +215,6 @@ public class Robot extends TimedRobot {
     if (mAutoModeExecutor != null) {
         mAutoModeExecutor.stop();
     }
-
-    // Configure Constants
-    mArm.configureArmForTeleop();
 
     // Zero Drive Sensors
     mDrive.zeroSensors();

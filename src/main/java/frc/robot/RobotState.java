@@ -19,6 +19,15 @@ public class RobotState {
         return mInstance;
     }
 
+
+    private static final int kBufferSize = 1;
+    private double mDistanceDriven;
+
+    private RobotState() {
+
+    }
+
+
     public synchronized void outputToSmartdashboard() {
         
     }

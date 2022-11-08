@@ -1,9 +1,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
-import frc.robot.Logger.SupportedLevels;
 import frc.robot.util.geometry.*;
 
+/**
+ * Constants
+ * Values defined in this class will never change during robot operation
+ */
 public class Constants {
   
   // Potential Targets
@@ -12,36 +15,6 @@ public class Constants {
     CAMERA_1_BLUE_CARGO,
     CAMERA_2_RED_CARGO,
     CAMERA_2_BLUE_CARGO;
-  }
-  
-  public enum Loggers {
-    VISION(SupportedLevels.VERBOSE),
-    POT(SupportedLevels.DEBUG),
-    PID(SupportedLevels.INFO),
-    ROBOT(SupportedLevels.WARN),
-    TURRET(SupportedLevels.VERBOSE),
-    DRIVE(SupportedLevels.INFO),
-    SUBSYSTEM(SupportedLevels.INFO),
-    BALL_STORED(SupportedLevels.INFO),
-    EVENT_WATCHER_THREAD(SupportedLevels.INFO),
-    VISION_MANAGER(SupportedLevels.INFO),
-    PATH(SupportedLevels.DEBUG),
-    OI(SupportedLevels.VERBOSE),
-    ROBOT_STATE(SupportedLevels.INFO),
-    BALL_DETECTED(SupportedLevels.INFO),
-    CAMERA_MANAGER(SupportedLevels.INFO),
-    CONFIG(SupportedLevels.INFO),
-    STORAGE(SupportedLevels.INFO),
-    INTAKE(SupportedLevels.VERBOSE),
-    SHOOTER(SupportedLevels.INFO),
-    SIMULATEDTALON(SupportedLevels.WARN),
-    CLIMBER(SupportedLevels.WARN);
-
-    public SupportedLevels minLevel;
-
-    Loggers(SupportedLevels minLevel) {
-      this.minLevel = minLevel;
-    }
   }
 
   // Talon Can IDs

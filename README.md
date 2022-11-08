@@ -7,23 +7,19 @@
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/Team138Entropy/Entropy2022)
 ![GitHub followers](https://img.shields.io/github/followers/Team138Entropy?style=social)
 
+https://github.com/Mechanical-Advantage/AdvantageKit
+https://github.com/Mechanical-Advantage/AdvantageScope
 
 This is a baseline of the 2023 Robotics Code. This readme contains tutorials, highlights portions of the architecture, ideas, and best practices.
 
-## Meta
+## Features
+[Simulator](docs/simulator.md)
+[Vision](docs/vision.md)
+[Drive Characteristation](docs/simulator.md)
+[Logging](docs/logging.md)
 
-[Find issues & PRs without a project](https://github.com/Team138Entropy/Entropy2022/issues?q=no%3Alabel)
-[Find issues & PRs without a label](https://github.com/Team138Entropy/Entropy2022/issues?q=no%3Aproject)
-[Find open issues & PRs without comments](https://github.com/Team138Entropy/Entropy2022/issues?q=is%3Aopen+comments%3A0)
 
-### Code Formatting
-We have a git hook that will format your code according to Google's style guide whenever you commit. To enable it, you will need to run
-`update-hooks.bat` on Windows or `update-hooks.sh` on Linux and macOS.
-
-[a relative link](docs/simulator.md)
-
-### Simulator
-WPILIB has simulator capability. We can simulate our all our code and drive it virtually!
+## Learning Tasks
 
 ### Architecture Highlights
 - Multithreading Support
