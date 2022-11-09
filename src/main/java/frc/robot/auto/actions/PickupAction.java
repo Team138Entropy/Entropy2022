@@ -32,7 +32,7 @@ public class PickupAction implements Action {
     public void start() {
       System.out.println("PickupAction::Start");
       mTimer.start();
-      mArm.rotateToPosition(ArmTarget.SCORE_FRONT.degrees);
+      mArm.rotateToPosition(ArmTarget.INTAKE.degrees);
       mGrasper.intake();
     }
 
@@ -44,11 +44,12 @@ public class PickupAction implements Action {
             // Ball is stored!
             mComplete = true;
             mGrasper.stop();
-            mArm.rotateToPosition(ArmTarget.HOME.degrees);
+            mArm.rotateToPosition(ArmTarget.SCORE_FRONT.degrees);
         }
 
         // check if timeout
         if(mTimer.hasElapsed(mTimeoutSeconds)) {
+            mArm.rotateToPosition(ArmTarget.SCORE_FRONT.degrees);
             System.out.println("PickupAction:Timeout");
             mComplete = true;
             mGrasper.stop();

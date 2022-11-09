@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -106,6 +107,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // populate autonomous list
     populateAutonomousModes();
+    CameraServer.getInstance().startAutomaticCapture();
 
     // generate generic auto modes to load into JIT
     TrajectoryGeneratorHelper.generateExampleTrajectories();
@@ -121,7 +123,9 @@ public class Robot extends TimedRobot {
     mAutoModes.addOption("Two Ball", new TwoOrThreeBall(false));
     mAutoModes.addOption("Three Ball", new TwoOrThreeBall(true));
     mAutoModes.addOption("T3.5_B5", new T35_B5());
-    mAutoModes.addOption("TEST", new TEST());
+    mAutoModes.addOption("TEST_2ball", new TEST(false));
+    mAutoModes.addOption("TEST_3ball", new TEST(true));
+
     SmartDashboard.putData(mAutoModes);
 
     // Ball Selector

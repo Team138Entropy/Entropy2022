@@ -335,7 +335,7 @@ true,0
     new Callable<Boolean>() {
         public Boolean call(){
             // set climber position to climb position
-            mArm.rotateToPosition(117);
+            mArm.rotateToPosition(118);
             return false;
         }
     },
