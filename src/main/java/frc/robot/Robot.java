@@ -155,7 +155,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    System.out.println("target list call in robot 1");
     mpPhotoVision.getTargetList().forEach(System.out::println);
+    mpPhotoVision.targetDist();
+
+    System.out.println("target list call in robot 2");
     updateRobotSmartDashboard();
     NetworkTable table = inst.getTable("SmartDashboard");
     ballColorEntry = table.getEntry("selectedColor");

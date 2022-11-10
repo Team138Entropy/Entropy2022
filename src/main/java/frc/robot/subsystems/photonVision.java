@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.lang.annotation.Target;
+import java.util.Arrays;
 import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -27,9 +28,6 @@ public class photonVision{
   public static photonVision mInstance = null;
 
   static PhotonCamera camera = new PhotonCamera("camera138");
-
-    
-  
 
 
   
@@ -60,43 +58,53 @@ public class photonVision{
   }
 
   public synchronized PhotonPipelineResult getPipeLine() {
+    System.out.println("calling getPipeLine");
     return camera.getLatestResult();
   }
   
   public synchronized List<PhotonTrackedTarget> getTargetList() {
+    System.out.println("calling getTargetList");
     PhotonPipelineResult pipeLine = getPipeLine();
     List<PhotonTrackedTarget> targets = pipeLine.getTargets();
+    System.out.println(targets);
     return targets;
   }
 
   public synchronized  PhotonTrackedTarget bestTarget(){
+    System.out.println("calling bestTarget");
     PhotonPipelineResult pipeLine = getPipeLine();
     return pipeLine.getBestTarget();
   }
 
   public synchronized double targetDist(){
+    System.out.println("calling targetDist");
     //TODO input camera values
-    double CAMERA_HEIGHT_METERS = 0;
-    double TARGET_HEIGHT_METERS = 0;
-    double CAMERA_PITCH_RADIANS = 0;
+    double CAMERA_HEIGHT_METERS = 1;
+    double TARGET_HEIGHT_METERS = 0.5;
+    double CAMERA_PITCH_RADIANS = 1;
+    double range = 0;
     var result = camera.getLatestResult();
+    System.out.println("result:" + result);
     try{
       if (result.hasTargets()) {
         // First calculate range
-        double range =
+         range =
           PhotonUtils.calculateDistanceToTargetMeters(
                   CAMERA_HEIGHT_METERS,
                   TARGET_HEIGHT_METERS,
                   CAMERA_PITCH_RADIANS,
                   Units.degreesToRadians(result.getBestTarget().getPitch()));
+                  System.out.println("Range:"+range);
                   return range;}
+      
       else{
+        System.out.println("returning 0.0");
         return 0.0;
       }
+      
+
     }finally{}
     
-    
-  
   }
 
 /*
