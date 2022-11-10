@@ -159,6 +159,8 @@ public class Robot extends TimedRobot {
     mpPhotoVision.getTargetList().forEach(System.out::println);
     mpPhotoVision.targetDist();
 
+    System.out.println("target yaw:" + mpPhotoVision.getTargetYaw());
+
     System.out.println("target list call in robot 2");
     updateRobotSmartDashboard();
     NetworkTable table = inst.getTable("SmartDashboard");

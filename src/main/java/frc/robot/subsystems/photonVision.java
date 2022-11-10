@@ -64,9 +64,11 @@ public class photonVision{
   }
 
   public synchronized double getTargetYaw(){
+    var result = camera.getLatestResult();
     PhotonTrackedTarget myTarget = result.getBestTarget();
     double targetYaw = myTarget.getYaw();
-    System.out.println("target yaw:" + targetYaw);
+    //System.out.println("target yaw:" + targetYaw);
+    return targetYaw;
   }
   
   public synchronized List<PhotonTrackedTarget> getTargetList() {
