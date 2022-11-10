@@ -51,6 +51,7 @@ public class photonVision{
     double pitch = target.getPitch();
     double area = target.getArea();
     double skew = target.getSkew();
+
     }
     finally{
       
@@ -61,12 +62,19 @@ public class photonVision{
     System.out.println("calling getPipeLine");
     return camera.getLatestResult();
   }
+
+  public synchronized double getTargetYaw(){
+    PhotonTrackedTarget myTarget = result.getBestTarget();
+    double targetYaw = myTarget.getYaw();
+    System.out.println("target yaw:" + targetYaw);
+  }
   
   public synchronized List<PhotonTrackedTarget> getTargetList() {
     System.out.println("calling getTargetList");
     PhotonPipelineResult pipeLine = getPipeLine();
     List<PhotonTrackedTarget> targets = pipeLine.getTargets();
-    System.out.println(targets);
+
+    //System.out.println(targets);
     return targets;
   }
 
@@ -77,6 +85,7 @@ public class photonVision{
   }
 
   public synchronized double targetDist(){
+    
     System.out.println("calling targetDist");
     //TODO input camera values
     double CAMERA_HEIGHT_METERS = 1;
@@ -84,9 +93,16 @@ public class photonVision{
     double CAMERA_PITCH_RADIANS = 1;
     double range = 0;
     var result = camera.getLatestResult();
+    //System.out.println(result.getBestTarget().getYaw());
+    /*
     System.out.println("result:" + result);
+    PhotonTrackedTarget myBestTarget = result.getBestTarget();
+    System.out.println("Yaw: " + myBestTarget.getYaw());
+    */
+
     try{
       if (result.hasTargets()) {
+
         // First calculate range
          range =
           PhotonUtils.calculateDistanceToTargetMeters(
@@ -94,6 +110,7 @@ public class photonVision{
                   TARGET_HEIGHT_METERS,
                   CAMERA_PITCH_RADIANS,
                   Units.degreesToRadians(result.getBestTarget().getPitch()));
+                  
                   System.out.println("Range:"+range);
                   return range;}
       
