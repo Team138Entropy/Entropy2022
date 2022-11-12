@@ -37,8 +37,8 @@ public class Constants {
 
     public static class Feeder {
       public static final int shooterInput = 7;
-      public static final int feeder1 = 8;
-      public static final int feeder2 = 9;
+      public static final int feeder1 = 9;
+      public static final int feeder2 = 8;
 
     }
   }
@@ -167,19 +167,19 @@ public class Constants {
     public static final TuneableNumber shooterTestSpeed_Forward 
               = new TuneableNumber("shooter/TestSpeed_Forward", .4);
     public static final TuneableNumber shooterTestSpeed_Reverse 
-              = new TuneableNumber("shooter/TestSpeed_reverse", .4);
+              = new TuneableNumber("shooter/TestSpeed_reverse", -.4);
   }
 
   public static class Feeder {
     public static final TuneableNumber inputWheelTestSpeed_Forward 
               = new TuneableNumber("feeder/inputWheelTestSpeed_Forward", .4);
     public static final TuneableNumber inputWheelTestSpeed_Reverse 
-              = new TuneableNumber("feeder/inputWheelTestSpeed_Reverse", .4);
+              = new TuneableNumber("feeder/inputWheelTestSpeed_Reverse", -.4);
 
     public static final TuneableNumber feederTestSpeed_Forward
-              = new TuneableNumber("feeder/feederTestSpeed_Forward", .4);
+              = new TuneableNumber("feeder/feederTestSpeed_Forward", .3);
     public static final TuneableNumber feederTestSpeed_Reverse
-              = new TuneableNumber("feeder/feederTestSpeed_Reverse", .4);
+              = new TuneableNumber("feeder/feederTestSpeed_Reverse", -.3);
   }
 
   public static class Arm {

@@ -166,4 +166,25 @@ public class OperatorInterface {
     public boolean getClimbCancel() {
         return mOperatorController.getButton(Button.BACK);
     }
+    public boolean getRunShooterForward() {
+        return mDriverController.getTrigger(Side.RIGHT);
+    }
+  
+    public boolean getRunShooterBackward() {
+        return mDriverController.getTrigger(Side.LEFT);
+    }
+    public boolean getFeedUp() {
+        return mDriverController.getButton(Button.X);
+    }
+  
+    public boolean getFeedDown() {
+        return mDriverController.getButton(Button.A);
+    }
+
+    public boolean getFeedShooterUp() {
+        return mDriverController.getButton(Button.Y);
+    }
+    public boolean getFeedShooterDown() {
+        return mDriverController.getButton(Button.B);
+    }
 }

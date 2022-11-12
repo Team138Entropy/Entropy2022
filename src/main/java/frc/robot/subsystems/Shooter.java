@@ -22,6 +22,7 @@ public class Shooter extends Subsystem {
   private Shooter() {
     mLeftTalon = new EntropyTalonFX(Constants.Talons.Shooter.leftMaster);
     mRightTalon = new EntropyTalonFX(Constants.Talons.Shooter.rightMaster);
+    mRightTalon.setInverted(true);
   }
 
   // Set Shooter Jogging

@@ -26,6 +26,9 @@ public class Feeder extends Subsystem {
     mShooterInputTalon = new EntropyTalonFX(Constants.Talons.Feeder.shooterInput);
     mFeeder1Talon = new EntropyTalonFX(Constants.Talons.Feeder.feeder1);
     mFeeder2Talon = new EntropyTalonFX(Constants.Talons.Feeder.feeder2);
+    mShooterInputTalon.setInverted(true);
+    mFeeder1Talon.setInverted(true);
+    mFeeder2Talon.setInverted(true);
   }
 
   // Set Shooter Jogging

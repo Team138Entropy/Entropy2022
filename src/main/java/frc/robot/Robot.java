@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.TargetType;
+import frc.robot.Enums.JogDirection;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
 import frc.robot.vision.TargetInfo;
@@ -205,7 +206,45 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    
+    String ShooterString = "blank string";
+    if (mOperatorInterface.getRunShooterForward() == true) {
+      ShooterString = ("Ball is being shot");
+      mShooter.jogShooterInput(JogDirection.FORWARD);
+    } else if (mOperatorInterface.getRunShooterBackward() == true) {
+      ShooterString = ("Shooter is running backwards");
+      mShooter.jogShooterInput(JogDirection.REVERSE);
+    } else {
+      ShooterString = ("Shooter is not currently running");
+      mShooter.jogShooterInput(JogDirection.STOP);
+    }
+    SmartDashboard.putString("ShooterString", ShooterString);
+
+    String FeedString = "blank string";
+    if (mOperatorInterface.getFeedUp() == true) {
+      FeedString = ("Feed taking in balls");
+      mFeeder.jogFeeder(JogDirection.FORWARD);
+    } else if (mOperatorInterface.getFeedDown() == true) {
+      FeedString = ("Feed rejecting balls");
+      mFeeder.jogFeeder(JogDirection.REVERSE);
+    } else {
+      FeedString = ("Feed is not currently running");
+      mFeeder.jogFeeder(JogDirection.STOP);
+    }
+    SmartDashboard.putString("FeedSring", FeedString);
+
+    String FeedShooterString = "blank string";
+    if (mOperatorInterface.getFeedShooterUp() == true) {
+      FeedShooterString = ("Ball is ready to be shot");
+      mFeeder.jogShooterInput(JogDirection.FORWARD);
+    } else if (mOperatorInterface.getFeedShooterDown() == true) {
+      FeedShooterString = ("Ball is being sent back to feed");
+      mFeeder.jogShooterInput(JogDirection.REVERSE);
+    } else {
+      FeedShooterString = ("Shooter is not currently running");
+      mFeeder.jogShooterInput(JogDirection.STOP);
+    }
+    SmartDashboard.putString("FeedShooterString", FeedShooterString);
+
   }
 
 
