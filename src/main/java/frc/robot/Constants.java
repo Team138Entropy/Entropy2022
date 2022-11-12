@@ -2,12 +2,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.util.geometry.*;
+import frc.robot.util.TuneableNumber;
 
 /**
  * Constants
  * Values defined in this class will never change during robot operation
  */
 public class Constants {
+  // Used for tuneable numbers
+  public static final boolean tuningMode = true;
+
   
   // Potential Targets
   public enum TargetType {
@@ -26,13 +30,16 @@ public class Constants {
       public static final int rightSlave = 1;
     }
 
-    public static class Arm {
-      public static final int shoulder = 5;
-      public static final int forearm = 6;
+    public static class Shooter {
+      public static final int leftMaster = 5;
+      public static final int rightMaster = 6;
     }
 
-    public static class Climber {
-      public static final int climber = 7;
+    public static class Feeder {
+      public static final int shooterInput = 7;
+      public static final int feeder1 = 8;
+      public static final int feeder2 = 9;
+
     }
   }
 
@@ -154,6 +161,25 @@ public class Constants {
     private static final double WheelCircumferenceMeters = WheelCircumference * Misc.inchesToMeters; //meters
     private static final double RotationsPerMeter = 1.0/WheelCircumferenceMeters; // meters (rotations per meter)
     public static final double tippingLimitXaxis = .25;
+  }
+
+  public static class Shooter {
+    public static final TuneableNumber shooterTestSpeed_Forward 
+              = new TuneableNumber("shooter/TestSpeed_Forward", .4);
+    public static final TuneableNumber shooterTestSpeed_Reverse 
+              = new TuneableNumber("shooter/TestSpeed_reverse", .4);
+  }
+
+  public static class Feeder {
+    public static final TuneableNumber inputWheelTestSpeed_Forward 
+              = new TuneableNumber("feeder/inputWheelTestSpeed_Forward", .4);
+    public static final TuneableNumber inputWheelTestSpeed_Reverse 
+              = new TuneableNumber("feeder/inputWheelTestSpeed_Reverse", .4);
+
+    public static final TuneableNumber feederTestSpeed_Forward
+              = new TuneableNumber("feeder/feederTestSpeed_Forward", .4);
+    public static final TuneableNumber feederTestSpeed_Reverse
+              = new TuneableNumber("feeder/feederTestSpeed_Reverse", .4);
   }
 
   public static class Arm {

@@ -37,6 +37,16 @@ public class Drive extends Subsystem {
   private EntropyTalonFX mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
   WPI_TalonSRX mLeftMasterSRX, mRightMasterSRX;
 
+  // Drive Sets
+  public enum DriveStyle {
+    DIFFERENTIAL_DRIVE, // Tank Drive
+    SWERVE_DRIVE, // Swerve Drive
+  };
+  
+  // Default to Differential Drive
+  private DriveStyle mDriveStyle = DriveStyle.DIFFERENTIAL_DRIVE;
+
+
   // Potential Drive Modes
   public enum DriveControlState {
     OPEN_LOOP, // open loop voltage control
@@ -93,6 +103,19 @@ public class Drive extends Subsystem {
   private final double drivetrainTicksPerMeter = 22000.0 * 2.08; //using constants now
   
   private Drive() {
+    // Initialize the selected drive system
+    switch(mDriveStyle)
+    {
+      case DIFFERENTIAL_DRIVE:
+        initDifferentialDrive();
+      break;
+      case SWERVE_DRIVE:
+        initSwerveDrive();
+      break;
+    }
+
+    // Perform common initilization tasks
+
     // Create Talon References
     mLeftSlave = new EntropyTalonFX(Constants.Talons.Drive.leftMaster, Constants.Drive.Encoders.ticksPerMeters, 
       MotorConfigUtils.POSITION_SLOT_IDX, MotorConfigUtils.VELOCITY_SLOT_IDX);
@@ -143,6 +166,16 @@ public class Drive extends Subsystem {
 
     // Initialize Drive Simulation System
     mDriveSimSystem = new DriveSimSystem();
+  }
+
+  // Initialize the Differential Drive
+  private void initDifferentialDrive() {
+
+  }
+
+  // Initialize the Swerve Drive
+  private void initSwerveDrive() {
+
   }
 
   private void configTalon(EntropyTalonFX talon) {

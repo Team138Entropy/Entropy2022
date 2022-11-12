@@ -2,7 +2,6 @@ package frc.robot.auto.actions;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Arm.ArmTarget;
 import frc.robot.vision.*;
 import edu.wpi.first.wpilibj.PowerDistribution;
 /**

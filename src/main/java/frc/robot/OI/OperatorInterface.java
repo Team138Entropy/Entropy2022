@@ -4,7 +4,6 @@ import frc.robot.Constants;
 import frc.robot.OI.XboxController.Axis;
 import frc.robot.OI.XboxController.Button;
 import frc.robot.OI.XboxController.Side;
-import frc.robot.subsystems.Arm.ArmTarget;
 import frc.robot.util.LatchedBoolean;
 
 public class OperatorInterface {
@@ -71,27 +70,7 @@ public class OperatorInterface {
         mDriverController.setRumble(a);
     }
 
-    /**
-     * Returns a target arm position based on operator input. Returns null if there is no input.
-     * @return
-     */
-    public ArmTarget getArmPos(){
-        if (mOperatorController.getButton(Button.LB)) {
-            return ArmTarget.SCORE_FRONT;
-        } else if (mOperatorController.getButton(Button.RB)) {
-            return ArmTarget.SCORE_BACK;
-        } else if (mOperatorController.getTrigger(Side.RIGHT)) {
-            return ArmTarget.INTAKE;    
-        } else if (mOperatorController.getButton(Button.Y)) {
-            return ArmTarget.HOME;
-        } else if (mOperatorController.getButton(Button.X)) {
-            return ArmTarget.FLAT_FRONT;
-        } else if (mOperatorController.getButton(Button.B)) {
-            return ArmTarget.FLAT_BACK;
-        }
-        return null; // Return null otherwise
-    }
-
+  
     public boolean getArmEject() {
         return mOperatorController.getTrigger(Side.LEFT);
     }

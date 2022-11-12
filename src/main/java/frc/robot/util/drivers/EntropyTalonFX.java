@@ -4,14 +4,19 @@ import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
+
 public class EntropyTalonFX extends TalonFX {
     private final double decisecondsPerSecond = 10;
+    private String deviceInfo;
     private double ticksPerMeter;
     private double saturationVoltage = 12;
     private int velocitySlotIdx;
     private int positionSlotIdx;
     private int lastSlot = 0;
     private boolean invertEncoder = false;
+
 
     /**
      * Constructor
@@ -23,6 +28,20 @@ public class EntropyTalonFX extends TalonFX {
         this.ticksPerMeter = ticksPerMeter;
         this.velocitySlotIdx = velocitySlotIdx;
         this.positionSlotIdx = positionSlotIdx;
+        setDeviceInfo(deviceNumber);
+    }
+
+    public EntropyTalonFX(int deviceNumber){
+        super(deviceNumber);
+        this.ticksPerMeter = Constants.Drive.Encoders.ticksPerMeters;
+        this.velocitySlotIdx = MotorConfigUtils.VELOCITY_SLOT_IDX;
+        this.positionSlotIdx = MotorConfigUtils.POSITION_SLOT_IDX;
+        setDeviceInfo(deviceNumber);
+    }
+
+    // Talon Name
+    private void setDeviceInfo(int deviceNumber){
+        deviceInfo = "Talon FX " + deviceNumber;
     }
 
     public void invertEncoder(){
@@ -84,5 +103,13 @@ public class EntropyTalonFX extends TalonFX {
     public ErrorCode configVoltageCompSaturation(double voltage) {
         saturationVoltage = voltage;
         return super.configVoltageCompSaturation(voltage);
+    }
+
+    public void updateSmartdashboard()
+    {
+       SmartDashboard.putNumber(deviceInfo + "/Voltage", getBusVoltage());
+       SmartDashboard.putNumber(deviceInfo + "/Current", getSupplyCurrent()); 
+       SmartDashboard.putBoolean(deviceInfo + "/Inverted", getInverted()); 
+
     }
 }
