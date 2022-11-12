@@ -157,7 +157,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     System.out.println("target list call in robot 1");
     mpPhotoVision.getTargetList().forEach(System.out::println);
-    mpPhotoVision.targetDist();
+    //mpPhotoVision.targetDist();
 
     System.out.println("target yaw:" + mpPhotoVision.getTargetYaw());
 

@@ -16,6 +16,7 @@ public class AutoSteerAction implements Action {
   private Drive mDrive = Drive.getInstance();
   private VisionManager mVisionManager = VisionManager.getInstance();
   private Grasper mGrasper = Grasper.getInstance();
+  private photonVision mPhotonVision =photonVision.getInstance();
   private boolean mComplete;
   private double mThrottleSpeed = -.19;
   private boolean mAllowBacktrack;
@@ -44,8 +45,16 @@ public class AutoSteerAction implements Action {
     mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
     switch(mCurrentMode){
       case VisionSteering:
-        TargetInfo ti = mVisionManager.getSelectedTarget(Constants.Vision.kAllowedSecondsThreshold);
-        double errorAngle = 0;
+        double ti = 0.0;
+        //TargetInfo ti = mVisionManager.getSelectedTarget(Constants.Vision.kAllowedSecondsThreshold);
+        
+          //ti = photonVision.getTargetYaw();
+        
+        double errorAngle = 0.0;
+        try{
+          errorAngle = photonVision.getTargetYaw();
+        }finally{}
+        /*
         if (ti != null) {
           System.out.println("valid target!");
           
@@ -53,6 +62,7 @@ public class AutoSteerAction implements Action {
         }else{
           System.out.println("no target");
         }
+        */
         if (Math.abs(errorAngle) < 3 && mInitialSet == false) {
           mGrasper.intake();
           mArm.rotateToPosition(ArmTarget.INTAKE.degrees);
