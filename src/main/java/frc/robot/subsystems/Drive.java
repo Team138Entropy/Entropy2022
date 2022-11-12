@@ -28,6 +28,7 @@ import frc.robot.util.drivers.EntropyTalonFX;
 import frc.robot.util.drivers.MotorConfigUtils;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.lang.Math;
 
 public class Drive extends Subsystem {
   private static Drive mInstance;
@@ -418,27 +419,29 @@ public class Drive extends Subsystem {
    * 
    */
   public synchronized void driveErrorAngle(double throttle, double error){
-    final double kP = 0.187;
+    final double kP = 0.1;
     final double minOutput = 0;
     final double maxOutput = .6155;
+    //maxoutpus was .6155
     double turningValue = error * kP;
+    
+      // Constrain to min output
+      if(turningValue < minOutput && turningValue >= 0){
+        turningValue = minOutput;
+      }else if(turningValue > -minOutput && turningValue <= 0){
+        turningValue = -minOutput;
+      }
 
-    // Constrain to min output
-    if(turningValue < minOutput && turningValue >= 0){
-      turningValue = minOutput;
-    }else if(turningValue > -minOutput && turningValue <= 0){
-      turningValue = -minOutput;
-    }
-
-    // Constrain to max output
-    if(turningValue > maxOutput){
-      turningValue = maxOutput;
-    }else if(turningValue < -maxOutput){
-      turningValue = -maxOutput;
-    }
-
+      // Constrain to max output
+      if(turningValue > maxOutput){
+        turningValue = maxOutput;
+      }else if(turningValue < -maxOutput){
+        turningValue = -maxOutput;
+      }
+    
     // set into drive with no ramp
     setUnrampedDrive(throttle, turningValue, true);
+    
   }
 
   /** Updates the field-relative position. */

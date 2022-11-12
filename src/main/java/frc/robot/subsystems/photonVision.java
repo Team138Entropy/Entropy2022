@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -42,6 +43,7 @@ public class photonVision{
   }
 
   public static synchronized void findingTargets(){
+
     try{
       PhotonPipelineResult result = camera.getLatestResult();
       PhotonTrackedTarget target = result.getBestTarget();
@@ -59,12 +61,38 @@ public class photonVision{
 
   public synchronized PhotonPipelineResult getPipeLine() {
     try{
-      System.out.println("calling getPipeLine");
+      //System.out.println("calling getPipeLine");
       return camera.getLatestResult();
     }finally{
 
     }
     
+  }
+
+  public synchronized String getTargetID() {
+    System.out.println("calling getTargetID");
+    String myIDString = "0";
+    int myIDInt = 0;
+    List<PhotonTrackedTarget> myItems = getTargetList();
+    String stringTargetList = myItems.toString();
+    Pattern pattern = Pattern.compile("(?<=fiducialId=)(.*)(?=, cam)", Pattern.CASE_INSENSITIVE);
+    Matcher matcher = pattern.matcher(stringTargetList);
+    while (matcher.find()){
+      myIDString =  matcher.group(1);
+      System.out.println(myIDString);
+    }
+    /*
+    try{
+      System.out.println("before string to int");
+      System.out.println(myIDString);
+      myIDInt= Integer.valueOf(myIDString);
+      System.out.println("after string to int");
+    }finally{
+      System.out.println("connot convert string to int");
+    }
+    */
+    
+    return myIDString;
   }
 
   public synchronized static double getTargetYaw(){
@@ -80,7 +108,7 @@ public class photonVision{
         //System.out.println("target yaw:" + targetYaw);
         hasTarget = true;
       }
-
+      
       return targetYaw;
     
   }
@@ -98,6 +126,16 @@ public class photonVision{
 
 
   public synchronized  PhotonTrackedTarget bestTarget(){
+    //options for deciding what target is best (for later)
+    /*
+    Largest
+    Smallest
+    Highest (towards the top of the image)
+    Lowest
+    Rightmost (Best target on the right, worst on left)
+    Leftmost
+    Centermost
+    */
     System.out.println("calling bestTarget");
     PhotonPipelineResult pipeLine = getPipeLine();
     return pipeLine.getBestTarget();

@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 
 import java.util.List;
+import java.util.regex.*;
 
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -155,13 +156,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    System.out.println("target list call in robot 1");
-    mpPhotoVision.getTargetList().forEach(System.out::println);
+    //System.out.println("target list call in robot 1");
+    //mpPhotoVision.getTargetList().forEach(System.out::println);\
+    System.out.println(mpPhotoVision.getTargetID());
+
+    //System.out.println("Fiducial ID:" + matcher.matches());
+    
+    //System.out.println(stringTargetList);
+    
+    //System.out.println("my items 2:"+stringTargetList);
+
     //mpPhotoVision.targetDist();
 
-    System.out.println("target yaw:" + mpPhotoVision.getTargetYaw());
+    //System.out.println("target yaw:" + mpPhotoVision.getTargetYaw());
 
-    System.out.println("target list call in robot 2");
+    //System.out.println("target list call in robot 2");
     updateRobotSmartDashboard();
     NetworkTable table = inst.getTable("SmartDashboard");
     ballColorEntry = table.getEntry("selectedColor");
@@ -188,7 +197,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("drive turn", mOperatorInterface.getDriveTurn());
     SmartDashboard.putBoolean("ball color", getBallColor());
     SmartDashboard.putNumber("GrasperCurrent", Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
-    
+    SmartDashboard.putNumber("target yaw", mpPhotoVision.getTargetYaw());
     mSubsystemManager.updateSmartdashboard();
   }
 
@@ -514,15 +523,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Valid Target", validTarget);
     SmartDashboard.putNumber("Target Angle", errorAngle);
     
-    if(wantsAutoSteer && validTargetInfo){
-      if(ti.isValid()){ //only allow if valud packet
+    if(wantsAutoSteer && true){
         // autonomously steering robot towards cargo
         // todo: only allow drive in a certain direction? 
        //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
-       mDrive.driveErrorAngle(driveThrottle * .4, ti.getErrorAngle());
-      }else{
-        System.out.println("Invalid Packet!");
-      }
+       mDrive.driveErrorAngle(driveThrottle * .4, mpPhotoVision.getTargetYaw());
+
     }else if(wantsAutoSteer){
       // wants auto steer, but invalid target info
       // TODO: vibrate controller so driver knows

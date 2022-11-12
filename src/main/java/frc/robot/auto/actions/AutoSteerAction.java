@@ -63,6 +63,7 @@ public class AutoSteerAction implements Action {
           System.out.println("no target");
         }
         */
+        /*
         if (Math.abs(errorAngle) < 3 && mInitialSet == false) {
           mGrasper.intake();
           mArm.rotateToPosition(ArmTarget.INTAKE.degrees);
@@ -87,6 +88,7 @@ public class AutoSteerAction implements Action {
           mDrive.driveErrorAngle(mThrottleSpeed, errorAngle);
           System.out.println("still driving " + errorAngle);
         }
+        */
         break;
       case Backtracking:
         // now following back the path we took to auto steer
