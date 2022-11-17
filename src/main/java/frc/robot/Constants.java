@@ -2,9 +2,18 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.Logger.SupportedLevels;
+import frc.robot.util.TuneableNumber;
 import frc.robot.util.geometry.*;
 
 public class Constants {
+
+  public static Boolean tuningMode = true;
+  public static final TuneableNumber tuneableKf = new TuneableNumber("Kf",0);
+  public static final TuneableNumber tuneableKp = new TuneableNumber("Kp",0);
+  public static final TuneableNumber tuneableKi = new TuneableNumber("Ki",0);
+  public static final TuneableNumber tuneableKd = new TuneableNumber("Kd",0);
+
+
   
   // Potential Targets
   public enum TargetType {

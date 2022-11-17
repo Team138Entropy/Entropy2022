@@ -524,6 +524,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Target Angle", errorAngle);
     
     if(wantsAutoSteer && true){
+
         // autonomously steering robot towards cargo
         // todo: only allow drive in a certain direction? 
        //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
