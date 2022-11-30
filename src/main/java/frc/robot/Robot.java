@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
   // Subsystem Manager
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
 
-  private final photonVision mpPhotoVision = photonVision.getInstance();
+  private final photonVision mPhotonVision = photonVision.getInstance();
   
   // Subsystems
   private final Drive mDrive = Drive.getInstance();
@@ -157,8 +157,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     //System.out.println("target list call in robot 1");
-    //mpPhotoVision.getTargetList().forEach(System.out::println);\
-    System.out.println(mpPhotoVision.getTargetID());
+    //mPhotonVision.getTargetList().forEach(System.out::println);\
+    System.out.println(mPhotonVision.getTargetID());
 
     //System.out.println("Fiducial ID:" + matcher.matches());
     
@@ -166,9 +166,9 @@ public class Robot extends TimedRobot {
     
     //System.out.println("my items 2:"+stringTargetList);
 
-    //mpPhotoVision.targetDist();
+    //mPhotonVision.targetDist();
 
-    //System.out.println("target yaw:" + mpPhotoVision.getTargetYaw());
+    //System.out.println("target yaw:" + mpPhotonVision.getTargetYaw());
 
     //System.out.println("target list call in robot 2");
     updateRobotSmartDashboard();
@@ -197,7 +197,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("drive turn", mOperatorInterface.getDriveTurn());
     SmartDashboard.putBoolean("ball color", getBallColor());
     SmartDashboard.putNumber("GrasperCurrent", Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
-    SmartDashboard.putNumber("target yaw", mpPhotoVision.getTargetYaw());
+    SmartDashboard.putNumber("target yaw", mPhotonVision.getTargetYaw());
     mSubsystemManager.updateSmartdashboard();
   }
 
@@ -414,7 +414,7 @@ public class Robot extends TimedRobot {
     mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
 
     // Run Drive Code! Allow Precision Steer and Auto Aim
-    DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
+    //DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
   }
 
   private ArmTarget lastTarget = ArmTarget.HOME;
@@ -468,7 +468,7 @@ public class Robot extends TimedRobot {
      // mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
 
       // Drive with Precision Steer and Auto Steer
-      DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
+      //DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
     } else if(mCurrentMode == RobotMode.Climber) {
       // Objective is to Climb
       // Do not allow manual control of arm and grasper
@@ -489,7 +489,7 @@ public class Robot extends TimedRobot {
       mClimber.update(manualStop, mOperatorInterface.getOperatorClimbStageApprovePress());
 
       // Drive with Precision Steer Automatically Enabled, no auto steer
-      DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), false);
+      //DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), false);
     }
   }
 
@@ -507,6 +507,7 @@ public class Robot extends TimedRobot {
    if(precisionSteer) driveThrottle *= .3;
 
     boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
+    boolean wantAutoTurn = mOperatorInterface.getAutoTurn();
     wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed
     SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 
@@ -523,12 +524,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Valid Target", validTarget);
     SmartDashboard.putNumber("Target Angle", errorAngle);
     
-    if(wantsAutoSteer && true){
+    if(wantAutoTurn && true){
 
-        // autonomously steering robot towards cargo
-        // todo: only allow drive in a certain direction? 
-       //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
-       mDrive.driveErrorAngle(driveThrottle * .4, mpPhotoVision.getTargetYaw());
+      // auto turn to best apriltag item
+      //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
+      mDrive.turnErrorAngle(driveThrottle, mPhotonVision.getTargetYaw());
 
     }else if(wantsAutoSteer){
       // wants auto steer, but invalid target info

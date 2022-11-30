@@ -59,9 +59,11 @@ public class OperatorInterface {
         return mDriverController.getTrigger(Side.RIGHT);
     }
 
+    /*
     public boolean getDrivePrecisionSteer(){
         return mDriverController.getTrigger(Side.LEFT);
     }
+    */
 
     public void setOperatorRumble(boolean a){ 
         mOperatorController.setRumble(a);
@@ -69,6 +71,10 @@ public class OperatorInterface {
 
     public void setDriverRumble(boolean a){ 
         mDriverController.setRumble(a);
+    }
+    
+    public boolean getAutoTurn(){
+        return mDriverController.getTrigger(Side.LEFT);
     }
 
     /**

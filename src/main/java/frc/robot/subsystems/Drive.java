@@ -472,7 +472,7 @@ public class Drive extends Subsystem {
 
     integral += (error*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
     derivative = (error - previous_error) / .02;
-    this.rcw = P*error + I*integral + D*derivative;
+    //this.rcw = P*error + I*integral + D*derivative;
     
 
     
@@ -483,6 +483,55 @@ public class Drive extends Subsystem {
     double turningValue = error * kP;
     
     
+    // Constrain to min output
+    if(turningValue < minOutput && turningValue >= 0){
+      turningValue = minOutput;
+    }else if(turningValue > -minOutput && turningValue <= 0){
+      turningValue = -minOutput;
+    }
+
+    // Constrain to max output
+    if(turningValue > maxOutput){
+      turningValue = maxOutput;
+    }else if(turningValue < -maxOutput){
+      turningValue = -maxOutput;
+    }
+    
+    // set into drive with no ramp
+    setUnrampedDrive(throttle, turningValue, true);
+    
+  }
+
+  public synchronized void turnErrorAngle(double throttle, double error){
+    //1st value is wheel speed, 3rd is rotation
+    //var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(.1, 0.0, 0));
+    double Kp = 0;
+    double Ki = 0;
+    double Kd = 0;
+
+    final double minOutput = 0;
+    final double maxOutput = .6155;
+
+    System.out.println(error);
+
+    double lastError = 0;
+    double integral = 0;
+    double derivative = 0;
+
+    double leftPower = 0;
+    double rightPower = 0;
+    double turningValue = 0;
+
+    while (Math.abs(error) > 0 ) {
+      integral = integral + error;
+      derivative = error - lastError;
+
+      turningValue = (error * Kp) + (integral * Ki) + (derivative * Kd);
+
+      lastError = error;
+      
+    }
+
     // Constrain to min output
     if(turningValue < minOutput && turningValue >= 0){
       turningValue = minOutput;
