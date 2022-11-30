@@ -77,8 +77,9 @@ public class Drive extends Subsystem {
   // Autonomous PID Controllers
   private final PIDController mLeftPIDController = new PIDController(1, 0, 0);
   private final PIDController mRightPIDController = new PIDController(1, 0, 0);
-  private final PIDController mAutoSteerPidControllerLeft = new PIDController(Constants.tuneableKp.get(), Constants.tuneableKi.get(), Constants.tuneableKd.get());
-  private final PIDController mAutoSteerPidControllerRight = new PIDController(Constants.tuneableKp.get(), Constants.tuneableKi.get(), Constants.tuneableKd.get());
+
+  //private final PIDController mAutoSteerPidControllerLeft = new PIDController(Constants.tuneableKp.get(), Constants.tuneableKi.get(), Constants.tuneableKd.get());
+  //private final PIDController mAutoSteerPidControllerRight = new PIDController(Constants.tuneableKp.get(), Constants.tuneableKi.get(), Constants.tuneableKd.get());
 
   public static synchronized Drive getInstance() {
     if (mInstance == null) {
@@ -178,8 +179,6 @@ public class Drive extends Subsystem {
     mRightMaster.config_kP(0, Constants.tuneableKp.get(), 10);
     mRightMaster.config_kI(0, Constants.tuneableKi.get(), 10);
     mLeftMaster.config_kD(0, Constants.tuneableKd.get(), 10);
-
-
   }
 
   // Intialize Drive Memory Objects
@@ -499,13 +498,12 @@ public class Drive extends Subsystem {
     
     // set into drive with no ramp
     setUnrampedDrive(throttle, turningValue, true);
-    
   }
 
   public synchronized void turnErrorAngle(double throttle, double error){
     //1st value is wheel speed, 3rd is rotation
     //var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(.1, 0.0, 0));
-    double Kp = 0;
+    double Kp = 0.2;
     double Ki = 0;
     double Kd = 0;
 
@@ -516,18 +514,14 @@ public class Drive extends Subsystem {
 
     double lastError = 0;
     double integral = 0;
+    integral += error*.02;
     double derivative = 0;
-
-    double leftPower = 0;
-    double rightPower = 0;
+    derivative = (error - lastError)/.02;
     double turningValue = 0;
 
     while (Math.abs(error) > 0 ) {
       integral = integral + error;
-      derivative = error - lastError;
-
       turningValue = (error * Kp) + (integral * Ki) + (derivative * Kd);
-
       lastError = error;
       
     }
@@ -548,7 +542,6 @@ public class Drive extends Subsystem {
     
     // set into drive with no ramp
     setUnrampedDrive(throttle, turningValue, true);
-    
   }
 
   /** Updates the field-relative position. */

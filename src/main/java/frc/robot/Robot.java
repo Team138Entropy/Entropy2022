@@ -528,7 +528,7 @@ public class Robot extends TimedRobot {
 
       // auto turn to best apriltag item
       //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
-      mDrive.turnErrorAngle(driveThrottle, mPhotonVision.getTargetYaw());
+      mDrive.turnErrorAngle(driveThrottle, photonVision.getTargetYaw());
 
     }else if(wantsAutoSteer){
       // wants auto steer, but invalid target info
