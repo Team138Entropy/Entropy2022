@@ -27,6 +27,9 @@ import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.util.drivers.CTREUnits;
 import frc.robot.util.drivers.EntropyTalonFX;
 import frc.robot.util.drivers.MotorConfigUtils;
+import frc.robot.util.drivers.SwerveModule;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -45,7 +48,6 @@ public class Drive extends Subsystem {
   
   // Default to Differential Drive
   private DriveStyle mDriveStyle = DriveStyle.DIFFERENTIAL_DRIVE;
-
 
   // Potential Drive Modes
   public enum DriveControlState {
@@ -66,6 +68,10 @@ public class Drive extends Subsystem {
   private static final double kTrackWidth = 0.3; // meters (23.5 inches)
   private final DifferentialDriveKinematics mKinematics = 
     new DifferentialDriveKinematics(kTrackWidth);
+
+  // Swerve Based Odometry
+  public SwerveDriveOdometry mSwerveOdometry;
+  public SwerveModule[] mSwerveModlues; 
 
   private Pose2d mStoredPose;
 

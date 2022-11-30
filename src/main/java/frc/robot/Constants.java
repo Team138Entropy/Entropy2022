@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.util.geometry.*;
 import frc.robot.util.TuneableNumber;
@@ -161,6 +163,9 @@ public class Constants {
     private static final double WheelCircumferenceMeters = WheelCircumference * Misc.inchesToMeters; //meters
     private static final double RotationsPerMeter = 1.0/WheelCircumferenceMeters; // meters (rotations per meter)
     public static final double tippingLimitXaxis = .25;
+
+
+    // these aren't correct
   }
 
   public static class Shooter {
@@ -205,5 +210,67 @@ public class Constants {
     public static final double pi = 3.14159;  
     public static final double inchesToMeters = 0.0254; //multiple inches to get meters
     public static final double degreeToRadian = 0.0174;
+  }
+
+  public static class CAN {
+    // Timeout constants
+    public static final int kLongCANTimeoutMs = 100;
+    public static final int kCANTimeoutMs = 10;
+  }
+
+  public static class SwerveConstants { // constants related to swerve system
+    public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
+    
+    /* Swerve Drive Motor PID Values */
+    public static final double driveKP = 0.05;
+    public static final double driveKI = 0.0;
+    public static final double driveKD = 0.0;
+    public static final double driveKF = 0.0;
+
+    /* Swerve Drive Motor Characterization Values */
+    public static final double driveKS = (0.32 / 12);
+    public static final double driveKV = (1.51 / 12);
+    public static final double driveKA = (0.27 / 12);
+
+    /* Swerve Current Limiting */
+    public static final int angleContinuousCurrentLimit = 25;
+    public static final int anglePeakCurrentLimit = 40;
+    public static final double anglePeakCurrentDuration = 0.1;
+    public static final boolean angleEnableCurrentLimit = true;
+
+    public static final int driveContinuousCurrentLimit = 35;
+    public static final int drivePeakCurrentLimit = 60;
+    public static final double drivePeakCurrentDuration = 0.1;
+    public static final boolean driveEnableCurrentLimit = true;
+
+    /* Angle Motor PID Values */
+    public static final double angleKP = 0.3;
+    public static final double angleKI = 0.0;
+    public static final double angleKD = 0.0;
+    public static final double angleKF = 0.0;
+    
+    public static final double openLoopRamp = 0.25;
+    public static final double closedLoopRamp = 0.0;
+
+    public static final double driveGearRatio = 6.75;
+    public static final double angleGearRatio = 21.43;
+
+    /* Angle Encoder Invert */
+    public static final boolean canCoderInvert = false;
+
+    /* Swerve Motor Inverts */
+    public static final boolean driveMotorInvert = false;
+    public static final boolean angleMotorInvert = true;
+
+    /* Neutral Modes */
+    public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
+    public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
+
+    /* Swerve Profiling Values */
+    public static final double maxSpeed = 4.5; // meters per second
+    public static final double maxAngularVelocity = 10.0;
+
+    public static final double wheelDiameter = Units.inchesToMeters(4.0);
+    public static final double wheelCircumference = wheelDiameter * Math.PI;
   }
 }
