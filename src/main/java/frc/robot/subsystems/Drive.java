@@ -78,8 +78,8 @@ public class Drive extends Subsystem {
   private final PIDController mLeftPIDController = new PIDController(1, 0, 0);
   private final PIDController mRightPIDController = new PIDController(1, 0, 0);
 
-  //private final PIDController mAutoSteerPidControllerLeft = new PIDController(Constants.tuneableKp.get(), Constants.tuneableKi.get(), Constants.tuneableKd.get());
-  //private final PIDController mAutoSteerPidControllerRight = new PIDController(Constants.tuneableKp.get(), Constants.tuneableKi.get(), Constants.tuneableKd.get());
+  private final PIDController mAutoSteerPidControllerLeft = new PIDController(Constants.tuneableKp.get(), Constants.tuneableKi.get(), Constants.tuneableKd.get());
+  private final PIDController mAutoSteerPidControllerRight = new PIDController(Constants.tuneableKp.get(), Constants.tuneableKi.get(), Constants.tuneableKd.get());
 
   public static synchronized Drive getInstance() {
     if (mInstance == null) {
