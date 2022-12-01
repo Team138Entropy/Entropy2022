@@ -95,7 +95,7 @@ public class photonVision{
     return myIDString;
   }
 
-  public synchronized static double getTargetYaw(){
+  public synchronized double getTargetYaw(){
     PhotonTrackedTarget myTarget = null;
       var result = camera.getLatestResult();
       double targetYaw = 0.0;

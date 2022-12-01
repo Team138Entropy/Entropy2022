@@ -414,7 +414,7 @@ public class Robot extends TimedRobot {
     mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
 
     // Run Drive Code! Allow Precision Steer and Auto Aim
-    //DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
+    DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
   }
 
   private ArmTarget lastTarget = ArmTarget.HOME;
@@ -468,7 +468,7 @@ public class Robot extends TimedRobot {
      // mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
 
       // Drive with Precision Steer and Auto Steer
-      //DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
+      DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
     } else if(mCurrentMode == RobotMode.Climber) {
       // Objective is to Climb
       // Do not allow manual control of arm and grasper
@@ -489,7 +489,7 @@ public class Robot extends TimedRobot {
       mClimber.update(manualStop, mOperatorInterface.getOperatorClimbStageApprovePress());
 
       // Drive with Precision Steer Automatically Enabled, no auto steer
-      //DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), false);
+      DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), false);
     }
   }
 
@@ -507,7 +507,8 @@ public class Robot extends TimedRobot {
    if(precisionSteer) driveThrottle *= .3;
 
     boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
-    boolean wantAutoTurn = mOperatorInterface.getAutoTurn();
+    boolean wantsAutoTurn = mOperatorInterface.getAutoTurn();
+    boolean wantsPreicisionSteer = mOperatorInterface.getDrivePrecisionSteer();
     wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed
     SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 
@@ -524,15 +525,26 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Valid Target", validTarget);
     SmartDashboard.putNumber("Target Angle", errorAngle);
     
-    if(wantAutoTurn && true){
+    
+
+    if(wantsAutoSteer && true){
 
       // auto turn to best apriltag item
       //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
-      mDrive.turnErrorAngle(driveThrottle, photonVision.getTargetYaw());
+      mDrive.driveErrorAngle(driveThrottle, errorAngle);
 
-    }else if(wantsAutoSteer){
-      // wants auto steer, but invalid target info
-      // TODO: vibrate controller so driver knows
+    }
+    else if(wantsAutoTurn && true){
+
+      // auto turn to best apriltag item
+      //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
+      mDrive.turnErrorAngle(driveThrottle, mPhotonVision.getTargetYaw());
+    }
+    else if(wantsAutoSteer){
+      // autonomously steering robot towards cargo
+      // todo: only allow drive in a certain direction? 
+      //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
+      mDrive.driveErrorAngle(driveThrottle * .4, mPhotonVision.getTargetYaw());
     }else{
       //manual drive
       mDrive.setDrive(driveThrottle, driveTurn, false);
