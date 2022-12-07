@@ -18,6 +18,7 @@ import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Logger;
@@ -98,7 +99,8 @@ public class photonVision{
   public synchronized double getTargetYaw(){
     PhotonTrackedTarget myTarget = null;
       var result = camera.getLatestResult();
-      double targetYaw = 0.0;
+      double targetYaw = -999;
+
       try{
         myTarget = result.getBestTarget();
       }finally{}
@@ -110,7 +112,6 @@ public class photonVision{
       }
       
       return targetYaw;
-    
   }
   
   public synchronized List<PhotonTrackedTarget> getTargetList() {
@@ -128,13 +129,7 @@ public class photonVision{
   public synchronized  PhotonTrackedTarget bestTarget(){
     //options for deciding what target is best (for later)
     /*
-    Largest
-    Smallest
-    Highest (towards the top of the image)
-    Lowest
-    Rightmost (Best target on the right, worst on left)
-    Leftmost
-    Centermost
+    Largest, Smallest, Highest (towards the top of the image) , Lowest , Rightmost (Best target on the right, worst on left), Leftmost, Centermost
     */
     System.out.println("calling bestTarget");
     PhotonPipelineResult pipeLine = getPipeLine();

@@ -504,11 +504,10 @@ public class Robot extends TimedRobot {
 
 
     // precision steer (slow down throttle if left trigger is held)
-   if(precisionSteer) driveThrottle *= .3;
+    if(precisionSteer) driveThrottle *= .3;
 
     boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
     boolean wantsAutoTurn = mOperatorInterface.getAutoTurn();
-    boolean wantsPreicisionSteer = mOperatorInterface.getDrivePrecisionSteer();
     wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed
     SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 
@@ -525,14 +524,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Valid Target", validTarget);
     SmartDashboard.putNumber("Target Angle", errorAngle);
     
-    
-
-    if(wantsAutoSteer && true){
-
-      // auto turn to best apriltag item
+    if(wantsAutoSteer && mPhotonVision.getTargetYaw() != -999){
+      // autonomously steering robot towards cargo
+      // todo: only allow drive in a certain direction? 
       //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
-      mDrive.driveErrorAngle(driveThrottle, errorAngle);
-
+      mDrive.driveErrorAngle(driveThrottle * .4, mPhotonVision.getTargetYaw());
     }
     else if(wantsAutoTurn && true){
 
@@ -541,10 +537,8 @@ public class Robot extends TimedRobot {
       mDrive.turnErrorAngle(driveThrottle, mPhotonVision.getTargetYaw());
     }
     else if(wantsAutoSteer){
-      // autonomously steering robot towards cargo
-      // todo: only allow drive in a certain direction? 
-      //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
-      mDrive.driveErrorAngle(driveThrottle * .4, mPhotonVision.getTargetYaw());
+      // wants auto steer, but invalid target info
+      // TODO: vibrate controller so driver knows
     }else{
       //manual drive
       mDrive.setDrive(driveThrottle, driveTurn, false);
