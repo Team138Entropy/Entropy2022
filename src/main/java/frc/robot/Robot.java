@@ -27,6 +27,9 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 
 
 /**
@@ -43,6 +46,8 @@ public class Robot extends TimedRobot {
 
   // Vision Manager
   private final VisionManager mVisionManager = VisionManager.getInstance();
+
+  AHRS ahrs;
 
   // Subsystem Manager
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
@@ -104,6 +109,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    ahrs = new AHRS(SPI.Port.kMXP);
+    
     // populate autonomous list
     populateAutonomousModes();
 
@@ -163,6 +170,15 @@ public class Robot extends TimedRobot {
   
   //Updates SmartDashboard ;3
   private void updateRobotSmartDashboard() {
+    SmartDashboard.putBoolean("navX: IMU_Connected",ahrs.isConnected());
+    SmartDashboard.putBoolean("navX: IMU_IsCalibrating",ahrs.isCalibrating());
+    SmartDashboard.putNumber("navX: altitude", ahrs.getAltitude());
+    SmartDashboard.putNumber("navX: angle", ahrs.getAngle());
+    SmartDashboard.putNumber("navX: roll", ahrs.getRoll());
+    SmartDashboard.putNumber("navX: yaw", ahrs.getYaw());
+    SmartDashboard.putNumber("navX: velocityX", ahrs.getVelocityX());
+    SmartDashboard.putNumber("navX: velocityY", ahrs.getVelocityY());
+    SmartDashboard.putNumber("navX: velocityZ", ahrs.getVelocityZ());
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
     SmartDashboard.putData("power panel",Constants.Grasper.globelPowerDistribution);
     SmartDashboard.putNumber("accel X", accelerometer.getX());
@@ -214,7 +230,8 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {    
+  public void teleopInit() {   
+    ahrs.calibrate(); 
     // Default Robot Mode to CargoScorer
     mCurrentMode = RobotMode.CargoScorer;
     
