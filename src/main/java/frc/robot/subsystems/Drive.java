@@ -17,7 +17,6 @@ import frc.robot.Constants;
 import frc.robot.Kinematics;
 import frc.robot.Robot;
 import frc.robot.util.DriveSignal;
-import frc.robot.util.TuneableNumber;
 import frc.robot.util.Util;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.geometry.Rotation2d;
@@ -29,7 +28,6 @@ import frc.robot.util.drivers.EntropyTalonFX;
 import frc.robot.util.drivers.MotorConfigUtils;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import java.lang.Math;
 
 public class Drive extends Subsystem {
   private static Drive mInstance;
@@ -79,9 +77,6 @@ public class Drive extends Subsystem {
   // Autonomous PID Controllers
   private final PIDController mLeftPIDController = new PIDController(1, 0, 0);
   private final PIDController mRightPIDController = new PIDController(1, 0, 0);
-
-  private final PIDController mAutoSteerPidControllerLeft = new PIDController(Constants.tuneableKp.get(), Constants.tuneableKi.get(), Constants.tuneableKd.get());
-  private final PIDController mAutoSteerPidControllerRight = new PIDController(Constants.tuneableKp.get(), Constants.tuneableKi.get(), Constants.tuneableKd.get());
 
   public static synchronized Drive getInstance() {
     if (mInstance == null) {
@@ -174,13 +169,6 @@ public class Drive extends Subsystem {
     // Acceleration Limits
     // This should be ZERO!
     talon.configOpenloopRamp(0);
-  }
-
-  public void autoSteerConfig(EntropyTalonFX talon){
-    mRightMaster.config_kF(0, Constants.tuneableKf.get(),0);
-    mRightMaster.config_kP(0, Constants.tuneableKp.get(), 10);
-    mRightMaster.config_kI(0, Constants.tuneableKi.get(), 10);
-    mLeftMaster.config_kD(0, Constants.tuneableKd.get(), 10);
   }
 
   // Intialize Drive Memory Objects
@@ -361,42 +349,12 @@ public class Drive extends Subsystem {
     mRightSlave.zeroEncoder();
   }
   
-  public void autoAimSpeed(DifferentialDriveWheelSpeeds speeds){
-    final double leftFeedforward = mFeedForward.calculate(speeds.leftMetersPerSecond);
-    final double rightFeedforward = mFeedForward.calculate(speeds.rightMetersPerSecond);
-
-    double leftEncoderRate = mLeftMaster.getRateMetersPerSecond();
-    double rightEncoderRate = mRightMaster.getRateMetersPerSecond();
-
-    // calculate left and right outputs
-    final double leftOutput =
-        mAutoSteerPidControllerLeft.calculate(leftEncoderRate, speeds.leftMetersPerSecond);
-    final double rightOutput =
-        mAutoSteerPidControllerRight.calculate(rightEncoderRate, speeds.rightMetersPerSecond);
-    // calculte left and right voltage to feed to motors
-    double leftVoltage = leftOutput + leftFeedforward;
-    double rightVoltage = rightOutput + rightFeedforward;
-
-    // normalize voltage out of robot voltage (~12)
-    // this command from the WPILib is normalized out of 12 
-    // Talons expect [1, -1]
-    // calculate out of battery voltage
-    leftVoltage = leftVoltage/RobotController.getBatteryVoltage();
-    rightVoltage = rightVoltage/RobotController.getBatteryVoltage();
-
-    // Invert Right Voltage (same as Teleop)
-    rightVoltage *= -1;
-
-    // set motor outputs
-    mLeftMaster.set(ControlMode.PercentOutput, leftVoltage);
-    mRightMaster.set(ControlMode.PercentOutput, rightVoltage);
-  }
     /**
    * Sets the desired wheel speeds.
    *
    * @param speeds The desired wheel speeds.
    */
-  public void setAutoSpeeds(DifferentialDriveWheelSpeeds speeds) {
+  public void autoAimSpeed(DifferentialDriveWheelSpeeds speeds) {
     final double leftFeedforward = mFeedForward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = mFeedForward.calculate(speeds.rightMetersPerSecond);
 
@@ -436,7 +394,7 @@ public class Drive extends Subsystem {
    */
   public void autoomousDrive(double xSpeed, double rot) {
     var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
-    setAutoSpeeds(wheelSpeeds);
+    autoAimSpeed(wheelSpeeds);
   }
 
   public synchronized void setPercentOutputDrive(double left, double right){
@@ -466,25 +424,33 @@ public class Drive extends Subsystem {
     var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(.1, 0.0, 0));
     autoAimSpeed(wheelSpeeds);
 
-    int setpoint = 0;
-    int integral = 0;
-    
+    double setpoint = 0;
+    double integral = 0;
     double derivative = 0;
-    error = setpoint - error;
 
+    SmartDashboard.putNumber("Previous Error", previous_error);
+
+    error = setpoint - error; //Error = Target - Actual
     integral += (error*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
     derivative = (error - previous_error) / .02;
-    previous_error = error;
-    //this.rcw = P*error + I*integral + D*derivative;
+    SmartDashboard.putNumber("Error", error);
+    SmartDashboard.putNumber("Integral", integral);
+    SmartDashboard.putNumber("Derivative", derivative);
     
+    previous_error = error;  
     
     final double kP = Constants.tuneableKp.get();
     final double kI = Constants.tuneableKi.get();
     final double kD = Constants.tuneableKd.get();
+
+    SmartDashboard.putNumber("kP from tuneable", kP);
+    SmartDashboard.putNumber("kI from tuneable", kI);
+    SmartDashboard.putNumber("kD from tuneable", kD);
+
     final double minOutput = 0;
     final double maxOutput = .6155;
     //maxoutpus was .6155
-    double turningValue = (error * kP) + (integral * kI) + (derivative * kD);
+    double turningValue = kP * error + kI * integral + kD * derivative;
     
     
     // Constrain to min output
@@ -502,6 +468,7 @@ public class Drive extends Subsystem {
     }
     
     // set into drive with no ramp
+    // Multiply turningValue by -1 to not spin the opposite direction
     setUnrampedDrive(throttle, turningValue*-1, true);
   }
 

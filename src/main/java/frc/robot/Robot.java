@@ -24,12 +24,6 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
-
-import java.util.List;
-import java.util.regex.*;
-
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -165,18 +159,6 @@ public class Robot extends TimedRobot {
       printCount = 0;
     }
     
-
-    //System.out.println("Fiducial ID:" + matcher.matches());
-    
-    //System.out.println(stringTargetList);
-    
-    //System.out.println("my items 2:"+stringTargetList);
-
-    //mPhotonVision.targetDist();
-
-    //System.out.println("target yaw:" + mpPhotonVision.getTargetYaw());
-
-    //System.out.println("target list call in robot 2");
     updateRobotSmartDashboard();
     NetworkTable table = inst.getTable("SmartDashboard");
     ballColorEntry = table.getEntry("selectedColor");
@@ -529,22 +511,15 @@ public class Robot extends TimedRobot {
     }
     SmartDashboard.putBoolean("Valid Target", validTarget);
     SmartDashboard.putNumber("Target Angle", errorAngle);
+
+    double aprilTagErrorAngle = mPhotonVision.getTargetYaw(); 
     
-    if(wantsAutoSteer && mPhotonVision.getTargetYaw() != -999){
+    if(wantsAutoSteer && aprilTagErrorAngle < Math.abs(50)){
       // autonomously steering robot towards cargo
       // todo: only allow drive in a certain direction? 
       //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
-      mDrive.driveErrorAngle(driveThrottle * .4, mPhotonVision.getTargetYaw());
-    }
-    /* 
-    else if(wantsAutoTurn && mPhotonVision.getTargetYaw() != -999){
-
-      // auto turn to best apriltag item
-      //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
-      mDrive.turnErrorAngle(driveThrottle, mPhotonVision.getTargetYaw());
-    }
-    */
-    else if(wantsAutoSteer){
+      mDrive.driveErrorAngle(driveThrottle * .4, aprilTagErrorAngle);
+    }else if(wantsAutoSteer){
       // wants auto steer, but invalid target info
       // TODO: vibrate controller so driver knows
     }else{
