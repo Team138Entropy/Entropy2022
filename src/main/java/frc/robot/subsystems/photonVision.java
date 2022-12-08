@@ -71,7 +71,7 @@ public class photonVision{
   }
 
   public synchronized String getTargetID() {
-    System.out.println("calling getTargetID");
+    //System.out.println("calling getTargetID");
     String myIDString = "0";
     int myIDInt = 0;
     List<PhotonTrackedTarget> myItems = getTargetList();
@@ -116,7 +116,7 @@ public class photonVision{
   
   public synchronized List<PhotonTrackedTarget> getTargetList() {
     try{
-      System.out.println("calling getTargetList");
+      //System.out.println("calling getTargetList");
       PhotonPipelineResult pipeLine = getPipeLine();
       List<PhotonTrackedTarget> targets = pipeLine.getTargets();
 

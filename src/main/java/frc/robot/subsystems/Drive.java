@@ -60,6 +60,8 @@ public class Drive extends Subsystem {
 
   private Pose2d mStoredPose;
 
+  public double previous_error = 0;
+
   // FeedForwardController for Autonomous Use
   // ks = static gain
   // kv = velocity gain
@@ -463,23 +465,26 @@ public class Drive extends Subsystem {
     //1st value is wheel speed, 3rd is rotation
     var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(.1, 0.0, 0));
     autoAimSpeed(wheelSpeeds);
+
     int setpoint = 0;
     int integral = 0;
-    int previous_error = 0;
+    
     double derivative = 0;
     error = setpoint - error;
 
     integral += (error*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
     derivative = (error - previous_error) / .02;
+    previous_error = error;
     //this.rcw = P*error + I*integral + D*derivative;
     
-
     
-    final double kP = 0.1;
+    final double kP = Constants.tuneableKp.get();
+    final double kI = Constants.tuneableKi.get();
+    final double kD = Constants.tuneableKd.get();
     final double minOutput = 0;
     final double maxOutput = .6155;
     //maxoutpus was .6155
-    double turningValue = error * kP;
+    double turningValue = (error * kP) + (integral * kI) + (derivative * kD);
     
     
     // Constrain to min output
@@ -497,7 +502,7 @@ public class Drive extends Subsystem {
     }
     
     // set into drive with no ramp
-    setUnrampedDrive(throttle, turningValue, true);
+    setUnrampedDrive(throttle, turningValue*-1, true);
   }
 
   public synchronized void turnErrorAngle(double throttle, double error){

@@ -60,6 +60,7 @@ public class Robot extends TimedRobot {
   private final Arm mArm = Arm.getInstance();
   private final Grasper mGrasper = Grasper.getInstance();
   private final Climber mClimber = Climber.getInstance();
+  private double printCount = 0;
 
   // Autonomous Execution Thread
   private AutoModeExecutor mAutoModeExecutor = null;
@@ -158,7 +159,12 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     //System.out.println("target list call in robot 1");
     //mPhotonVision.getTargetList().forEach(System.out::println);\
-    System.out.println(mPhotonVision.getTargetID());
+    printCount += 1;
+    if(printCount == 100){
+      System.out.println(mPhotonVision.getTargetID());
+      printCount = 0;
+    }
+    
 
     //System.out.println("Fiducial ID:" + matcher.matches());
     
@@ -530,12 +536,14 @@ public class Robot extends TimedRobot {
       //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
       mDrive.driveErrorAngle(driveThrottle * .4, mPhotonVision.getTargetYaw());
     }
-    else if(wantsAutoTurn && true){
+    /* 
+    else if(wantsAutoTurn && mPhotonVision.getTargetYaw() != -999){
 
       // auto turn to best apriltag item
       //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
       mDrive.turnErrorAngle(driveThrottle, mPhotonVision.getTargetYaw());
     }
+    */
     else if(wantsAutoSteer){
       // wants auto steer, but invalid target info
       // TODO: vibrate controller so driver knows
