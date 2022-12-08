@@ -29,6 +29,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -52,6 +53,7 @@ public class Robot extends TimedRobot {
   private final Arm mArm = Arm.getInstance();
   private final Grasper mGrasper = Grasper.getInstance();
   private final Climber mClimber = Climber.getInstance();
+  private final CTRPigeon mPigeon2 = CTRPigeon.getInstance();
 
   // Autonomous Execution Thread
   private AutoModeExecutor mAutoModeExecutor = null;
@@ -163,6 +165,9 @@ public class Robot extends TimedRobot {
   
   //Updates SmartDashboard ;3
   private void updateRobotSmartDashboard() {
+    SmartDashboard.putNumber("pigeon yaw", mPigeon2.getPigeonYaw());
+    SmartDashboard.putNumber("pigeon Roll", mPigeon2.getPigeonRoll());
+    SmartDashboard.putNumber("pigeon Pitch", mPigeon2.getPigeonPitch());
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
     SmartDashboard.putData("power panel",Constants.Grasper.globelPowerDistribution);
     SmartDashboard.putNumber("accel X", accelerometer.getX());
