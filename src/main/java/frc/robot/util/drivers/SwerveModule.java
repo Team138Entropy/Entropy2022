@@ -30,12 +30,12 @@ public class SwerveModule  {
     private double mAngleKd;
     private SimpleMotorFeedforward mFeedforward;
 
-    public SwerveModule(int moduleNumber, int driveMotorID, int angleMotorID, int angleEncoderID) {
+    public SwerveModule(int moduleNumber, SwerveModuleConstants swerveConstants) {
         mModuleNumber = moduleNumber;
         mModuleName = "Module " + moduleNumber;
-        mDriveMotor = new EntropyTalonFX(driveMotorID);
-        mAngleMotor = new EntropyTalonFX(angleMotorID);
-        mAngleEncoder = new CANCoder(angleEncoderID);
+        mDriveMotor = new EntropyTalonFX(swerveConstants.driveMotorID);
+        mAngleMotor = new EntropyTalonFX(swerveConstants.angleMotorID);
+        mAngleEncoder = new CANCoder(swerveConstants.cancoderID);
     }
 
 

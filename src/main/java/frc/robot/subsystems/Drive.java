@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import frc.robot.Constants;
 import frc.robot.Kinematics;
 import frc.robot.Robot;
@@ -69,9 +70,9 @@ public class Drive extends Subsystem {
   private final DifferentialDriveKinematics mKinematics = 
     new DifferentialDriveKinematics(kTrackWidth);
 
-  // Swerve Based Odometry
+  // Swerve Based Systems
   public SwerveDriveOdometry mSwerveOdometry;
-  public SwerveModule[] mSwerveModlues; 
+  public SwerveModule[] mSwerveModules; 
 
   private Pose2d mStoredPose;
 
@@ -181,7 +182,12 @@ public class Drive extends Subsystem {
 
   // Initialize the Swerve Drive
   private void initSwerveDrive() {
-
+    mSwerveModules = new SwerveModule[] {
+      new SwerveModule(0, Constants.Drive.SwerveModules.Module0.SwerveModuleConstants()),
+      new SwerveModule(1, Constants.Drive.SwerveModules.Module1.SwerveModuleConstants()),
+      new SwerveModule(2, Constants.Drive.SwerveModules.Module2.SwerveModuleConstants()),
+      new SwerveModule(3, Constants.Drive.SwerveModules.Module3.SwerveModuleConstants())
+    };
   }
 
   private void configTalon(EntropyTalonFX talon) {

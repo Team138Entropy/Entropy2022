@@ -3,8 +3,10 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import frc.robot.util.geometry.*;
 import frc.robot.util.TuneableNumber;
+import frc.robot.util.drivers.SwerveModuleConstants;
 
 /**
  * Constants
@@ -30,6 +32,30 @@ public class Constants {
       public static final int leftSlave = 3;
       public static final int rightMaster = 2;
       public static final int rightSlave = 1;
+
+      /* Swerve Module IDs */
+      public static class SwerveModules {
+        /* Module 0 */
+        public static final int module0_Drive = 0;
+        public static final int module0_Rotation = 0;
+        public static final int module0_Cancoder = 0;
+
+        /* Module 1 */
+        public static final int module1_Drive = 0;
+        public static final int module1_Rotation = 0;
+        public static final int module1_Cancoder = 0;
+
+        /* Module 2 */
+        public static final int module2_Drive = 0;
+        public static final int module2_Rotation = 0;
+        public static final int module2_Cancoder = 0;
+
+        /* Module 3 */
+        public static final int module3_Drive = 0;
+        public static final int module3_Rotation = 0;
+        public static final int module3_Cancoder = 0;
+      }
+
     }
 
     public static class Shooter {
@@ -119,6 +145,62 @@ public class Constants {
       public static final double d = 0.015;
       public static final double acceptableError = 0.5;
     }
+
+    /* Swerve Modules */
+    public static class SwerveModules {
+      public static class Module0 {
+        public static double AngleOffset = 0;
+
+        public static SwerveModuleConstants SwerveModuleConstants() {
+          return new SwerveModuleConstants(
+            Talons.Drive.SwerveModules.module0_Drive,
+            Talons.Drive.SwerveModules.module0_Rotation,
+            Talons.Drive.SwerveModules.module0_Cancoder,
+            AngleOffset
+          );
+        }
+      }
+
+      public static class Module1 {
+        public static double AngleOffset = 0;
+
+        public static SwerveModuleConstants SwerveModuleConstants() {
+          return new SwerveModuleConstants(
+            Talons.Drive.SwerveModules.module1_Drive,
+            Talons.Drive.SwerveModules.module1_Rotation,
+            Talons.Drive.SwerveModules.module1_Cancoder,
+            AngleOffset
+          );
+        }
+      }
+
+      public static class Module2 {
+        public static double AngleOffset = 0;
+
+        public static SwerveModuleConstants SwerveModuleConstants() {
+          return new SwerveModuleConstants(
+            Talons.Drive.SwerveModules.module2_Drive,
+            Talons.Drive.SwerveModules.module2_Rotation,
+            Talons.Drive.SwerveModules.module2_Cancoder,
+            AngleOffset
+          );
+        }
+      }
+
+      public static class Module3 {
+        public static double AngleOffset = 0;
+
+        public static SwerveModuleConstants SwerveModuleConstants() {
+          return new SwerveModuleConstants(
+            Talons.Drive.SwerveModules.module3_Drive,
+            Talons.Drive.SwerveModules.module3_Rotation,
+            Talons.Drive.SwerveModules.module3_Cancoder,
+            AngleOffset
+          );
+        }
+      }
+    }
+
   }
 
   public static class Controllers {
