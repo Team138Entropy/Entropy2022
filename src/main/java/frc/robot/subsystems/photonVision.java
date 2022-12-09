@@ -99,7 +99,7 @@ public class photonVision{
   public synchronized double getTargetYaw(){
     PhotonTrackedTarget myTarget = null;
       var result = camera.getLatestResult();
-      double targetYaw = -999;
+      Double targetYaw = null;
 
       try{
         myTarget = result.getBestTarget();

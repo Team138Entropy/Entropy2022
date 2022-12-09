@@ -512,9 +512,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Valid Target", validTarget);
     SmartDashboard.putNumber("Target Angle", errorAngle);
 
-    double aprilTagErrorAngle = mPhotonVision.getTargetYaw(); 
+    Double aprilTagErrorAngle = mPhotonVision.getTargetYaw(); 
     
-    if(wantsAutoSteer && aprilTagErrorAngle < Math.abs(50)){
+    if(wantsAutoSteer && aprilTagErrorAngle != null){
       // autonomously steering robot towards cargo
       // todo: only allow drive in a certain direction? 
       //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
