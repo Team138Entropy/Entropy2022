@@ -58,6 +58,10 @@ public class TrajectoryLibrary {
      }
 
      // Get Path of PathPlanner Trajectory
+     // https://github.com/mjansen4857/pathplanner
+     // Allows placing event markers along the path which can be used to trigger other code
+     // Split into seperate paths
+     // Markers allow triggers
      public Path getPathPlannerTrajectoryPath(String TrajectoryName){
        return Filesystem.getDeployDirectory().toPath().resolve(trajectoryPathPlannerJSONFolder + "/" + TrajectoryName);
      }
