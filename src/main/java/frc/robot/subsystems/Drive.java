@@ -60,6 +60,8 @@ public class Drive extends Subsystem {
 
   public double previous_error = 0;
 
+  public double turningValue = 0.0;
+
   // FeedForwardController for Autonomous Use
   // ks = static gain
   // kv = velocity gain
@@ -339,6 +341,7 @@ public class Drive extends Subsystem {
     SmartDashboard.putNumber("encoder_left", getLeftEncoderPosition());
     SmartDashboard.putNumber("encoder_right", getRightEncoderPosition());
     SmartDashboard.putNumber("gyro", getHeading());
+    SmartDashboard.putNumber("PID output", turningValue);
   }
 
   // Zero Encoder of Each Falcon500
@@ -431,6 +434,7 @@ public class Drive extends Subsystem {
     SmartDashboard.putNumber("Previous Error", previous_error);
 
     error = setpoint - error; //Error = Target - Actual
+    System.out.println(error);
     integral += (error*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
     derivative = (error - previous_error) / .02;
     SmartDashboard.putNumber("Error", error);
@@ -439,18 +443,14 @@ public class Drive extends Subsystem {
     
     previous_error = error;  
     
-    final double kP = Constants.tuneableKp.get();
-    final double kI = Constants.tuneableKi.get();
-    final double kD = Constants.tuneableKd.get();
-
-    SmartDashboard.putNumber("kP from tuneable", kP);
-    SmartDashboard.putNumber("kI from tuneable", kI);
-    SmartDashboard.putNumber("kD from tuneable", kD);
+    final double kP = 0.2;
+    final double kI = 0.0;
+    final double kD = 0.0;
 
     final double minOutput = 0;
     final double maxOutput = .6155;
     //maxoutpus was .6155
-    double turningValue = kP * error + kI * integral + kD * derivative;
+    turningValue = kP * error + kI * integral + kD * derivative;
     
     
     // Constrain to min output
@@ -604,4 +604,6 @@ public class Drive extends Subsystem {
   public DifferentialDriveKinematics getKinematics() {
     return mKinematics;
   }
+
+
 }

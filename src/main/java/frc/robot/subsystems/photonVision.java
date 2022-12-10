@@ -8,6 +8,7 @@ import java.util.regex.*;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import org.opencv.core.Range;
+import org.opencv.photo.Photo;
 import org.photonvision.*;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
@@ -15,7 +16,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
-
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
@@ -31,7 +32,7 @@ public class photonVision{
 
   static PhotonCamera camera = new PhotonCamera("camera138");
 
-  public static boolean hasTarget = false;
+  public boolean hasTarget = false;
   
   //Transform2d pose = target.getCameraToTarget();
   //List<TargetCorner> corners = target.getCorners();
@@ -96,22 +97,32 @@ public class photonVision{
     return myIDString;
   }
 
+  public synchronized boolean seesTargets(){
+    var result = camera.getLatestResult();
+    boolean haveATarget = result.hasTargets();
+    
+    return haveATarget;
+  }
+
   public synchronized double getTargetYaw(){
+
+    double targetYaw = -999;
     PhotonTrackedTarget myTarget = null;
-      var result = camera.getLatestResult();
-      Double targetYaw = null;
 
-      try{
-        myTarget = result.getBestTarget();
-      }finally{}
-
-      if(myTarget != null){
-        targetYaw = myTarget.getYaw();
-        //System.out.println("target yaw:" + targetYaw);
-        hasTarget = true;
-      }
+    var result = camera.getLatestResult();
+    boolean seesTargets = seesTargets();
+    System.out.println("sees targets: " + seesTargets);
+    
+    if(seesTargets){
       
-      return targetYaw;
+      myTarget = result.getBestTarget();
+      targetYaw = myTarget.getYaw();
+    }
+    else{
+      targetYaw = -999;
+    }
+      
+    return targetYaw;
   }
   
   public synchronized List<PhotonTrackedTarget> getTargetList() {

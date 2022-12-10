@@ -495,9 +495,10 @@ public class Robot extends TimedRobot {
     if(precisionSteer) driveThrottle *= .3;
 
     boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
+    System.out.println("Wants auto steer: " + wantsAutoSteer);
     boolean wantsAutoTurn = mOperatorInterface.getAutoTurn();
-    wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed
-    SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
+    //wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed
+    //SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
 
     // Get Target within the allowed Threshold
     TargetInfo ti = mVisionManager.getSelectedTarget(Constants.Vision.kAllowedSecondsThreshold);
@@ -512,12 +513,15 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Valid Target", validTarget);
     SmartDashboard.putNumber("Target Angle", errorAngle);
 
-    Double aprilTagErrorAngle = mPhotonVision.getTargetYaw(); 
+    double aprilTagErrorAngle = mPhotonVision.getTargetYaw();
+    System.out.println(aprilTagErrorAngle);
     
-    if(wantsAutoSteer && aprilTagErrorAngle != null){
+    System.out.println("Before wantsAutoSteer");
+    if(wantsAutoSteer && mPhotonVision.seesTargets() ){
       // autonomously steering robot towards cargo
       // todo: only allow drive in a certain direction? 
       //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
+      System.out.println("Should be turning");
       mDrive.driveErrorAngle(driveThrottle * .4, aprilTagErrorAngle);
     }else if(wantsAutoSteer){
       // wants auto steer, but invalid target info
