@@ -116,6 +116,11 @@ public class SwerveModule  {
         return new SwerveModuleState(velocity, angle);
     }
 
+    public int getModuleNumber()
+    {
+        return mModuleNumber;
+    }
+
     public void updateSmartDashBoard()
     { 
         String BaseKey = "Swerve Modules/" + mModuleName + "/";

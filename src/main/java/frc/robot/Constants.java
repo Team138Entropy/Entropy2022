@@ -1,12 +1,12 @@
 package frc.robot;
-
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import frc.robot.util.geometry.*;
 import frc.robot.util.TuneableNumber;
 import frc.robot.util.drivers.SwerveModuleConstants;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 /**
  * Constants
@@ -26,6 +26,7 @@ public class Constants {
   }
 
   // Talon Can IDs
+  // CAN IDs
   public static class Talons {
     public static class Drive {
       public static final int leftMaster = 4;
@@ -67,7 +68,10 @@ public class Constants {
       public static final int shooterInput = 7;
       public static final int feeder1 = 9;
       public static final int feeder2 = 8;
+    }
 
+    public static class Sensors {
+      public static final int pigeonCan = 15;
     }
   }
 
@@ -231,6 +235,10 @@ public class Constants {
     public static final double driveWheelRadiusInches = driveWheelDiameterInches / 2.0;
     public static final double driveWheelTrackRadiusWidthMeters =
       driveWheelTrackWidthInches / 2.0 * 0.0254;
+
+    // Temp used for Swerve System
+    public static final double trackWidth = Units.inchesToMeters(20.75);
+    public static final double wheelBase = Units.inchesToMeters(20.75);
   
     // Offsets from our center point
     public static final Pose2d turretToLens =
@@ -302,7 +310,30 @@ public class Constants {
 
   public static class SwerveConstants { // constants related to swerve system
     public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
-    
+    public static final boolean invertYAxis = false;
+    public static final boolean invertXAxis = false;
+    public static final boolean invertRotateAxis = false;
+
+    /* Swerve Module Locations on the Robot */
+    public static final Translation2d[] swerveModuleLocations = {
+      new Translation2d(
+        RobotDimensions.wheelBase/2.0, RobotDimensions.trackWidth/2.0
+      ),
+      new Translation2d(
+        RobotDimensions.wheelBase/2.0, -RobotDimensions.trackWidth/2.0
+      ),
+      new Translation2d(
+        -RobotDimensions.wheelBase/2.0, RobotDimensions.trackWidth/2.0
+      ),
+      new Translation2d(
+        -RobotDimensions.wheelBase/2.0, -RobotDimensions.trackWidth/2.0
+      )
+    };
+
+    /* Swerve Drive Kinematics based on the module locations */
+    public static final SwerveDriveKinematics swerveKinematics = 
+            new SwerveDriveKinematics(swerveModuleLocations);
+
     /* Swerve Drive Motor PID Values */
     public static final double driveKP = 0.05;
     public static final double driveKI = 0.0;

@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import frc.robot.Constants;
 import frc.robot.Kinematics;
@@ -20,14 +21,16 @@ import frc.robot.Robot;
 import frc.robot.util.DriveSignal;
 import frc.robot.util.Util;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.util.geometry.Rotation2d;
 import frc.robot.util.geometry.Twist2d;
 import frc.robot.util.simulation.DriveSimSystem;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.util.drivers.CTREUnits;
 import frc.robot.util.drivers.EntropyTalonFX;
 import frc.robot.util.drivers.MotorConfigUtils;
+import frc.robot.util.drivers.Pigeon;
 import frc.robot.util.drivers.SwerveModule;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
@@ -48,7 +51,7 @@ public class Drive extends Subsystem {
   };
   
   // Default to Differential Drive
-  private DriveStyle mDriveStyle = DriveStyle.DIFFERENTIAL_DRIVE;
+  private final DriveStyle mDriveStyle = DriveStyle.DIFFERENTIAL_DRIVE;
 
   // Potential Drive Modes
   public enum DriveControlState {
@@ -62,6 +65,9 @@ public class Drive extends Subsystem {
 
   // The gyro sensor
   private final Gyro m_gyro = new ADXRS450_Gyro();
+
+  // pigeon sensor reference
+  public Pigeon mPigeon = Pigeon.getInstance();
 
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry mOdometry;
@@ -122,6 +128,19 @@ public class Drive extends Subsystem {
     }
 
     // Perform common initilization tasks
+    
+    // reset gyro to have position to zero
+    m_gyro.reset();
+
+    // Reset Odometrey 
+    mOdometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+
+    // Initialize Drive Simulation System
+    mDriveSimSystem = new DriveSimSystem();
+  }
+
+  // Initialize the Differential Drive
+  private void initDifferentialDrive() {
 
     // Create Talon References
     mLeftSlave = new EntropyTalonFX(Constants.Talons.Drive.leftMaster, Constants.Drive.Encoders.ticksPerMeters, 
@@ -136,7 +155,6 @@ public class Drive extends Subsystem {
     // These are so we can get encoders on test bed
     mLeftMasterSRX = new WPI_TalonSRX(Constants.Talons.Drive.leftSlave);
     mRightMasterSRX = new WPI_TalonSRX(Constants.Talons.Drive.rightSlave);
-
 
     // Configure Each TalonFX 
     MotorConfigUtils.setDefaultTalonFXConfig(mLeftSlave);
@@ -158,26 +176,12 @@ public class Drive extends Subsystem {
     // Configure slave Talons to follow masters
     mLeftSlave.follow(mLeftMaster);
     mRightSlave.follow(mRightMaster);
-    
-    // reset gyro to have position to zero
-    m_gyro.reset();
-
-    // Reset Odometrey 
-    mOdometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
 
     // Init Drive Memory to Zero
     intializeDriveMemory();
 
     // Default Robot into Open Loop
     setOpenLoop(DriveSignal.NEUTRAL);
-
-    // Initialize Drive Simulation System
-    mDriveSimSystem = new DriveSimSystem();
-  }
-
-  // Initialize the Differential Drive
-  private void initDifferentialDrive() {
-
   }
 
   // Initialize the Swerve Drive
@@ -262,6 +266,7 @@ public class Drive extends Subsystem {
     DriveSignal s = getCheesyDrive(throttle, wheel, quickTurn);
     setOpenLoop(s);    
   }
+  
   // Original Cheesy Drive Equation
   // Depcreated for memory system
   public DriveSignal getCheesyDrive(double throttle, double wheel, boolean quickTurn) {
@@ -376,11 +381,59 @@ public class Drive extends Subsystem {
     setOpenLoop(Kinematics.inverseKinematics(new Twist2d(DY, 0.0, dtheta)));
   }
 
+
+  /* Swerve Drive */
+  public void setSwerveDrive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+    boolean mIsSnapping = false;
+    boolean mIsLocked = false;
+
+    // Determine Swerve Module States
+    // SwerveModuleState(MetersPerSecond, Angle)
+    SwerveModuleState[] swerveModuleStates = null;
+
+    // Lock Drive Train in current spot
+    if(mIsLocked)
+    {    
+      swerveModuleStates = new SwerveModuleState[]{
+        new SwerveModuleState(0.1, Rotation2d.fromDegrees(45)),
+        new SwerveModuleState(0.1, Rotation2d.fromDegrees(315)),
+        new SwerveModuleState(0.1, Rotation2d.fromDegrees(135)),
+        new SwerveModuleState(0.1, Rotation2d.fromDegrees(225))
+      };
+    }
+    else {
+      // Normal Mode
+      // Use Swerve Kinematics to determine the wheel speeds
+      swerveModuleStates =
+      Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(
+          fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                              translation.getX(), 
+                              translation.getY(), 
+                              rotation, 
+                              mPigeon.getYaw()
+                          )
+                          : new ChassisSpeeds(
+                              translation.getX(), 
+                              translation.getY(), 
+                              rotation)
+                          );
+    }
+    
+    // Desaturate wheel speeds
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveConstants.maxSpeed);
+
+    // set the desired state into each swerve module
+    for (SwerveModule mod : mSwerveModules) {
+      mod.setDesiredState(swerveModuleStates[mod.getModuleNumber()], isOpenLoop);
+    }
+  }
+
+
+
   // periodic update 
   public void periodic() {
 
   }
-
 
   // Test all Sensors in the Subsystem
   public void checkSubsystem() {
@@ -498,7 +551,7 @@ public class Drive extends Subsystem {
     setUnrampedDrive(throttle, turningValue, true);
   }
 
-  /** Return the last Drive Signal */
+  /** Return the last Drive Signal for Differential Drive */
   public synchronized DriveSignal getLastDriveSignal()
   {
     return previousDriveSignals[0];
@@ -507,6 +560,16 @@ public class Drive extends Subsystem {
   /** Update Drivesim */
   public synchronized void updateDriveSim()
   {
+    switch(mDriveStyle)
+    {
+      case DIFFERENTIAL_DRIVE:
+       // initDifferentialDrive();
+      break;
+      case SWERVE_DRIVE:
+       // initSwerveDrive();
+      break;
+    }
+
     mDriveSimSystem.updateDrive(getLastDriveSignal());
   }
 

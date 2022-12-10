@@ -1,5 +1,7 @@
 package frc.robot.OI;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
 import frc.robot.OI.XboxController.Axis;
 import frc.robot.OI.XboxController.Button;
@@ -52,6 +54,41 @@ public class OperatorInterface {
     
     public double getDriveTurn() {
         return mDriverController.getJoystick(Side.RIGHT, Axis.X);
+    }
+
+    /* Swerve Drive Controls */
+    public Translation2d getSwerveTranslation() {
+        // joystick inputs
+        double forwardAxis = mDriverController.getJoystick(Side.LEFT, Axis.Y);
+        double strafeAxis = mDriverController.getJoystick(Side.LEFT, Axis.X);
+
+        forwardAxis = Constants.SwerveConstants.invertYAxis ? forwardAxis : -forwardAxis;
+        strafeAxis = Constants.SwerveConstants.invertXAxis ? strafeAxis :-strafeAxis;
+
+        Translation2d tAxes = new Translation2d(forwardAxis, strafeAxis);
+
+        if (Math.abs(tAxes.getNorm()) < Constants.Controllers.joystickDeadband) {
+            return new Translation2d();
+        } else {
+            Rotation2d deadband_direction = new Rotation2d(tAxes.getX(), tAxes.getY());
+            Translation2d deadband_vector = new Translation2d(Constants.Controllers.joystickDeadband, deadband_direction);
+
+            double scaled_x = tAxes.getX() - (deadband_vector.getX()) / (1 - deadband_vector.getX());
+            double scaled_y = tAxes.getY() - (deadband_vector.getY()) / (1 - deadband_vector.getY());
+
+            return new Translation2d(scaled_x, scaled_y).times(Constants.SwerveConstants.maxSpeed);
+        }
+    }
+
+    public double getSwerveRotation() {
+        double rotAxis = mDriverController.getJoystick(Side.RIGHT, Axis.X);
+        rotAxis = Constants.SwerveConstants.invertRotateAxis ? rotAxis : -rotAxis;
+
+        if (Math.abs(rotAxis) < Constants.Controllers.joystickDeadband) {
+            return 0.0;
+        } else {
+            return Constants.SwerveConstants.maxAngularVelocity * (rotAxis - (Math.signum(rotAxis) * Constants.Controllers.joystickDeadband)) / (1 - Constants.Controllers.joystickDeadband);
+        }
     }
 
     public boolean getDriveAutoSteer(){

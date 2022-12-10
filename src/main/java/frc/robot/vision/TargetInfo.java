@@ -60,6 +60,8 @@ public class TargetInfo {
 
     // angle to target
     public double getErrorAngle(){
+        return 0;
+        /*
             // Compensate for camera pitch
         Translation2d xz_plane_translation =
             new Translation2d(mX, mZ).rotateBy(Constants.Vision.kCameraHorizontalPlaneToLens);
@@ -86,6 +88,7 @@ public class TargetInfo {
         // 5 inches estimated offset
         return  getOffsetAngle(angle.getDegrees(), mDistance, .416);
         //return angle.getDegrees();
+        */
     }
 
     public double getOffsetAngle(double errorAngleDegrees, double distance, double cameraHorizontalOffset){
