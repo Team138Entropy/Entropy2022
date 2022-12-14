@@ -22,7 +22,7 @@ import frc.robot.util.DriveSignal;
 import frc.robot.util.Util;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.geometry.Twist2d;
-import frc.robot.util.simulation.DriveSimSystem;
+import frc.robot.util.simulation.DiffDriveSimSystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -101,7 +101,7 @@ public class Drive extends Subsystem {
   private final PIDController mRightPIDController = new PIDController(1, 0, 0);
 
   // Drivetrain Simulation 
-  DriveSimSystem mDriveSimSystem;
+  DiffDriveSimSystem mDriveSimSystem;
 
   public static synchronized Drive getInstance() {
     if (mInstance == null) {
@@ -136,7 +136,7 @@ public class Drive extends Subsystem {
     mOdometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
 
     // Initialize Drive Simulation System
-    mDriveSimSystem = new DriveSimSystem();
+    mDriveSimSystem = new DiffDriveSimSystem();
   }
 
   // Initialize the Differential Drive
@@ -563,14 +563,13 @@ public class Drive extends Subsystem {
     switch(mDriveStyle)
     {
       case DIFFERENTIAL_DRIVE:
-       // initDifferentialDrive();
+        mDriveSimSystem.updateDrive(getLastDriveSignal());
+
       break;
       case SWERVE_DRIVE:
        // initSwerveDrive();
       break;
     }
-
-    mDriveSimSystem.updateDrive(getLastDriveSignal());
   }
 
   /** Updates the field-relative position. */

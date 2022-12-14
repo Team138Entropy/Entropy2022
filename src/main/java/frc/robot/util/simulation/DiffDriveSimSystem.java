@@ -18,7 +18,7 @@ import frc.robot.util.DriveSignal;
  * All Sim objects are allowed to remain in codebase 
  * when deployed to the RoboRIo
  */
-public class DriveSimSystem {
+public class DiffDriveSimSystem {
 
     // Differential Drive Sim System
     DifferentialDrivetrainSim mDriveSim;
@@ -31,7 +31,7 @@ public class DriveSimSystem {
     private final AnalogGyroSim mGyroSim;
 
     /* Drive Sim Constructor */
-    public DriveSimSystem()
+    public DiffDriveSimSystem()
     {
         mLeftEncoderSim = null;
         mRightEncoderSim = null;
@@ -42,7 +42,7 @@ public class DriveSimSystem {
     }
 
     /* Drive Sim Constructor */
-    public DriveSimSystem(AnalogGyro gyro, 
+    public DiffDriveSimSystem(AnalogGyro gyro, 
                 Encoder leftEncoder, Encoder rightEncoder)
     {
         // Set References to real encoders
