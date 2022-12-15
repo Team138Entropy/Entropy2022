@@ -426,7 +426,7 @@ public class Drive extends Subsystem {
    */
   public synchronized void driveErrorAngle(double throttle, double error){
     //1st value is wheel speed, 3rd is rotation
-    var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(.1, 0.0, 0));
+    var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(0, 0.0, 0));
     autoAimSpeed(wheelSpeeds);
 
     double setpoint = 0;
@@ -479,8 +479,12 @@ public class Drive extends Subsystem {
     // set into drive with no ramp
     // Multiply turningValue by -1 to not spin the opposite direction
     //setUnrampedDrive(throttle, turningValue*-1, true);
+    if(Math.abs(turningValue) > .15){
+      setDrive(throttle, turningValue*-1, true);
+    }else{
+      setDrive(throttle, 0, true);
+    }
     
-    setDrive(throttle, turningValue*-1, true);
     
     
   }
