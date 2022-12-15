@@ -49,6 +49,8 @@ public class Drive extends Subsystem {
   // The gyro sensor
   private final Gyro m_gyro = new ADXRS450_Gyro();
 
+  private final photonVision mPhotonVision = photonVision.getInstance();
+
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry mOdometry;
 
@@ -443,16 +445,22 @@ public class Drive extends Subsystem {
     
     previous_error = error;  
     
-    final double kP = 0.2;
+    /*
+    final double kP = 0.02;
     final double kI = 0.0;
-    final double kD = 0.0;
-
+    final double kD = 5;
+    */
+    final double kP = Constants.tuneableKp.get();
+    final double kI = Constants.tuneableKi.get();
+    final double kD = Constants.tuneableKd.get();
+    /*
     final double minOutput = 0;
     final double maxOutput = .6155;
     //maxoutpus was .6155
+    */
     turningValue = kP * error + kI * integral + kD * derivative;
     
-    
+    /*
     // Constrain to min output
     if(turningValue < minOutput && turningValue >= 0){
       turningValue = minOutput;
@@ -466,10 +474,15 @@ public class Drive extends Subsystem {
     }else if(turningValue < -maxOutput){
       turningValue = -maxOutput;
     }
+    */
     
     // set into drive with no ramp
     // Multiply turningValue by -1 to not spin the opposite direction
-    setUnrampedDrive(throttle, turningValue*-1, true);
+    //setUnrampedDrive(throttle, turningValue*-1, true);
+    
+    setDrive(throttle, turningValue*-1, true);
+    
+    
   }
 
   public synchronized void turnErrorAngle(double throttle, double error){

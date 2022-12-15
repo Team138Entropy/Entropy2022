@@ -106,7 +106,7 @@ public class photonVision{
 
   public synchronized double getTargetYaw(){
 
-    double targetYaw = -999;
+    double targetYaw = Double.NaN;
     PhotonTrackedTarget myTarget = null;
 
     var result = camera.getLatestResult();
@@ -119,7 +119,8 @@ public class photonVision{
       targetYaw = myTarget.getYaw();
     }
     else{
-      targetYaw = -999;
+      targetYaw = 0;
+      
     }
       
     return targetYaw;

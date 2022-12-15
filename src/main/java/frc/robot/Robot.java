@@ -517,15 +517,16 @@ public class Robot extends TimedRobot {
     System.out.println(aprilTagErrorAngle);
     
     System.out.println("Before wantsAutoSteer");
-    if(wantsAutoSteer && mPhotonVision.seesTargets() ){
+    if(wantsAutoSteer && mPhotonVision.seesTargets() && Math.abs(aprilTagErrorAngle) > 1){
+      
+      System.out.println("Should be turning");
+      mDrive.driveErrorAngle(driveThrottle * .4, aprilTagErrorAngle);
+      
       // autonomously steering robot towards cargo
       // todo: only allow drive in a certain direction? 
       //mDrive.autoSteer(driveThrottle * .4, ti.getErrorAngle());
-      System.out.println("Should be turning");
-      mDrive.driveErrorAngle(driveThrottle * .4, aprilTagErrorAngle);
-    }else if(wantsAutoSteer){
-      // wants auto steer, but invalid target info
-      // TODO: vibrate controller so driver knows
+      
+
     }else{
       //manual drive
       mDrive.setDrive(driveThrottle, driveTurn, false);
