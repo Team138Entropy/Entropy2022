@@ -106,10 +106,12 @@ public class EntropyTalonFX extends TalonFX {
     }
 
     public void updateSmartdashboard()
-    {
+    {    
        SmartDashboard.putNumber(deviceInfo + "/Voltage", getBusVoltage());
        SmartDashboard.putNumber(deviceInfo + "/Current", getSupplyCurrent()); 
        SmartDashboard.putBoolean(deviceInfo + "/Inverted", getInverted()); 
-
+       SmartDashboard.putNumber(deviceInfo + "/ClosedLoopTarget", getClosedLoopTarget());
+       SmartDashboard.putNumber(deviceInfo + "/ClosedLoopTarget", getClosedLoopError());
+       SmartDashboard.putNumber(deviceInfo + "/MotorOutputPercent", getMotorOutputPercent());
     }
 }

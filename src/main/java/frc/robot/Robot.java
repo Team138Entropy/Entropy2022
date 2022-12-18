@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
+import edu.wpi.first.wpilibj.DataLogManager;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -69,6 +69,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    // Start Datalog Manager
+    DataLogManager.start();
+
+    // Record both DS control and joystick data
+    DriverStation.startDataLog(DataLogManager.getLog());    
+
     // populate autonomous list
     populateAutonomousModes();
 

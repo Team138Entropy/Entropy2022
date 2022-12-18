@@ -2,6 +2,7 @@ package frc.robot.auto;
 
 import frc.robot.auto.modes.AutoModeBase;
 import frc.robot.util.CrashTrackingRunnable;
+import frc.robot.util.Logger;
 
 
 
@@ -43,7 +44,7 @@ public class AutoModeExecutor {
     }
 
     public void start() {
-        System.out.println("AutoModeExecutor::Start");
+        Logger.log("AutoModeExecutor", "Start");
         if (mThread != null) {
             mThread.start();
         }
@@ -54,7 +55,7 @@ public class AutoModeExecutor {
     }
 
     public void reset() {
-        System.out.println("AutoModeExecutor::Reset");
+        Logger.log("AutoModeExecutor", "Reset");
         if (isStarted()) {
             System.out.println("AutoModeExecutor::Reset::Stop!");
             stop();
@@ -64,7 +65,7 @@ public class AutoModeExecutor {
     }
 
     public void stop() {
-        System.out.println("AutoModeExecutor::Stop");
+        Logger.log("AutoModeExecutor", "Stop");
         if (mAutoMode != null) {
             mAutoMode.stop();
         }
@@ -77,7 +78,7 @@ public class AutoModeExecutor {
     }
 
     public boolean isInterrupted() {
-        System.out.println("AutoModeExecutor::isInterrupted");
+        Logger.log("AutoModeExecutor", "isInterrupted");
         if (mAutoMode == null) {
             return false;
         }
