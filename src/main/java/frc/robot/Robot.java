@@ -154,10 +154,7 @@ public class Robot extends TimedRobot {
     //System.out.println("target list call in robot 1");
     //mPhotonVision.getTargetList().forEach(System.out::println);\
     printCount += 1;
-    if(printCount == 100){
-      System.out.println(mPhotonVision.getTargetID());
-      printCount = 0;
-    }
+    
     
     updateRobotSmartDashboard();
     NetworkTable table = inst.getTable("SmartDashboard");
@@ -495,7 +492,7 @@ public class Robot extends TimedRobot {
     if(precisionSteer) driveThrottle *= .3;
 
     boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
-    System.out.println("Wants auto steer: " + wantsAutoSteer);
+    //System.out.println("Wants auto steer: " + wantsAutoSteer);
     boolean wantsAutoTurn = mOperatorInterface.getAutoTurn();
     //wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed
     //SmartDashboard.putBoolean("Autosteer", wantsAutoSteer);
@@ -514,12 +511,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Target Angle", errorAngle);
 
     double aprilTagErrorAngle = mPhotonVision.getTargetYaw();
-    System.out.println(aprilTagErrorAngle);
+    //System.out.println(aprilTagErrorAngle);
     
-    System.out.println("Before wantsAutoSteer");
+    //System.out.println("Before wantsAutoSteer");
     if(wantsAutoSteer && mPhotonVision.seesTargets() && Math.abs(aprilTagErrorAngle) > 1){
       
-      System.out.println("Should be turning");
+      //System.out.println("Should be turning");
       mDrive.driveErrorAngle(driveThrottle * .4, aprilTagErrorAngle);
       
       // autonomously steering robot towards cargo

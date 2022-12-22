@@ -436,7 +436,7 @@ public class Drive extends Subsystem {
     SmartDashboard.putNumber("Previous Error", previous_error);
 
     error = setpoint - error; //Error = Target - Actual
-    System.out.println(error);
+    //System.out.println(error);
     integral += (error*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
     derivative = (error - previous_error) / .02;
     SmartDashboard.putNumber("Error", error);
@@ -445,14 +445,15 @@ public class Drive extends Subsystem {
     
     previous_error = error;  
     
-    /*
+    
     final double kP = 0.02;
     final double kI = 0.0;
-    final double kD = 5;
-    */
+    final double kD = 3.5;
+    /*
     final double kP = Constants.tuneableKp.get();
     final double kI = Constants.tuneableKi.get();
     final double kD = Constants.tuneableKd.get();
+    */
     /*
     final double minOutput = 0;
     final double maxOutput = .6155;
@@ -499,7 +500,7 @@ public class Drive extends Subsystem {
     final double minOutput = 0;
     final double maxOutput = .6155;
 
-    System.out.println(error);
+    //System.out.println(error);
 
     double lastError = 0;
     double integral = 0;

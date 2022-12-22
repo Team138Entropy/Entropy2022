@@ -81,7 +81,7 @@ public class photonVision{
     Matcher matcher = pattern.matcher(stringTargetList);
     while (matcher.find()){
       myIDString =  matcher.group(1);
-      System.out.println(myIDString);
+      //System.out.println(myIDString);
     }
     /*
     try{
@@ -111,7 +111,7 @@ public class photonVision{
 
     var result = camera.getLatestResult();
     boolean seesTargets = seesTargets();
-    System.out.println("sees targets: " + seesTargets);
+    //System.out.println("sees targets: " + seesTargets);
     
     if(seesTargets){
       
@@ -143,14 +143,14 @@ public class photonVision{
     /*
     Largest, Smallest, Highest (towards the top of the image) , Lowest , Rightmost (Best target on the right, worst on left), Leftmost, Centermost
     */
-    System.out.println("calling bestTarget");
+    //System.out.println("calling bestTarget");
     PhotonPipelineResult pipeLine = getPipeLine();
     return pipeLine.getBestTarget();
   }
 
   public synchronized double targetDist(){
     try{
-      System.out.println("calling targetDist");
+      //System.out.println("calling targetDist");
       //TODO input camera values
       double CAMERA_HEIGHT_METERS = 1;
       double TARGET_HEIGHT_METERS = 0.5;
@@ -175,11 +175,11 @@ public class photonVision{
                     CAMERA_PITCH_RADIANS,
                     Units.degreesToRadians(result.getBestTarget().getPitch()));
                     
-                    System.out.println("Range:"+range);
+                    //System.out.println("Range:"+range);
                     return range;}
         
         else{
-          System.out.println("returning 0.0");
+          //System.out.println("returning 0.0");
           return 0.0;
         }
         
