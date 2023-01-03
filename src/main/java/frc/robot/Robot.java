@@ -24,6 +24,10 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -77,6 +81,8 @@ public class Robot extends TimedRobot {
   public Boolean selectedColor = false;
 
   public int ballColor = 0;
+
+  public CANSparkMax spark = new CANSparkMax(9,MotorType.kBrushless);
 
   
   
@@ -171,6 +177,7 @@ public class Robot extends TimedRobot {
   
   //Updates SmartDashboard ;3
   private void updateRobotSmartDashboard() {
+    SmartDashboard.putNumber("encoder", spark.getEncoder().getPosition());
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
     SmartDashboard.putData("power panel",Constants.Grasper.globelPowerDistribution);
     SmartDashboard.putNumber("accel X", accelerometer.getX());
@@ -290,117 +297,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    // Zero Sensors (left joystick press)
-    if(mOperatorInterface.getTestZeroPress()){
-      System.out.println("Zero Pressed!");
-      mSubsystemManager.zeroSensors();
-    }
-    
-    // Climber and Jogging Mode Changes
-    // Start and Select of the Operator Controller
-    if(mOperatorInterface.getSelectButtonPress()){
-      mTest_ArmJogging = !mTest_ArmJogging;
-    }
-    if(mOperatorInterface.getSwitchModePress()){
-      mTest_ClimberJogging = !mTest_ClimberJogging;
-    }
-    if(mOperatorInterface.getSwitchExtensionMode()){
-      mTest_ExtensionJogging = !mTest_ExtensionJogging;
-    }
-    
-    // Arm is in Jogging Mode or Position Mode
-    if(mTest_ArmJogging){
-      // Arm Jogging
-      SmartDashboard.putString("Arm Test Mode", "Jogging");
-      if (mOperatorInterface.getArmJogUp()) {
-        mArm.jogRotateUp();
-        mIsShoulderJogging = true;
-      } else if (mOperatorInterface.getArmJogDown()) {
-        mArm.jogRotateDown();
-        mIsShoulderJogging = true;
-      } else {
-        mArm.jogStop();
-      }
-    }else{
-      // Arm Position
-      SmartDashboard.putString("Arm Test Mode", "Position");
-      double target = mArm.getRotationTarget();
-      target = target + (mOperatorInterface.getArmRotateUp() ? 5 : 0);
-      target = target - (mOperatorInterface.getArmRotateDown() ? 5 : 0);
-      mArm.rotateToPosition(target);
-    }
-    
-
-    // Climber is in Jogging Mode or Position Mode
-    if(mTest_ClimberJogging){
-      // Climb Jogging 
-      SmartDashboard.putString("Climber Test Mode", "Jogging");
-        
-      // climber test controls
-      if(mOperatorInterface.getClimberTestExtend()){
-        System.out.println("climber extend");
-        //extend the climber
-        mClimber.TestExtend();
-      }else if(mOperatorInterface.getClimberTestRetract()){
-        System.out.println("climber retract");
-        // retract the climber
-        mClimber.TestRetract();
-      }else{
-        // stop the climber
-        mClimber.TestStop();
-      }
-    }else{
-      // Climb Position
-      SmartDashboard.putString("Climber Test Mode", "Position");
-      
-      if (mOperatorInterface.getClimberTest()){
-        System.out.println("Climber: Go to " + Climber.ClimberTarget.LOW.ticks);
-        mClimber.setPosition(50);
-      }
-      if (mOperatorInterface.getClimberTest2()){
-        System.out.println("Climber: Go to " + Climber.ClimberTarget.ABOVE_BAR.ticks);
-        mClimber.setPosition(Climber.ClimberTarget.ABOVE_BAR.ticks);
-
-
-      }
+    spark.set(.05);
     }
 
-    // arm extension test controls
-
-    if(mTest_ExtensionJogging){
-      if (mOperatorInterface.getArmExtendManual()) {
-        mArm.extend();
-        mIsForearmJogging = true;
-      } else if (mOperatorInterface.getArmRetractManual()) {
-        mArm.retract();
-        mIsForearmJogging = true;
-      } else {
-        mArm.stopForearm();
-      }
-    }else{
-      extensionTargetPosition = mArm.getExtensionPosition();
-      if(mOperatorInterface.getArmExtendPress()){
-        extensionTargetPosition += 10000;
-      }else if(mOperatorInterface.getArmRetractPress()){
-        extensionTargetPosition -= 10000;
-      }
-      SmartDashboard.putNumber("ExtensionTargetPosTest", extensionTargetPosition);
-      mArm.extendToPosition(extensionTargetPosition);
-    }
-
-    // grapser test controls
-    if (mOperatorInterface.getArmEject()) {
-      mGrasper.eject();
-    } else if (mOperatorInterface.getGrasperIntakeManual()) {
-      mGrasper.intake();
-    } else {
-      //mGrasper.stop();
-    }
-    mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
-
-    // Run Drive Code! Allow Precision Steer and Auto Aim
-    DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
-  }
 
   private ArmTarget lastTarget = ArmTarget.HOME;
 
