@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 import java.util.regex.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -44,32 +45,23 @@ public class photonVision{
     return mInstance;
   }
 
-  public static synchronized void findingTargets(){
-
-    try{
-      PhotonPipelineResult result = camera.getLatestResult();
-      PhotonTrackedTarget target = result.getBestTarget();
-
-      // Get information from target.
-      double yaw = target.getYaw();
-      double pitch = target.getPitch();
-      double area = target.getArea();
-      double skew = target.getSkew();
-
-    }
-    finally{    
-    }
-  }
-
   public synchronized PhotonPipelineResult getPipeLine() {
+    PhotonPipelineResult result = null;
     try{
-      //System.out.println("calling getPipeLine");
-      return camera.getLatestResult();
+      result = camera.getLatestResult();
     }finally{
 
     }
-    
+    return result;
   }
+
+  public synchronized List<String> getTargetIds() {
+    List<String> targetIDs = new Vector<>();
+
+
+    return targetIDs;
+  }
+
 
   public synchronized String getTargetID() {
     //System.out.println("calling getTargetID");
@@ -108,6 +100,7 @@ public class photonVision{
 
     double targetYaw = Double.NaN;
     PhotonTrackedTarget myTarget = null;
+
 
     var result = camera.getLatestResult();
     boolean seesTargets = seesTargets();
