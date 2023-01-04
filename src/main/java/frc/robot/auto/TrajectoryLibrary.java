@@ -12,6 +12,11 @@ import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.Filesystem;
 
 import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+
 import java.util.Collections;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -50,6 +55,10 @@ public class TrajectoryLibrary {
     
      public Path getTrajectoryPathFolder(){
        return Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSONFolder);
+     }
+
+     public List<PathPlannerTrajectory> getPathPlannerGroup(String pathGroupName, double speedMS, double accelerationMMS){
+      return PathPlanner.loadPathGroup(pathGroupName, new PathConstraints(speedMS, accelerationMMS));
      }
     
      // Get Path of Trajectory File

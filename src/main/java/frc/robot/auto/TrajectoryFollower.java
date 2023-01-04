@@ -16,11 +16,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.subsystems.Drive;
 
+import java.nio.file.Path;
 import java.util.List;
+
+import com.pathplanner.lib.PathPlannerTrajectory;
 
 // Singelton Instance of a Trajectory Follower
 // This drives the drivebase
 public class TrajectoryFollower {
+
     private static TrajectoryFollower mInstance;
 
     // Trajectory to Drive
@@ -66,6 +70,11 @@ public class TrajectoryFollower {
         // Push the trajectory to Field2d.
         mField.getObject("traj").setTrajectory(mTrajectory);
     }
+
+    public void setPath(PathPlannerTrajectory path){
+        mTrajectory = path;
+    }
+    
     
     private void init(){
         System.out.println("TrajectorFollower::Init");
