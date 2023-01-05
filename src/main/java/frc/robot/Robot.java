@@ -167,6 +167,7 @@ public class Robot extends TimedRobot {
     } 
     ballColorEntry.setBoolean(selectedColor);
     mVisionManager.setSelectedTarget(selectedColor ? Constants.TargetType.CAMERA_1_RED_CARGO : Constants.TargetType.CAMERA_1_BLUE_CARGO);
+    mPhotonVision.getTargetList();
   }
   
   //Updates SmartDashboard ;3

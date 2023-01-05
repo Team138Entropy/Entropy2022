@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
 import java.lang.annotation.Target;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.regex.*;
+
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -125,10 +128,35 @@ public class photonVision{
       PhotonPipelineResult pipeLine = getPipeLine();
       List<PhotonTrackedTarget> targets = pipeLine.getTargets();
 
+      java.util.Iterator<PhotonTrackedTarget> it = targets.iterator();
+
+      while(it.hasNext()){
+        PhotonTrackedTarget activeTarget = it.next();
+        int id = activeTarget.getFiducialId();
+        //if(id == 13){
+            System.out.println(id);
+          try{
+            double yaw = activeTarget.getYaw();
+            System.out.println(yaw);
+          }catch(Exception e){
+            System.out.println("yaw broke for" + id);
+          }
+        //}
+        
+        
+        //org.photonvision.targeting.PhotonTrackedTarget
+        //System.out.println("item: " + it.next());
+        //PhotonTrackedTarget thistarget = it.next();
+    
+
+      }
+
       //System.out.println(targets);
       return targets;
     }finally{}
   }
+
+  
 
 
   public synchronized  PhotonTrackedTarget bestTarget(){
