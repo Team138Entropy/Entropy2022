@@ -99,7 +99,7 @@ public class photonVision{
     return haveATarget;
   }
 
-  public synchronized double getTargetYaw(){
+  public synchronized double getBestTargetYaw(){
 
     double targetYaw = Double.NaN;
     PhotonTrackedTarget myTarget = null;
@@ -121,6 +121,30 @@ public class photonVision{
       
     return targetYaw;
   }
+
+  public synchronized Double getRedTargetYaw(){
+    List<PhotonTrackedTarget> targets = getTargetList();
+    java.util.Iterator<PhotonTrackedTarget> it = targets.iterator();
+    while(it.hasNext()){
+      PhotonTrackedTarget activeTarget = it.next();
+      if(activeTarget.getFiducialId() == 12){
+        return activeTarget.getYaw();
+      }  
+    }
+    return null;
+  }
+
+  public synchronized Double getBlueTargetYaw(){
+    List<PhotonTrackedTarget> targets = getTargetList();
+    java.util.Iterator<PhotonTrackedTarget> it = targets.iterator();
+    while(it.hasNext()){
+      PhotonTrackedTarget activeTarget = it.next();
+      if(activeTarget.getFiducialId() == 13){
+        return activeTarget.getYaw();
+      }  
+    }
+    return null;
+  }
   
   public synchronized List<PhotonTrackedTarget> getTargetList() {
     try{
@@ -129,7 +153,7 @@ public class photonVision{
       List<PhotonTrackedTarget> targets = pipeLine.getTargets();
 
       java.util.Iterator<PhotonTrackedTarget> it = targets.iterator();
-
+      /*
       while(it.hasNext()){
         PhotonTrackedTarget activeTarget = it.next();
         int id = activeTarget.getFiducialId();
@@ -144,12 +168,13 @@ public class photonVision{
         //}
         
         
+        
         //org.photonvision.targeting.PhotonTrackedTarget
         //System.out.println("item: " + it.next());
         //PhotonTrackedTarget thistarget = it.next();
     
 
-      }
+      }*/
 
       //System.out.println(targets);
       return targets;

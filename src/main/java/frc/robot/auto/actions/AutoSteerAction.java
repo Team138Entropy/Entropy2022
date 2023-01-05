@@ -52,7 +52,7 @@ public class AutoSteerAction implements Action {
         
         double errorAngle = 0.0;
         try{
-          errorAngle = mPhotonVision.getTargetYaw();
+          errorAngle = mPhotonVision.getBestTargetYaw();
         }finally{}
         /*
         if (ti != null) {

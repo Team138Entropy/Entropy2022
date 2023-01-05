@@ -151,6 +151,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    System.out.println(mPhotonVision.getRedTargetYaw());
+    System.out.println(mPhotonVision.getBlueTargetYaw());
     //System.out.println("target list call in robot 1");
     //mPhotonVision.getTargetList().forEach(System.out::println);\
     printCount += 1;
@@ -183,7 +185,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("drive turn", mOperatorInterface.getDriveTurn());
     SmartDashboard.putBoolean("ball color", getBallColor());
     SmartDashboard.putNumber("GrasperCurrent", Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
-    SmartDashboard.putNumber("target yaw", mPhotonVision.getTargetYaw());
+    SmartDashboard.putNumber("target yaw", mPhotonVision.getBestTargetYaw());
     mSubsystemManager.updateSmartdashboard();
   }
 
@@ -511,7 +513,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Valid Target", validTarget);
     SmartDashboard.putNumber("Target Angle", errorAngle);
 
-    double aprilTagErrorAngle = mPhotonVision.getTargetYaw();
+    double aprilTagErrorAngle = mPhotonVision.getBestTargetYaw();
     //System.out.println(aprilTagErrorAngle);
     
     //System.out.println("Before wantsAutoSteer");
