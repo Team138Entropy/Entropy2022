@@ -77,6 +77,14 @@ public class OperatorInterface {
         return mDriverController.getButton(Button.A);
     }
 
+    public boolean getAutoTurnRed(){
+        return mDriverController.getButton(Button.B);
+    }
+
+    public boolean getAutoTurnBlue(){
+        return mDriverController.getButton(Button.X);
+    }
+
     /**
      * Returns a target arm position based on operator input. Returns null if there is no input.
      * @return

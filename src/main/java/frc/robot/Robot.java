@@ -55,6 +55,7 @@ public class Robot extends TimedRobot {
   private final Grasper mGrasper = Grasper.getInstance();
   private final Climber mClimber = Climber.getInstance();
   private double printCount = 0;
+  private double aprilTagErrorAngle = 0;
 
   // Autonomous Execution Thread
   private AutoModeExecutor mAutoModeExecutor = null;
@@ -151,8 +152,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    System.out.println(mPhotonVision.getRedTargetYaw());
-    System.out.println(mPhotonVision.getBlueTargetYaw());
+    //System.out.println(mPhotonVision.getTargetYaw(12));
+    
     //System.out.println("target list call in robot 1");
     //mPhotonVision.getTargetList().forEach(System.out::println);\
     printCount += 1;
@@ -494,7 +495,8 @@ public class Robot extends TimedRobot {
     // precision steer (slow down throttle if left trigger is held)
     if(precisionSteer) driveThrottle *= .3;
 
-    boolean wantsAutoSteer = mOperatorInterface.getDriveAutoSteer();
+    boolean wantsAutoSteer = false;
+
     //System.out.println("Wants auto steer: " + wantsAutoSteer);
     boolean wantsAutoTurn = mOperatorInterface.getAutoTurn();
     //wantsAutoSteer &= allowAutoSteer; //disable if autosteer isn't allowed
@@ -512,8 +514,20 @@ public class Robot extends TimedRobot {
     }
     SmartDashboard.putBoolean("Valid Target", validTarget);
     SmartDashboard.putNumber("Target Angle", errorAngle);
-
-    double aprilTagErrorAngle = mPhotonVision.getBestTargetYaw();
+    
+    if(mPhotonVision.seesTargets()){
+      if(mOperatorInterface.getAutoTurnRed()){
+        wantsAutoSteer = true;
+        aprilTagErrorAngle = mPhotonVision.getTargetYaw(12);
+      }else if(mOperatorInterface.getAutoTurnBlue()){
+        aprilTagErrorAngle = mPhotonVision.getTargetYaw(4);
+        wantsAutoSteer = true;
+    }
+  }
+    
+    //aprilTagErrorAngle = mPhotonVision.getBestTargetYaw();
+    
+    
     //System.out.println(aprilTagErrorAngle);
     
     //System.out.println("Before wantsAutoSteer");

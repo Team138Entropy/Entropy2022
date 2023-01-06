@@ -81,6 +81,8 @@ public class Drive extends Subsystem {
   // Autonomous PID Controllers
   private final PIDController mLeftPIDController = new PIDController(1, 0, 0);
   private final PIDController mRightPIDController = new PIDController(1, 0, 0);
+  private final PIDController autoSteerController = new PIDController(Constants.tuneableKp.get(), Constants.tuneableKi.get(), Constants.tuneableKd.get());
+
 
   public static synchronized Drive getInstance() {
     if (mInstance == null) {
@@ -344,6 +346,7 @@ public class Drive extends Subsystem {
     SmartDashboard.putNumber("encoder_right", getRightEncoderPosition());
     SmartDashboard.putNumber("gyro", getHeading());
     SmartDashboard.putNumber("PID output", turningValue);
+    SmartDashboard.putData("PID controller", autoSteerController);
   }
 
   // Zero Encoder of Each Falcon500
@@ -444,6 +447,8 @@ public class Drive extends Subsystem {
     SmartDashboard.putNumber("Derivative", derivative);
     
     previous_error = error;  
+
+    
     
     
     final double kP = 0.02;
@@ -459,7 +464,18 @@ public class Drive extends Subsystem {
     final double maxOutput = .6155;
     //maxoutpus was .6155
     */
-    turningValue = kP * error + kI * integral + kD * derivative;
+    //turningValue = kP * error + kI * integral + kD * derivative;
+    autoSteerController.setP(Constants.tuneableKp.get());
+    autoSteerController.setI(Constants.tuneableKi.get());
+    autoSteerController.setD(Constants.tuneableKd.get());
+  
+    turningValue = autoSteerController.calculate(-error);
+
+    if(turningValue > 1){
+      turningValue = 1;
+    }else if(turningValue < -1){
+      turningValue = -1;
+    }
     
     /*
     // Constrain to min output

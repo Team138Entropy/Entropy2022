@@ -122,28 +122,17 @@ public class photonVision{
     return targetYaw;
   }
 
-  public synchronized Double getRedTargetYaw(){
+  //function that will return the yaw of a target, it will only track the target with the ID given
+  public synchronized Double getTargetYaw(int id){
     List<PhotonTrackedTarget> targets = getTargetList();
     java.util.Iterator<PhotonTrackedTarget> it = targets.iterator();
     while(it.hasNext()){
       PhotonTrackedTarget activeTarget = it.next();
-      if(activeTarget.getFiducialId() == 12){
+      if(activeTarget.getFiducialId() == id){
         return activeTarget.getYaw();
       }  
     }
-    return null;
-  }
-
-  public synchronized Double getBlueTargetYaw(){
-    List<PhotonTrackedTarget> targets = getTargetList();
-    java.util.Iterator<PhotonTrackedTarget> it = targets.iterator();
-    while(it.hasNext()){
-      PhotonTrackedTarget activeTarget = it.next();
-      if(activeTarget.getFiducialId() == 13){
-        return activeTarget.getYaw();
-      }  
-    }
-    return null;
+    return 0.0;
   }
   
   public synchronized List<PhotonTrackedTarget> getTargetList() {
