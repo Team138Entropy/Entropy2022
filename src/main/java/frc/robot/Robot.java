@@ -443,11 +443,26 @@ public class Robot extends TimedRobot {
       }
 
       //4th of july stuff to give operator the ability to extend the climber when in the cargo scoring mode
+      /* 
       if (mOperatorInterface.getTeleopClimberExtend() > .3 && mClimber.getClimberPosition() < 33700){
         climbingTargetPosition += 300*mOperatorInterface.getTeleopClimberExtend();
       }
       else if (mOperatorInterface.getTeleopClimberExtend() < -.3 && mClimber.getClimberPosition() > 0){
         climbingTargetPosition += 300*mOperatorInterface.getTeleopClimberExtend();
+      }
+      */
+
+      if(mOperatorInterface.getClimberTestExtend()){
+        System.out.println("climber extend");
+        //extend the climber
+        mClimber.TestExtend();
+      }else if(mOperatorInterface.getClimberTestRetract()){
+        System.out.println("climber retract");
+        // retract the climber
+        mClimber.TestRetract();
+      }else{
+        // stop the climber
+        mClimber.TestStop();
       }
       
 
@@ -455,7 +470,6 @@ public class Robot extends TimedRobot {
      // System.out.println("Target: " + target.degrees);
       mArm.rotateToPosition(target.degrees);
       mArm.extendToPosition(extensionTargetPosition);
-      mClimber.setPosition(climbingTargetPosition);
       SmartDashboard.putNumber("climb target", climbingTargetPosition);
       SmartDashboard.putNumber("extend target", extensionTargetPosition);
       /*

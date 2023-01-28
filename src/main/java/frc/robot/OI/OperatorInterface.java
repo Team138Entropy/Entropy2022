@@ -168,11 +168,11 @@ public class OperatorInterface {
     }
 
     public boolean getClimberTestExtend() {
-        return mOperatorController.getButton(Button.RB);
+        return mOperatorController.getButton(Button.L_JOYSTICK);
     }
 
     public boolean getClimberTestRetract() {
-        return mOperatorController.getButton(Button.LB);
+        return mOperatorController.getButton(Button.R_JOYSTICK);
     }
 
     public boolean getTestZeroPress(){
