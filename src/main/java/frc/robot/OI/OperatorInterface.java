@@ -48,11 +48,11 @@ public class OperatorInterface {
     }
 
     public double getDriveThrottle() {
-        return mDriverController.getJoystick(Side.LEFT, Axis.Y);
+        return mOperatorController.getJoystick(Side.LEFT, Axis.Y);
     }
     
     public double getDriveTurn() {
-        return mDriverController.getJoystick(Side.RIGHT, Axis.X);
+        return mOperatorController.getJoystick(Side.RIGHT, Axis.X);
     }
 
     public boolean getDriveAutoSteer(){
@@ -196,12 +196,13 @@ public class OperatorInterface {
         return mOperatorController.getButton(Button.A);
     }
 
-    public double getTeleopArmExtend() {
-        return mOperatorController.getJoystick(Side.LEFT, Axis.Y);
+    public boolean getTeleopArmExtend() {
+        return mOperatorController.getDPad() == 0;
     }
 
-    public double getTeleopClimberExtend() {
-        return mOperatorController.getJoystick(Side.RIGHT, Axis.Y);
+    public boolean getTeleopArmRetract() {
+        return mOperatorController.getDPad() == 180;
     }
+
 
 }

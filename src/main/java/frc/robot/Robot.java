@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.TargetType;
 import frc.robot.OI.OperatorInterface;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Arm.ArmExtensionTarget;
 import frc.robot.subsystems.Arm.ArmTarget;
 import frc.robot.subsystems.Climber.ClimberTarget;
 import frc.robot.vision.TargetInfo;
@@ -394,7 +395,7 @@ public class Robot extends TimedRobot {
     mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
 
     // Run Drive Code! Allow Precision Steer and Auto Aim
-    DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
+    DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), false);
   }
 
   private ArmTarget lastTarget = ArmTarget.HOME;
@@ -424,22 +425,23 @@ public class Robot extends TimedRobot {
       double grasperCurrent = Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber);
 
       if (mOperatorInterface.intakeTeleop() && grasperCurrent <35) {
-        mGrasper.intakeManual();
-        target = ArmTarget.INTAKE;
+        mGrasper.ejectManual();
       }
       else if (mOperatorInterface.getArmEject() && grasperCurrent <35) {
-        mGrasper.ejectManual();
+        mGrasper.intakeManual();
       }
       else {
         mGrasper.stop();
       }
 
       //4th of july stuff to give operator the ability to extend the arm when in the cargo scoring mode
-      if (mOperatorInterface.getTeleopArmExtend() > .3 && mArm.getExtensionPosition() < 184453){
-        extensionTargetPosition += 2000*mOperatorInterface.getTeleopArmExtend();
+      if (mOperatorInterface.getTeleopArmExtend()){
+        //extensionTargetPosition += 2000*mOperatorInterface.getTeleopArmExtend();
+        extensionTargetPosition = ArmExtensionTarget.FULLY_EXTENDED.ticks;
       }
-      else if (mOperatorInterface.getTeleopArmExtend() < -.3 && mArm.getExtensionPosition() > 0){
-        extensionTargetPosition += 2000*mOperatorInterface.getTeleopArmExtend();
+      else if (mOperatorInterface.getTeleopArmRetract()){
+        //extensionTargetPosition += 2000*mOperatorInterface.getTeleopArmExtend();
+        extensionTargetPosition = ArmExtensionTarget.FULLY_RETRACTED.ticks;
       }
 
       //4th of july stuff to give operator the ability to extend the climber when in the cargo scoring mode
@@ -485,7 +487,7 @@ public class Robot extends TimedRobot {
      // mGrasper.update(Constants.Grasper.globelPowerDistribution.getCurrent(Constants.Grasper.powerDistributionNumber));
 
       // Drive with Precision Steer and Auto Steer
-      DriveLoop(mOperatorInterface.getDrivePrecisionSteer(), true);
+      DriveLoop(true, true);
     } else if(mCurrentMode == RobotMode.Climber) {
       // Objective is to Climb
       // Do not allow manual control of arm and grasper
